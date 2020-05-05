@@ -47,7 +47,7 @@ const Main = (props) => {
       <aside>
         <Button className="open-btn" variant="contained" color="primary">
           OPEN IMAGE
-          <input className="open-file" type="file" accept=".jpg, .jpeg, .png" onChange={evt => openImage(evt)}/>
+          <input className="open-file" type="file" accept=".jpg, .jpeg, .png" onChange={openImage}/>
         </Button>
       </aside>
       {/* <article className="editor-container horizontal">  */}
