@@ -47,10 +47,11 @@
 - chore (개발 환경 변경)     
 *angularJS commit convention 참고했습니다*    
 
-### pull request   
-- 각자 개인 브랜치에서 master로 pull request 날리기   
+### pull request
+- 각자 개인 브랜치(feature-...)에서 develop으로 pull request 날리기
 - 코드리뷰 후 2명 이상 동의하면 merge    
 - 다른 사람이 수정해야될 사항이나 오류나는 부분 이슈에 남기기   
+*참고: [Gitflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)*
 
 ### Job Role
 * 필수사항: Front-End 개발
