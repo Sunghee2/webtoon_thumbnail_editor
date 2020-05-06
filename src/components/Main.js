@@ -46,12 +46,15 @@ const Main = props => {
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
-    setCanvasScale({
-      left: canvasRef.current.offsetLeft,
-      top: canvasRef.current.offsetTop,
-      width: canvasRef.current.width,
-      height: canvasRef.current.height,
-    });
+    if (canvasRef.current) {
+      const { offsetLeft, offsetTop, width, height } = canvasRef.current;
+      setCanvasScale({
+        left: offsetLeft,
+        top: offsetTop,
+        width,
+        height,
+      });
+    }
   };
 
   return (
