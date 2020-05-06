@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import "../styles/Main.scss";
+import React, { useState } from 'react';
+import '../styles/Main.scss';
 
 const Cropper = ({ cropIsActive, canvasScale }) => {
   const [cropperInfo, setCropperInfo] = useState({
@@ -27,10 +27,10 @@ const Cropper = ({ cropIsActive, canvasScale }) => {
         height: `${cropperInfo.height}px`,
       }}
     >
-      <div className="crop-square-margin ne"></div>
-      <div className="crop-square-margin se"></div>
-      <div className="crop-square-margin sw"></div>
-      <div className="crop-square-margin nw"></div>
+      <div className="crop-square-margin ne" />
+      <div className="crop-square-margin se" />
+      <div className="crop-square-margin sw" />
+      <div className="crop-square-margin nw" />
     </div>
   ) : null;
 };

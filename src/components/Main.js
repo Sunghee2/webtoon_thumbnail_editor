@@ -6,14 +6,14 @@ import Cropper from './Cropper';
 const Main = props => {
   const canvasRef = useRef(null);
 
-  const openImage = evt => {
+  const openImage = (evt) => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
     const img = evt.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = readerEvt => {
+    reader.onload = (readerEvt) => {
       const image = new Image();
 
       image.src = readerEvt.target.result;
@@ -71,8 +71,7 @@ const Main = props => {
         </Button>
       </aside>
       <article className="editor-container horizontal">
-        <canvas className="editor" ref={canvasRef} />
-        <Cropper cropIsActive={cropIsActive} canvasScale={canvasScale} />
+        <canvas className="editor" ref={canvasRef}></canvas>
       </article>
     </section>
   );
