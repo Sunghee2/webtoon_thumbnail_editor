@@ -46,7 +46,7 @@ const Main = props => {
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
-    return setCanvasScale({
+    setCanvasScale({
       left: canvasRef.current.offsetLeft,
       top: canvasRef.current.offsetTop,
       width: canvasRef.current.width,
@@ -72,6 +72,9 @@ const Main = props => {
       </aside>
       <article className="editor-container horizontal">
         <canvas className="editor" ref={canvasRef}></canvas>
+        {cropIsActive && <Cropper
+          canvasScale={canvasScale}
+        />}
       </article>
     </section>
   );

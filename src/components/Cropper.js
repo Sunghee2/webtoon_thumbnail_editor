@@ -1,23 +1,18 @@
 import React, { useState } from 'react';
 import '../styles/Main.scss';
+import '../styles/Cropper.scss';
 
-const Cropper = ({ cropIsActive, canvasScale }) => {
+const Cropper = ({ canvasScale }) => {
+  console.log(canvasScale);
+
   const [cropperInfo, setCropperInfo] = useState({
-    top: 0,
-    left: 0,
-    width: 0,
-    height: 0,
+    top: canvasScale.top,
+    left: canvasScale.left,
+    width: canvasScale.width,
+    height: canvasScale.height,
   });
-  useEffect(() => {
-    setCropperInfo({
-      top: canvasScale.top,
-      left: canvasScale.left,
-      width: canvasScale.width,
-      height: canvasScale.height,
-    });
-  }, [canvasScale]);
 
-  return cropIsActive ? (
+  return (
     <div
       className="crop-area"
       style={{
@@ -32,7 +27,7 @@ const Cropper = ({ cropIsActive, canvasScale }) => {
       <div className="crop-square-margin sw" />
       <div className="crop-square-margin nw" />
     </div>
-  ) : null;
+  );
 };
 
 export default Cropper;
