@@ -1,18 +1,19 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
+import Cropper from './Cropper';
 
 const Main = props => {
   const canvasRef = useRef(null);
 
-  const openImage = evt => {
+  const openImage = (evt) => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
     const img = evt.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = readerEvt => {
+    reader.onload = (readerEvt) => {
       const image = new Image();
 
       image.src = readerEvt.target.result;
@@ -40,6 +41,22 @@ const Main = props => {
     }
   };
 
+  const [cropIsActive, setCropIsActive] = useState(false);
+  const [canvasScale, setCanvasScale] = useState({});
+  const startCrop = e => {
+    e.preventDefault();
+    setCropIsActive(!cropIsActive);
+    if (canvasRef.current) {
+      const { offsetLeft, offsetTop, width, height } = canvasRef.current;
+      setCanvasScale({
+        left: offsetLeft,
+        top: offsetTop,
+        width,
+        height,
+      });
+    }
+  };
+
   return (
     <section>
       <aside>
@@ -52,10 +69,16 @@ const Main = props => {
             onChange={openImage}
           />
         </Button>
+        <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+          Crop
+        </Button>
       </aside>
-      {/* <article className="editor-container horizontal">  */}
-      <canvas className="editor" ref={canvasRef} />
-      {/* </article> */}
+      <article className="editor-container horizontal">
+        <canvas className="editor" ref={canvasRef}></canvas>
+        {cropIsActive && <Cropper
+          canvasScale={canvasScale}
+        />}
+      </article>
     </section>
   );
 };

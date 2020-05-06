@@ -8,9 +8,12 @@ aside {
   top: 200px;
   left: 40px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
 }
 .open-btn {
   position: relative;
+  margin: 0.5rem !important;
 }
 .open-file {
   position: absolute;
