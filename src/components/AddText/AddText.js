@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../styles/TextAdd.scss';
 import Button from '@material-ui/core/Button';
+import AddTextSetting from './AddTextSetting';
 
 const AddText = () => {
   const [addTextSettingActive, setAddTextSettingActive] = useState(false);
@@ -15,6 +16,7 @@ const AddText = () => {
       >
         + add text
       </Button>
+      {addTextSettingActive && <AddTextSetting />}
     </div>
   );
 };
