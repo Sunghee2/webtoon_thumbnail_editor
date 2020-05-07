@@ -3,13 +3,8 @@ import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 
 const Cropper = ({ canvasScale }) => {
-  console.log(canvasScale);
-
   const [cropperInfo, setCropperInfo] = useState({
-    top: canvasScale.top,
-    left: canvasScale.left,
-    width: canvasScale.width,
-    height: canvasScale.height,
+    ...canvasScale,
   });
 
   return (
