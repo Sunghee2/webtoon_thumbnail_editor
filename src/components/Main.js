@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
+import AddText from './AddText/AddText';
 
 const Main = props => {
   const canvasRef = useRef(null);
@@ -66,6 +67,8 @@ const Main = props => {
     }
   };
 
+  const [addTextActive, setAddTextActive] = useState(false);
+
   return (
     <section>
       <aside>
@@ -88,6 +91,7 @@ const Main = props => {
         <canvas className="editor" ref={canvasRef}></canvas>
         {cropIsActive && <Cropper canvasScale={canvasScale} />}
       </article>
+      <nav>{addTextActive && <AddText />}</nav>
     </section>
   );
 };
