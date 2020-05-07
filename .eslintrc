@@ -21,7 +21,6 @@
       {
         "extensions": [".js", ".jsx"]
       }
-    ],
-    "no-console": 0
+    ]
   }
 }
