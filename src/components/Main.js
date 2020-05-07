@@ -147,9 +147,11 @@ const Main = props => {
             onChange={openImage}
           />
         </Button>
-        <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-          Crop
-        </Button>
+        {canvasRef.current && (
+          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+            Crop
+          </Button>
+        )}
       </aside>
       <article className="editor-container horizontal" onMouseUp={finishResize}>
         <div onMouseMove={resizing}>
