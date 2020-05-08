@@ -23,7 +23,11 @@ aside {
   height: 100%;
   opacity: 0;
 }
+.editor-container {
+  width: 60%;
+  margin-left: 20rem;
+  position: relative;
+}
 .editor { 
   display: block;
-  margin: 0 auto;
 }

@@ -5,15 +5,16 @@ import Cropper from './Cropper';
 
 const Main = props => {
   const canvasRef = useRef(null);
-
-  const openImage = (evt) => {
+  const [canvasScale, setCanvasScale] = useState({});
+  const [cropperInfo, setCropperInfo] = useState({});
+  const openImage = evt => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
     const img = evt.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = (readerEvt) => {
+    reader.onload = readerEvt => {
       const image = new Image();
 
       image.src = readerEvt.target.result;
@@ -34,6 +35,21 @@ const Main = props => {
         canvasEl.width = width;
         canvasEl.height = height;
         context.drawImage(image, 0, 0, width, height);
+        if (canvasRef.current) {
+          const { offsetLeft, offsetTop } = canvasRef.current;
+          setCanvasScale({
+            left: offsetLeft,
+            top: offsetTop,
+            width,
+            height,
+          });
+          setCropperInfo({
+            left: offsetLeft,
+            top: offsetTop,
+            width,
+            height,
+          });
+        }
       };
     };
     if (img) {
@@ -42,19 +58,80 @@ const Main = props => {
   };
 
   const [cropIsActive, setCropIsActive] = useState(false);
-  const [canvasScale, setCanvasScale] = useState({});
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
-    if (canvasRef.current) {
-      const { offsetLeft, offsetTop, width, height } = canvasRef.current;
-      setCanvasScale({
-        left: offsetLeft,
-        top: offsetTop,
-        width,
-        height,
-      });
+  };
+
+  const [cropperChange, setCropperChange] = useState({
+    prevWidth: 0,
+    prevHeight: 0,
+    prevX: 0,
+    prevY: 0,
+    startX: 0,
+    startY: 0,
+  });
+
+  const [activeResize, setActiveResize] = useState(false);
+  const [direction, setDirection] = useState('');
+  const startResize = e => {
+    e.preventDefault();
+    setActiveResize(true);
+    setDirection(e.target.dataset.dir);
+    setCropperChange({
+      prevWidth: cropperInfo.width,
+      prevHeight: cropperInfo.height,
+      prevX: cropperInfo.left,
+      prevY: cropperInfo.top,
+      startX: e.clientX,
+      startY: e.clientY,
+    });
+  };
+  const resizing = e => {
+    e.preventDefault();
+    const diffX = cropperChange.startX - e.clientX;
+    const diffY = cropperChange.startY - e.clientY;
+    if (activeResize) {
+      switch (direction) {
+        case 'se':
+          setCropperInfo(prev => ({
+            ...prev,
+            width: cropperChange.prevWidth - diffX,
+            height: cropperChange.prevHeight - diffY,
+          }));
+          break;
+        case 'ne':
+          setCropperInfo(prev => ({
+            ...prev,
+            top: cropperChange.prevY - diffY,
+            width: cropperChange.prevWidth - diffX,
+            height: cropperChange.prevHeight + diffY,
+          }));
+          break;
+        case 'sw':
+          setCropperInfo(prev => ({
+            ...prev,
+            left: cropperChange.prevX - diffX,
+            width: cropperChange.prevWidth + diffX,
+            height: cropperChange.prevHeight - diffY,
+          }));
+          break;
+        case 'nw':
+          setCropperInfo({
+            top: cropperChange.prevY - diffY,
+            left: cropperChange.prevX - diffX,
+            width: cropperChange.prevWidth + diffX,
+            height: cropperChange.prevHeight + diffY,
+          });
+          break;
+        default:
+          break;
+      }
     }
+  };
+  const finishResize = e => {
+    e.preventDefault();
+    setActiveResize(false);
   };
 
   return (
@@ -73,11 +150,11 @@ const Main = props => {
           Crop
         </Button>
       </aside>
-      <article className="editor-container horizontal">
-        <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper
-          canvasScale={canvasScale}
-        />}
+      <article className="editor-container horizontal" onMouseUp={finishResize}>
+        <div onMouseMove={resizing}>
+          <canvas className="editor" ref={canvasRef} />
+          {cropIsActive && <Cropper startResize={startResize} cropperInfo={cropperInfo} />}
+        </div>
       </article>
     </section>
   );
