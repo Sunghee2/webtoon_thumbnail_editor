@@ -77,6 +77,8 @@ const Cropper = ({ canvasScale }) => {
   };
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="crop-area"
       style={{
         left: `${cropperInfo.left}px`,
@@ -87,24 +89,36 @@ const Cropper = ({ canvasScale }) => {
       onMouseUp={finishResize}
     >
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north east"
         className="crop-square-margin ne"
         data-dir="ne"
         onMouseDown={startResize}
         onMouseMove={resizing}
       />
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south east"
         className="crop-square-margin se"
         data-dir="se"
         onMouseDown={startResize}
         onMouseMove={resizing}
       />
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south west"
         className="crop-square-margin sw"
         data-dir="sw"
         onMouseDown={startResize}
         onMouseMove={resizing}
       />
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north west"
         className="crop-square-margin nw"
         data-dir="nw"
         onMouseDown={startResize}
