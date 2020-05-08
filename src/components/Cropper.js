@@ -31,10 +31,8 @@ const Cropper = ({ canvasScale }) => {
   const resizing = e => {
     e.preventDefault();
     const { dir } = e.target.dataset;
-    let diffX = 0;
-    let diffY = 0;
-    diffX = cropperChange.startX - e.clientX;
-    diffY = cropperChange.startY - e.clientY;
+    const diffX = cropperChange.startX - e.clientX;
+    const diffY = cropperChange.startY - e.clientY;
     if (activeResize) {
       switch (dir) {
         case 'se':
@@ -45,7 +43,6 @@ const Cropper = ({ canvasScale }) => {
           }));
           break;
         case 'ne':
-          console.log(cropperChange, diffY);
           setCropperInfo(prev => ({
             ...prev,
             top: cropperChange.prevY - diffY,
@@ -54,13 +51,12 @@ const Cropper = ({ canvasScale }) => {
           }));
           break;
         default:
-          console.log('default');
+          break;
       }
     }
   };
   const finishResize = e => {
     e.preventDefault();
-    console.log(cropperInfo);
     setActiveResize(false);
   };
   return (
