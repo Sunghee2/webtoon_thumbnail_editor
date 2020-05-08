@@ -86,12 +86,22 @@ const Main = props => {
             Crop
           </Button>
         )}
+        {canvasRef.current && (
+          <Button
+            className="add-text-btn open-btn"
+            variant="contained"
+            color="primary"
+            onClick={setAddTextActive}
+          >
+            TEXT ADD
+          </Button>
+        )}
       </aside>
       <article className="editor-container horizontal">
         <canvas className="editor" ref={canvasRef}></canvas>
         {cropIsActive && <Cropper canvasScale={canvasScale} />}
+        {addTextActive && <AddText />}
       </article>
-      <nav>{addTextActive && <AddText />}</nav>
     </section>
   );
 };

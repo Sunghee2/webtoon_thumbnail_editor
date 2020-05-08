@@ -10,10 +10,15 @@
 
 .add-text-title {
     background-color: rgb(0, 0, 0);
+    color: white;
+    font-weight: bold;
     padding: 10px;
 }
 
 .add-text-setting {
     margin: 5px;
     padding: 5px;
+    > * {
+        margin-bottom: 20px !important;
+    }
 }
