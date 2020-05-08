@@ -91,37 +91,38 @@ const Main = props => {
     e.preventDefault();
     const diffX = cropperChange.startX - e.clientX;
     const diffY = cropperChange.startY - e.clientY;
+    const { prevWidth, prevHeight, prevX, prevY } = cropperChange;
     if (activeResize) {
       switch (direction) {
         case 'se':
           setCropperInfo(prev => ({
             ...prev,
-            width: cropperChange.prevWidth - diffX,
-            height: cropperChange.prevHeight - diffY,
+            width: prevWidth - diffX,
+            height: prevHeight - diffY,
           }));
           break;
         case 'ne':
           setCropperInfo(prev => ({
             ...prev,
-            top: cropperChange.prevY - diffY,
-            width: cropperChange.prevWidth - diffX,
-            height: cropperChange.prevHeight + diffY,
+            top: prevY - diffY,
+            width: prevWidth - diffX,
+            height: prevHeight + diffY,
           }));
           break;
         case 'sw':
           setCropperInfo(prev => ({
             ...prev,
-            left: cropperChange.prevX - diffX,
-            width: cropperChange.prevWidth + diffX,
-            height: cropperChange.prevHeight - diffY,
+            left: prevX - diffX,
+            width: prevWidth + diffX,
+            height: prevHeight - diffY,
           }));
           break;
         case 'nw':
           setCropperInfo({
-            top: cropperChange.prevY - diffY,
-            left: cropperChange.prevX - diffX,
-            width: cropperChange.prevWidth + diffX,
-            height: cropperChange.prevHeight + diffY,
+            top: prevY - diffY,
+            left: prevX - diffX,
+            width: prevWidth + diffX,
+            height: prevHeight + diffY,
           });
           break;
         default:
