@@ -50,6 +50,22 @@ const Cropper = ({ canvasScale }) => {
             height: cropperChange.prevHeight + diffY,
           }));
           break;
+        case 'sw':
+          setCropperInfo(prev => ({
+            ...prev,
+            left: cropperChange.prevX - diffX,
+            width: cropperChange.prevWidth + diffX,
+            height: cropperChange.prevHeight - diffY,
+          }));
+          break;
+        case 'nw':
+          setCropperInfo({
+            top: cropperChange.prevY - diffY,
+            left: cropperChange.prevX - diffX,
+            width: cropperChange.prevWidth + diffX,
+            height: cropperChange.prevHeight + diffY,
+          });
+          break;
         default:
           break;
       }
@@ -82,8 +98,18 @@ const Cropper = ({ canvasScale }) => {
         onMouseDown={startResize}
         onMouseMove={resizing}
       />
-      <div className="crop-square-margin sw" />
-      <div className="crop-square-margin nw" />
+      <div
+        className="crop-square-margin sw"
+        data-dir="sw"
+        onMouseDown={startResize}
+        onMouseMove={resizing}
+      />
+      <div
+        className="crop-square-margin nw"
+        data-dir="nw"
+        onMouseDown={startResize}
+        onMouseMove={resizing}
+      />
     </div>
   );
 };
