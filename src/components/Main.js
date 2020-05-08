@@ -5,15 +5,15 @@ import Cropper from './Cropper';
 
 const Main = props => {
   const canvasRef = useRef(null);
+  const [canvasScale, setCanvasScale] = useState({});
 
-  const openImage = (evt) => {
-    console.log(evt.target.files[0]);
+  const openImage = evt => {
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
     const img = evt.target.files[0];
     const reader = new FileReader();
 
-    reader.onload = (readerEvt) => {
+    reader.onload = readerEvt => {
       const image = new Image();
 
       image.src = readerEvt.target.result;
@@ -34,6 +34,16 @@ const Main = props => {
         canvasEl.width = width;
         canvasEl.height = height;
         context.drawImage(image, 0, 0, width, height);
+
+        if (canvasRef.current) {
+          const { offsetLeft, offsetTop } = canvasRef.current;
+          setCanvasScale({
+            left: offsetLeft,
+            top: offsetTop,
+            width,
+            height,
+          });
+        }
       };
     };
     if (img) {
@@ -42,7 +52,6 @@ const Main = props => {
   };
 
   const [cropIsActive, setCropIsActive] = useState(false);
-  const [canvasScale, setCanvasScale] = useState({});
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
@@ -69,15 +78,15 @@ const Main = props => {
             onChange={openImage}
           />
         </Button>
-        <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-          Crop
-        </Button>
+        {canvasRef.current && (
+          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+            Crop
+          </Button>
+        )}
       </aside>
       <article className="editor-container horizontal">
         <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper
-          canvasScale={canvasScale}
-        />}
+        {cropIsActive && <Cropper canvasScale={canvasScale} />}
       </article>
     </section>
   );
