@@ -2,11 +2,14 @@ import React, { useRef, useState } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
+import Resizer from './Resizer';
 
 const Main = props => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [cropperInfo, setCropperInfo] = useState({});
+  const [imgSrc, setImgSrc] = useState(null);
+
   const openImage = evt => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
@@ -19,6 +22,8 @@ const Main = props => {
 
       image.src = readerEvt.target.result;
       image.onload = () => {
+        setImgSrc(image);
+
         const maxWidth = 800;
         let { width } = image;
         let { height } = image;
@@ -135,6 +140,13 @@ const Main = props => {
     setActiveResize(false);
   };
 
+  const [isResize, setIsResize] = useState(false);
+
+  const startResize = e => {
+    e.preventDefault();
+    setIsResize(true);
+  };
+
   return (
     <section>
       <aside>
@@ -148,9 +160,14 @@ const Main = props => {
           />
         </Button>
         {canvasRef.current && (
-          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
-          </Button>
+          <>
+            <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+              Crop
+            </Button>
+            <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
+              Resize
+            </Button>
+          </>
         )}
       </aside>
       <article className="editor-container horizontal" onMouseUp={finishResize}>
