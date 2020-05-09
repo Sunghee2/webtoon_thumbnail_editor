@@ -1,6 +1,12 @@
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 .crop-area {
   border: 2px dashed #000;
   position: absolute;
+  cursor: move;
 }
 .crop-square-margin {
   width: 10px;
@@ -10,6 +16,7 @@
   border: 1px solid #333;
   opacity: 0.8;
   position: absolute;
+  z-index: 10;
 }
 .ne {
   top: -5px;
