@@ -211,7 +211,6 @@ const Main = props => {
   useEffect(() => {
     if (isResize || isImgMove) {
       if (canvasRef.current) {
-        console.log(cropperInfo);
         const canvasEl = canvasRef.current;
         const context = canvasEl.getContext(`2d`);
 

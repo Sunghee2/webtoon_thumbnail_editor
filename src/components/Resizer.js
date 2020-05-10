@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/Main.scss';
 
-const Resizer = ({ startImgResize, startImgMove, cropperInfo }) => {
+const Resizer = props => {
+  const { startImgResize, startImgMove, cropperInfo } = props;
   return (
     <div
       role="section"
