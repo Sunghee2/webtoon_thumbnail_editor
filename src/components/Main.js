@@ -11,17 +11,26 @@ const Main = props => {
   const [imgSrc, setImgSrc] = useState(null);
   const [isResize, setIsResize] = useState(false);
 
-  const openImage = evt => {
-    console.log(evt.target.files[0]);
-    const canvasEl = canvasRef.current;
-    const context = canvasEl.getContext(`2d`);
-    const img = evt.target.files[0];
-    const reader = new FileReader();
+  const readImgAsync = img => {
+    return new Promise((res, rej) => {
+      const reader = new FileReader();
 
-    reader.onload = readerEvt => {
+      reader.onload = () => {
+        res(reader.result);
+      };
+
+      reader.onerror = rej;
+      reader.readAsDataURL(img);
+    });
+  };
+
+  const loadImgAsync = src => {
+    return new Promise((res, rej) => {
+      const canvasEl = canvasRef.current;
+      const context = canvasEl.getContext(`2d`);
       const image = new Image();
 
-      image.src = readerEvt.target.result;
+      image.src = src;
       image.onload = () => {
         setImgSrc(image);
 
@@ -57,10 +66,14 @@ const Main = props => {
           });
         }
       };
-    };
-    if (img) {
-      reader.readAsDataURL(img);
-    }
+      if (image) res(true);
+    });
+  };
+
+  const openImage = async evt => {
+    const img = evt.target.files[0];
+    const imgSrc = await readImgAsync(img);
+    const flag = await loadImgAsync(imgSrc);
   };
 
   const [cropIsActive, setCropIsActive] = useState(false);
