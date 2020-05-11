@@ -2,8 +2,9 @@ import React, { useRef, useState } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
+import CanvasTypeModal from './CanvasTypeModal';
 
-const Main = props => {
+const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
 
@@ -67,28 +68,31 @@ const Main = props => {
   };
 
   return (
-    <section>
-      <aside>
-        <Button className="open-btn" variant="contained" color="primary">
-          OPEN IMAGE
-          <input
-            className="open-file"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={openImage}
-          />
-        </Button>
-        {canvasRef.current && (
-          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
+    <>
+      <CanvasTypeModal />
+      <section>
+        <aside>
+          <Button className="open-btn" variant="contained" color="primary">
+            OPEN IMAGE
+            <input
+              className="open-file"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              onChange={openImage}
+            />
           </Button>
-        )}
-      </aside>
-      <article className="editor-container horizontal">
-        <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper canvasScale={canvasScale} />}
-      </article>
-    </section>
+          {canvasRef.current && (
+            <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+              Crop
+            </Button>
+          )}
+        </aside>
+        <article className="editor-container horizontal">
+          <canvas className="editor" ref={canvasRef} />
+          {cropIsActive && <Cropper canvasScale={canvasScale} />}
+        </article>
+      </section>
+    </>
   );
 };
 
