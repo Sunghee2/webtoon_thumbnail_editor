@@ -187,6 +187,14 @@ const Main = () => {
     setTextAddActive(false);
   };
 
+  const handleDrawerOpen = () => {
+    setVisibleDrawer(true);
+  };
+
+  const handleDrawerClose = () => {
+    setVisibleDrawer(false);
+  };
+
   return (
     <>
       <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />

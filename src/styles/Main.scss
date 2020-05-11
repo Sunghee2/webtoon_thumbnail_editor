@@ -59,7 +59,6 @@ article {
   height: 100%;
   opacity: 0;
 }
-
 .editor {
   display: block;
   margin: 0 auto;
@@ -81,6 +80,14 @@ article {
 
 .drawer {
   width: 250px;
+
+  .drawer-content {
+    padding: 10px;
+  }
+}
+
+.drawer {
+  width: 200px;
 
   .drawer-content {
     padding: 10px;
