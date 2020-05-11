@@ -1,7 +1,29 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.App {
+  width: 100%;
+  height: 100%;
+}
+
 section {
   position: relative;
   min-width: 1200px;
   padding: 100px 0;
+  width: 100%;
+  height: 100%;
 }
 aside {
   position: absolute;
@@ -26,4 +48,5 @@ aside {
 .editor { 
   display: block;
   margin: 0 auto;
+  border: 1px solid black;
 }
