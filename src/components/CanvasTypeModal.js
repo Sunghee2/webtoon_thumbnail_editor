@@ -15,7 +15,7 @@ const CanvasTypeModal = props => {
     const { offsetLeft, offsetTop } = props.canvasRef.current;
     console.log('size', props.canvasRef.current.parentNode.parentNode.offsetHeight);
     const [width, height] =
-      canvasType === 'horizontal' ? [1280, 720] : canvasType === 'vertical' ? [800, 600] : [0, 0];
+      canvasType === 'horizontal' ? [640, 360] : canvasType === 'vertical' ? [400, 300] : [0, 0];
     props.setCanvasScale({
       left: offsetLeft,
       top: offsetTop,

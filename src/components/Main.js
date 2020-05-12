@@ -12,8 +12,8 @@ const Main = () => {
     if (Object.keys(canvasScale)) {
       const canvasEl = canvasRef.current;
 
-      canvasEl.width = canvasScale.width;
-      canvasEl.height = canvasScale.height;
+      canvasEl.style.width = `${canvasScale.width}px`;
+      canvasEl.style.height = `${canvasScale.height}px`;
     }
   }, [canvasScale]);
 
@@ -43,7 +43,13 @@ const Main = () => {
         }
         // canvasEl.width = width;
         // canvasEl.height = height;
-        context.drawImage(image, 0, 0, canvasEl.width, canvasEl.height);
+        canvasEl.width = image.width;
+        canvasEl.height = image.height;
+
+        context.drawImage(image, 0, 0);
+
+        canvasEl.style.width = `${canvasScale.width}px`;
+        canvasEl.style.height = `${canvasScale.height}px`;
       };
     };
     if (img) {
