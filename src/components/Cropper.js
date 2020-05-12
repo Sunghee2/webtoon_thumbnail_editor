@@ -1,19 +1,12 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 
-const Cropper = ({ canvasScale }) => {
-  console.log(canvasScale);
-
-  const [cropperInfo, setCropperInfo] = useState({
-    top: canvasScale.top,
-    left: canvasScale.left,
-    width: canvasScale.width,
-    height: canvasScale.height,
-  });
-
+const Cropper = ({ cropperInfo, startResize }) => {
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="crop-area"
       style={{
         left: `${cropperInfo.left}px`,
@@ -22,10 +15,38 @@ const Cropper = ({ canvasScale }) => {
         height: `${cropperInfo.height}px`,
       }}
     >
-      <div className="crop-square-margin ne" />
-      <div className="crop-square-margin se" />
-      <div className="crop-square-margin sw" />
-      <div className="crop-square-margin nw" />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north east"
+        className="crop-square-margin ne"
+        data-dir="ne"
+        onMouseDown={startResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south east"
+        className="crop-square-margin se"
+        data-dir="se"
+        onMouseDown={startResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south west"
+        className="crop-square-margin sw"
+        data-dir="sw"
+        onMouseDown={startResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north west"
+        className="crop-square-margin nw"
+        data-dir="nw"
+        onMouseDown={startResize}
+      />
     </div>
   );
 };
