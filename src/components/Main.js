@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
+import { CropperInfoContext } from '../CropperInfoContext';
 
 const Main = props => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [cropperInfo, setCropperInfo] = useState({});
+  const [cropperInfo, setCropperInfo] = useContext(CropperInfoContext);
   const openImage = evt => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
