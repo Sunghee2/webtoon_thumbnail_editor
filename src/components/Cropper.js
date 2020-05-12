@@ -6,7 +6,6 @@ import { CropperInfoContext } from '../context';
 
 const Cropper = ({ startCropperResize, startCropperMove }) => {
   const { state } = useContext(CropperInfoContext);
-
   return (
     <div
       role="button"
