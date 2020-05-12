@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
@@ -7,6 +7,15 @@ import CanvasTypeModal from './CanvasTypeModal';
 const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
+
+  useEffect(() => {
+    if (Object.keys(canvasScale)) {
+      const canvasEl = canvasRef.current;
+
+      canvasEl.width = canvasScale.width;
+      canvasEl.height = canvasScale.height;
+    }
+  }, [canvasScale]);
 
   const openImage = evt => {
     const canvasEl = canvasRef.current;
@@ -32,19 +41,9 @@ const Main = () => {
           width *= maxWidth / height;
           height = maxWidth;
         }
-        canvasEl.width = width;
-        canvasEl.height = height;
-        context.drawImage(image, 0, 0, width, height);
-
-        if (canvasRef.current) {
-          const { offsetLeft, offsetTop } = canvasRef.current;
-          setCanvasScale({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
-        }
+        // canvasEl.width = width;
+        // canvasEl.height = height;
+        context.drawImage(image, 0, 0, canvasEl.width, canvasEl.height);
       };
     };
     if (img) {
@@ -69,7 +68,7 @@ const Main = () => {
 
   return (
     <>
-      <CanvasTypeModal />
+      <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />
       <section>
         <aside>
           <Button className="open-btn" variant="contained" color="primary">

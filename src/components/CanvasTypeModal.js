@@ -5,12 +5,23 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 
-const CanvasTypeModal = () => {
+const CanvasTypeModal = props => {
   const [open, setOpen] = useState(true);
   const [canvasType, setCanvasType] = useState(null);
 
   const handleSubmit = e => {
     e.preventDefault();
+    if (canvasType === null) return;
+    const { offsetLeft, offsetTop } = props.canvasRef.current;
+    console.log('size', props.canvasRef.current.parentNode.parentNode.offsetHeight);
+    const [width, height] =
+      canvasType === 'horizontal' ? [1280, 720] : canvasType === 'vertical' ? [800, 600] : [0, 0];
+    props.setCanvasScale({
+      left: offsetLeft,
+      top: offsetTop,
+      width,
+      height,
+    });
     setOpen(false);
   };
 
@@ -31,6 +42,7 @@ const CanvasTypeModal = () => {
           value="horizontal"
           style={{ marginRight: '8px' }}
           variant={canvasType === 'horizontal' ? 'contained' : 'outlined'}
+          color="primary"
           onClick={handleClickButton}
         >
           가로형
@@ -38,6 +50,7 @@ const CanvasTypeModal = () => {
         <Button
           value="vertical"
           variant={canvasType === 'vertical' ? 'contained' : 'outlined'}
+          color="primary"
           onClick={handleClickButton}
         >
           세로형
