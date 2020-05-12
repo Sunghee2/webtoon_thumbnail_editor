@@ -23,4 +23,18 @@ const getHistory = () => {
   return database.ref('/').once('value');
 };
 
-export { initFirebase, getHistory };
+const setHistory = (name, file) => {
+  const storageRef = firebase.storage().ref();
+  const imageRef = storageRef.child(`${name}`);
+
+  imageRef.put(file).then(() => {
+    firebase
+      .database()
+      .ref(`/${name}`)
+      .set(
+        `https://firebasestorage.googleapis.com/v0/b/webtoon-thumbnail-editor.appspot.com/o/${name}?alt=media`,
+      );
+  });
+};
+
+export { initFirebase, getHistory, setHistory };
