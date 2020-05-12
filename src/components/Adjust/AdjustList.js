@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import AdjustItem from './AdjustItem';
 import { AdjustContext } from '../../context/adjustContext';
-import brightnessFilter from '../../utils/filter';
+import { brightnessFilter, grayscaleFilter } from '../../utils/filter';
 
 const AdjustList = ({ canvasRef }) => {
   const [adjust, dispatch] = useContext(AdjustContext);
@@ -19,6 +19,7 @@ const AdjustList = ({ canvasRef }) => {
         case 'contrast':
           break;
         case 'gray':
+          imgData = grayscaleFilter(imgData, 0.01);
           break;
         case 'blur':
           break;
