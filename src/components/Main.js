@@ -7,7 +7,7 @@ import { CropperInfoContext } from '../context/CropperInfoContext';
 const Main = props => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [cropperInfo, setCropperInfo] = useContext(CropperInfoContext);
+  const { state, dispatch } = useContext(CropperInfoContext);
   const openImage = evt => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
@@ -44,12 +44,7 @@ const Main = props => {
             width,
             height,
           });
-          setCropperInfo({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
+          dispatch({ type: 'init', offsetLeft, offsetTop, width, height });
         }
       };
     };

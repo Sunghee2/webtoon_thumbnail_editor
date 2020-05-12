@@ -1,59 +1,21 @@
-import React, { useContext, useEffect } from 'react';
-import propTypes, { number } from 'prop-types';
+import React, { useContext } from 'react';
+import propTypes from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 
-const Cropper = ({ startResize, diff, cropperChange, direction }) => {
-  const [cropperInfo, setCropperInfo] = useContext(CropperInfoContext);
-  useEffect(() => {
-    const { prevWidth, prevHeight, prevX, prevY } = cropperChange;
-    switch (direction) {
-      case 'se':
-        setCropperInfo(prev => ({
-          ...prev,
-          width: prevWidth - diff.x,
-          height: prevHeight - diff.y,
-        }));
-        break;
-      case 'ne':
-        setCropperInfo(prev => ({
-          ...prev,
-          top: prevY - diff.y,
-          width: prevWidth - diff.x,
-          height: prevHeight + diff.y,
-        }));
-        break;
-      case 'sw':
-        setCropperInfo(prev => ({
-          ...prev,
-          left: prevX - diff.x,
-          width: prevWidth + diff.x,
-          height: prevHeight - diff.y,
-        }));
-        break;
-      case 'nw':
-        setCropperInfo({
-          top: prevY - diff.y,
-          left: prevX - diff.x,
-          width: prevWidth + diff.x,
-          height: prevHeight + diff.y,
-        });
-        break;
-      default:
-        break;
-    }
-  }, [diff]);
+const Cropper = ({ startResize }) => {
+  const { state } = useContext(CropperInfoContext);
   return (
     <div
       role="button"
       tabIndex={0}
       className="crop-area"
       style={{
-        left: `${cropperInfo.left}px`,
-        top: `${cropperInfo.top}px`,
-        width: `${cropperInfo.width}px`,
-        height: `${cropperInfo.height}px`,
+        left: `${state.left}px`,
+        top: `${state.top}px`,
+        width: `${state.width}px`,
+        height: `${state.height}px`,
       }}
     >
       <div
@@ -94,9 +56,6 @@ const Cropper = ({ startResize, diff, cropperChange, direction }) => {
 
 Cropper.propTypes = {
   startResize: propTypes.func.isRequired,
-  diff: propTypes.objectOf(number).isRequired,
-  cropperChange: propTypes.objectOf(number).isRequired,
-  direction: propTypes.string.isRequired,
 };
 
 export default Cropper;

@@ -4,7 +4,7 @@ import { CropperInfoContext } from '../context/CropperInfoContext';
 import Cropper from './Cropper';
 
 const CanvasContainer = ({ children, cropIsActive }) => {
-  const [cropperInfo, setCropperInfo] = useContext(CropperInfoContext);
+  const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
   const [cropperChange, setCropperChange] = useState({
@@ -20,19 +20,20 @@ const CanvasContainer = ({ children, cropIsActive }) => {
     setActiveResize(true);
     setDirection(e.target.dataset.dir);
     setCropperChange({
-      prevWidth: cropperInfo.width,
-      prevHeight: cropperInfo.height,
-      prevX: cropperInfo.left,
-      prevY: cropperInfo.top,
+      prevWidth: state.width,
+      prevHeight: state.height,
+      prevX: state.left,
+      prevY: state.top,
       startX: e.clientX,
       startY: e.clientY,
     });
   };
-  const [diff, setDiff] = useState({ x: 0, y: 0 });
   const cropperResizing = e => {
     e.preventDefault();
     if (activeResize) {
-      setDiff({ x: cropperChange.startX - e.clientX, y: cropperChange.startY - e.clientY });
+      const diffX = cropperChange.startX - e.clientX;
+      const diffY = cropperChange.startY - e.clientY;
+      dispatch({ type: direction, diffX, diffY, cropperChange });
     }
   };
   const finishResize = e => {
@@ -42,14 +43,7 @@ const CanvasContainer = ({ children, cropIsActive }) => {
   return (
     <div role="button" tabIndex={0} onMouseMove={cropperResizing} onMouseUp={finishResize}>
       {children}
-      {cropIsActive && (
-        <Cropper
-          startResize={startResize}
-          cropperChange={cropperChange}
-          diff={diff}
-          direction={direction}
-        />
-      )}
+      {cropIsActive && <Cropper startResize={startResize} />}
     </div>
   );
 };
