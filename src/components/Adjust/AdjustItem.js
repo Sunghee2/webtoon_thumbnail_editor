@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Slider } from '@material-ui/core';
 
-const AdjustItem = ({ header, value, setValue }) => {
+const AdjustItem = memo(({ header, value, setValue }) => {
   const handleChange = (_, newValue) => {
     setValue(header, newValue);
   };
@@ -21,7 +21,7 @@ const AdjustItem = ({ header, value, setValue }) => {
       />
     </>
   );
-};
+});
 
 AdjustItem.propTypes = {
   header: PropTypes.string.isRequired,

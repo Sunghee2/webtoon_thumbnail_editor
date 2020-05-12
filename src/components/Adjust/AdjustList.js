@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useCallback } from 'react';
 
 import AdjustItem from './AdjustItem';
 
@@ -26,9 +26,9 @@ const adjustReducer = (state, action) => {
 const AdjustList = () => {
   const [adjust, dispatchAdjust] = useReducer(adjustReducer, initialAdjustState);
 
-  const changeValue = (key, value) => {
+  const changeValue = useCallback((key, value) => {
     dispatchAdjust({ type: 'SET_VALUE', key, value });
-  };
+  }, []);
 
   return (
     <>
