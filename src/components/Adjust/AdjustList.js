@@ -1,39 +1,19 @@
-import React, { useReducer, useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 
 import AdjustItem from './AdjustItem';
-
-const initialAdjustState = {
-  brightness: 0,
-  contrast: 0,
-  gray: 0,
-  blur: 0,
-};
-
-const adjustReducer = (state, action) => {
-  switch (action.type) {
-    case 'RESET': {
-      return initialAdjustState;
-    }
-    case 'SET_VALUE': {
-      return { ...state, [action.key]: action.value };
-    }
-    default: {
-      throw new Error(`unexpected action.type: ${action.type}`);
-    }
-  }
-};
+import { AdjustContext } from '../../context/adjustContext';
 
 const AdjustList = () => {
-  const [adjust, dispatchAdjust] = useReducer(adjustReducer, initialAdjustState);
+  const [state, dispatch] = useContext(AdjustContext);
 
-  const changeValue = useCallback((key, value) => {
-    dispatchAdjust({ type: 'SET_VALUE', key, value });
+  const setValue = useCallback((key, value) => {
+    dispatch({ type: 'SET_VALUE', key, value });
   }, []);
 
   return (
     <>
-      {Object.entries(adjust).map(([key, value]) => (
-        <AdjustItem key={key} header={key} value={value} setValue={changeValue} />
+      {Object.entries(state).map(([key, value]) => (
+        <AdjustItem key={key} header={key} value={value} setValue={setValue} />
       ))}
     </>
   );
