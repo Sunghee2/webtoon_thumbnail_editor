@@ -1,19 +1,39 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 
 import AdjustItem from './AdjustItem';
 
+const initialAdjustState = {
+  brightness: 0,
+  contrast: 0,
+  gray: 0,
+  blur: 0,
+};
+
+const adjustReducer = (state, action) => {
+  switch (action.type) {
+    case 'RESET': {
+      return initialAdjustState;
+    }
+    case 'SET_VALUE': {
+      return { ...state, [action.key]: action.value };
+    }
+    default: {
+      throw new Error(`unexpected action.type: ${action.type}`);
+    }
+  }
+};
+
 const AdjustList = () => {
-  const list = [
-    { header: '밝기', value: 30 },
-    { header: '대조', value: 80 },
-    { header: '흑백', value: 0 },
-    { header: '블러', value: 0 },
-  ];
+  const [adjust, dispatchAdjust] = useReducer(adjustReducer, initialAdjustState);
+
+  const changeValue = (key, value) => {
+    dispatchAdjust({ type: 'SET_VALUE', key, value });
+  };
 
   return (
     <>
-      {list.map(l => (
-        <AdjustItem key={l.header} header={l.header} value={l.value} />
+      {Object.entries(adjust).map(([key, value]) => (
+        <AdjustItem key={key} header={key} value={value} setValue={changeValue} />
       ))}
     </>
   );
