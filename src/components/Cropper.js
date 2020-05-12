@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 
@@ -49,6 +50,11 @@ const Cropper = ({ cropperInfo, startResize }) => {
       />
     </div>
   );
+};
+
+Cropper.propTypes = {
+  cropperInfo: propTypes.objectOf().isRequired,
+  startResize: propTypes.func.isRequired,
 };
 
 export default Cropper;

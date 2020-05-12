@@ -62,4 +62,14 @@ const CanvasContainer = ({
     </div>
   );
 };
+
+CanvasContainer.propTypes = {
+  children: PropTypes.elementType.isRequired,
+  cropIsActive: PropTypes.bool.isRequired,
+  activeResize: PropTypes.bool.isRequired,
+  startResize: PropTypes.func.isRequired,
+  direction: PropTypes.string.isRequired,
+  cropperChange: PropTypes.objectOf().isRequired,
+};
+
 export default CanvasContainer;
