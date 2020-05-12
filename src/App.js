@@ -4,7 +4,7 @@ import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
-import { CropperInfoProvider } from './CropperInfoContext';
+import { CropperInfoProvider } from './context/CropperInfoContext';
 
 const App = () => {
   return (

@@ -2,7 +2,7 @@ import React, { useRef, useState, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
-import { CropperInfoContext } from '../CropperInfoContext';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
 const Main = props => {
   const canvasRef = useRef(null);
