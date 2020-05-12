@@ -1,64 +1,55 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 import Cropper from './Cropper';
 
-const CanvasContainer = ({
-  children,
-  cropIsActive,
-  activeResize,
-  startResize,
-  direction,
-  cropperChange,
-}) => {
+const CanvasContainer = ({ children, cropIsActive }) => {
   const [cropperInfo, setCropperInfo] = useContext(CropperInfoContext);
+  const [activeResize, setActiveResize] = useState(false);
+  const [direction, setDirection] = useState('');
+  const [cropperChange, setCropperChange] = useState({
+    prevWidth: 0,
+    prevHeight: 0,
+    prevX: 0,
+    prevY: 0,
+    startX: 0,
+    startY: 0,
+  });
+  const startResize = e => {
+    e.preventDefault();
+    setActiveResize(true);
+    setDirection(e.target.dataset.dir);
+    setCropperChange({
+      prevWidth: cropperInfo.width,
+      prevHeight: cropperInfo.height,
+      prevX: cropperInfo.left,
+      prevY: cropperInfo.top,
+      startX: e.clientX,
+      startY: e.clientY,
+    });
+  };
+  const [diff, setDiff] = useState({ x: 0, y: 0 });
   const cropperResizing = e => {
     e.preventDefault();
-    const diffX = cropperChange.startX - e.clientX;
-    const diffY = cropperChange.startY - e.clientY;
-    const { prevWidth, prevHeight, prevX, prevY } = cropperChange;
     if (activeResize) {
-      switch (direction) {
-        case 'se':
-          setCropperInfo(prev => ({
-            ...prev,
-            width: prevWidth - diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'ne':
-          setCropperInfo(prev => ({
-            ...prev,
-            top: prevY - diffY,
-            width: prevWidth - diffX,
-            height: prevHeight + diffY,
-          }));
-          break;
-        case 'sw':
-          setCropperInfo(prev => ({
-            ...prev,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'nw':
-          setCropperInfo({
-            top: prevY - diffY,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight + diffY,
-          });
-          break;
-        default:
-          break;
-      }
+      setDiff({ x: cropperChange.startX - e.clientX, y: cropperChange.startY - e.clientY });
     }
   };
+  const finishResize = e => {
+    e.preventDefault();
+    setActiveResize(false);
+  };
   return (
-    <div onMouseMove={cropperResizing}>
+    <div role="button" tabIndex={0} onMouseMove={cropperResizing} onMouseUp={finishResize}>
       {children}
-      {cropIsActive && <Cropper startResize={startResize} cropperInfo={cropperInfo} />}
+      {cropIsActive && (
+        <Cropper
+          startResize={startResize}
+          cropperChange={cropperChange}
+          diff={diff}
+          direction={direction}
+        />
+      )}
     </div>
   );
 };
@@ -66,10 +57,6 @@ const CanvasContainer = ({
 CanvasContainer.propTypes = {
   children: PropTypes.elementType.isRequired,
   cropIsActive: PropTypes.bool.isRequired,
-  activeResize: PropTypes.bool.isRequired,
-  startResize: PropTypes.func.isRequired,
-  direction: PropTypes.string.isRequired,
-  cropperChange: PropTypes.objectOf().isRequired,
 };
 
 export default CanvasContainer;
