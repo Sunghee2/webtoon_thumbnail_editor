@@ -10,13 +10,17 @@ const firebaseConfig = {
   appId: '1:385711263103:web:338c6a98457ecfb644de4a',
   measurementId: 'G-V0979BKPDQ',
 };
-// let database;
+let database;
 
 const initFirebase = () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  // database = firebase.database();
+  database = firebase.database();
 };
 
-export default initFirebase;
+const getHistory = () => {
+  return database.ref('/').once('value');
+};
+
+export { initFirebase, getHistory };
