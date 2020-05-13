@@ -8,6 +8,7 @@ const AddTextList = ({
   handleTextPosition,
   handleFocusedID,
   removeTextContent,
+  handleWidth,
 }) => {
   return (
     <div>
@@ -18,6 +19,7 @@ const AddTextList = ({
           handleTextPosition={handleTextPosition}
           handleFocusedID={handleFocusedID}
           removeTextContent={removeTextContent}
+          handleWidth={handleWidth}
         />
       ))}
     </div>

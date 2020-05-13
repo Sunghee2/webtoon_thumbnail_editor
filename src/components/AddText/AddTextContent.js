@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
+import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import PropTypes from 'prop-types';
 
 const AddTextContent = ({
@@ -8,11 +8,12 @@ const AddTextContent = ({
   handleTextPosition,
   handleFocusedID,
   removeTextContent,
+  handleWidth,
 }) => {
-  const { id, top, left, text, font, focused } = contentAttribute;
+  const { id, top, left, width, text, font, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
-  const handleMouseDown = () => {
+  const handleTextMove = () => {
     const textContent = textContentRef.current;
     let X = left;
     let Y = top;
@@ -36,35 +37,65 @@ const AddTextContent = ({
     });
   };
 
+  const handleTextResize = () => {
+    const textContent = textContentRef.current;
+    let X = width;
+
+    const move = dX => {
+      X += dX;
+      textContent.style.width = `${X < 50 ? 50 : X}px`;
+    };
+
+    const handleMouseMove = e => {
+      move(e.movementX);
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', () => {
+      handleWidth(id, X);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.onMouseup = null;
+    });
+  };
+
   if (!focused)
     return (
       <div
-        role="textbox"
-        tabIndex="-1"
         className="add-text-content unselectable"
         ref={textContentRef}
-        style={{ top, left, fontFamily: font }}
-        onMouseDown={() => {
-          handleFocusedID(id);
-          handleMouseDown();
-        }}
+        style={{ top, left, width, fontFamily: font }}
       >
-        <div className="add-text-string unselectable">{text}</div>
+        <div
+          className="add-text-string unselectable"
+          onMouseDown={() => {
+            handleFocusedID(id);
+            handleTextMove();
+          }}
+          role="textbox"
+          tabIndex="-1"
+        >
+          {text}
+        </div>
       </div>
     );
 
   return (
     <div
-      role="textbox"
-      tabIndex="-1"
       className="add-text-content focused unselectable"
       ref={textContentRef}
-      style={{ top, left, fontFamily: font }}
-      onMouseDown={handleMouseDown}
+      style={{ top, left, width, fontFamily: font }}
     >
-      <div className="add-text-string unselectable">{text}</div>
+      <div
+        className="add-text-string unselectable"
+        onMouseDown={handleTextMove}
+        role="textbox"
+        tabIndex="-1"
+      >
+        {text}
+      </div>
       <CloseIcon className="remove-text-content" onClick={() => removeTextContent(id)} />
-      <AutorenewIcon className="rotate-text-content" />
+      <SwapHorizIcon className="resize-text-content" onMouseDown={handleTextResize} />
+      {/* <AutorenewIcon className="rotate-text-content" /> */}
     </div>
   );
 };
@@ -74,7 +105,6 @@ AddTextContent.propTypes = {
   contentAttribute: PropTypes.shape({
     id: PropTypes.string.isRequired,
     width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,

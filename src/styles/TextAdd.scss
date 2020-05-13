@@ -14,7 +14,6 @@ $focusedColor: rgb(3, 207, 93);
 
 .add-text-content {
   color: black;
-  width: 200px;
   position: absolute;
   overflow-wrap: break-word;
   text-align: center;
@@ -38,23 +37,23 @@ $focusedColor: rgb(3, 207, 93);
   background-color: red;
   clip-path: circle();
   position: absolute;
-  width: 15px !important;
-  height: 15px !important;
-  top: -10px;
-  left: -10px;
+  width: 20px !important;
+  height: 20px !important;
+  top: -15px;
+  left: -15px;
   padding: 1px;
   cursor: pointer;
 }
 
-.rotate-text-content {
+.resize-text-content {
   color: white;
   background-color: $focusedColor;
   clip-path: circle();
   position: absolute;
-  width: 15px !important;
-  height: 15px !important;
-  right: -10px;
-  bottom: -10px;
+  width: 20px !important;
+  height: 20px !important;
+  right: -15px;
+  bottom: -15px;
   padding: 1px;
 }
 

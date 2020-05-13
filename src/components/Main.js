@@ -69,10 +69,9 @@ const Main = () => {
     const id = `text_${new Date().getTime()}`;
     const newContent = {
       id,
-      width,
-      height,
+      width: 200,
       top: height / 2,
-      left: width / 2 - 50,
+      left: width / 2 - 100,
       text: `글자를 입력하세요.`,
       font: `BlackHanSans`,
       focused: true,
@@ -85,6 +84,12 @@ const Main = () => {
     const { top, left } = position;
     setTextContents(prevState =>
       prevState.map(item => (item.id === id ? { ...item, top, left } : item)),
+    );
+  };
+
+  const handleWidth = (id, width) => {
+    setTextContents(prevState =>
+      prevState.map(item => (item.id === id ? { ...item, width } : item)),
     );
   };
 
@@ -164,6 +169,7 @@ const Main = () => {
               handleTextPosition={handleTextPosition}
               handleFocusedID={setFocusedTextID}
               removeTextContent={removeTextContent}
+              handleWidth={handleWidth}
             />
           )}
         </article>
