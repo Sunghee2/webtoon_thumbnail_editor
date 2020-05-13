@@ -3,6 +3,7 @@ import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
+import AddTextContent from './AddText/AddTextContent';
 
 const Main = props => {
   const canvasRef = useRef(null);
@@ -56,18 +57,23 @@ const Main = props => {
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
-    if (canvasRef.current) {
-      const { offsetLeft, offsetTop, width, height } = canvasRef.current;
-      setCanvasScale({
-        left: offsetLeft,
-        top: offsetTop,
-        width,
-        height,
-      });
-    }
   };
 
   const [addTextActive, setAddTextActive] = useState(false);
+  const [focusedTextID, setFocusedTextID] = useState('');
+  const [textContents, setTextContents] = useState([]);
+
+  const addTextContent = () => {
+    const { width, height, top, left } = canvasScale;
+    const id = `text_${new Date().getDate()}`;
+    const adjustedTop = top + height / 2;
+    const adjustedLeft = left + width / 2;
+    const text = `TEXT`;
+    const font = `Arial`;
+    const newContent = { id, width, height, top: adjustedTop, left: adjustedLeft, text, font };
+    setFocusedTextID(id);
+    setTextContents([...textContents, newContent]);
+  };
 
   return (
     <section>
@@ -86,12 +92,26 @@ const Main = props => {
             Crop
           </Button>
         )}
+        {canvasRef.current && (
+          <Button
+            className="add-text-btn open-btn"
+            variant="contained"
+            color="primary"
+            onClick={setAddTextActive}
+          >
+            TEXT ADD
+          </Button>
+        )}
       </aside>
       <article className="editor-container horizontal">
         <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper canvasScale={canvasScale} />}
+        {cropIsActive && <Cropper canvasScale={canvasScale} addTextContent={addTextContent} />}
+        {textContents.length > 0 &&
+          textContents.map(item => <AddTextContent key={item.id} contentAttribute={item} />)}
       </article>
-      <nav>{addTextActive && <AddText />}</nav>
+      <nav>
+        {addTextActive && <AddText addTextContent={addTextContent} focusedTextID={focusedTextID} />}
+      </nav>
     </section>
   );
 };

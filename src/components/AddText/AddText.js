@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../../styles/TextAdd.scss';
 import Button from '@material-ui/core/Button';
 import AddTextSetting from './AddTextSetting';
 
-const AddText = () => {
-  const [addTextSettingActive, setAddTextSettingActive] = useState(false);
+const AddText = ({ focusedTextID, addTextContent }) => {
   return (
     <div className="add-text">
       <div className="add-text-title">Text</div>
@@ -12,11 +11,11 @@ const AddText = () => {
         className="add-text-button"
         variant="contained"
         style={{ margin: `15px` }}
-        onClick={() => setAddTextSettingActive(true)}
+        onClick={addTextContent}
       >
         + add text
       </Button>
-      {addTextSettingActive && <AddTextSetting />}
+      {focusedTextID && <AddTextSetting />}
     </div>
   );
 };
