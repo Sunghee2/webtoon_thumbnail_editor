@@ -1,12 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
-import Cropper from './Cropper';
+import CanvasContainer from './CanvasContainer';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
 const Main = props => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [cropperInfo, setCropperInfo] = useState({});
+  const { state, dispatch } = useContext(CropperInfoContext);
   const openImage = evt => {
     console.log(evt.target.files[0]);
     const canvasEl = canvasRef.current;
@@ -43,12 +44,7 @@ const Main = props => {
             width,
             height,
           });
-          setCropperInfo({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
+          dispatch({ type: 'init', offsetLeft, offsetTop, width, height });
         }
       };
     };
@@ -62,79 +58,6 @@ const Main = props => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
   };
-
-  const [cropperChange, setCropperChange] = useState({
-    prevWidth: 0,
-    prevHeight: 0,
-    prevX: 0,
-    prevY: 0,
-    startX: 0,
-    startY: 0,
-  });
-
-  const [activeResize, setActiveResize] = useState(false);
-  const [direction, setDirection] = useState('');
-  const startResize = e => {
-    e.preventDefault();
-    setActiveResize(true);
-    setDirection(e.target.dataset.dir);
-    setCropperChange({
-      prevWidth: cropperInfo.width,
-      prevHeight: cropperInfo.height,
-      prevX: cropperInfo.left,
-      prevY: cropperInfo.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    });
-  };
-  const resizing = e => {
-    e.preventDefault();
-    const diffX = cropperChange.startX - e.clientX;
-    const diffY = cropperChange.startY - e.clientY;
-    const { prevWidth, prevHeight, prevX, prevY } = cropperChange;
-    if (activeResize) {
-      switch (direction) {
-        case 'se':
-          setCropperInfo(prev => ({
-            ...prev,
-            width: prevWidth - diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'ne':
-          setCropperInfo(prev => ({
-            ...prev,
-            top: prevY - diffY,
-            width: prevWidth - diffX,
-            height: prevHeight + diffY,
-          }));
-          break;
-        case 'sw':
-          setCropperInfo(prev => ({
-            ...prev,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'nw':
-          setCropperInfo({
-            top: prevY - diffY,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight + diffY,
-          });
-          break;
-        default:
-          break;
-      }
-    }
-  };
-  const finishResize = e => {
-    e.preventDefault();
-    setActiveResize(false);
-  };
-
   return (
     <section>
       <aside>
@@ -151,11 +74,10 @@ const Main = props => {
           Crop
         </Button>
       </aside>
-      <article className="editor-container horizontal" onMouseUp={finishResize}>
-        <div onMouseMove={resizing}>
+      <article className="editor-container horizontal">
+        <CanvasContainer cropIsActive={cropIsActive}>
           <canvas className="editor" ref={canvasRef} />
-          {cropIsActive && <Cropper startResize={startResize} cropperInfo={cropperInfo} />}
-        </div>
+        </CanvasContainer>
       </article>
     </section>
   );

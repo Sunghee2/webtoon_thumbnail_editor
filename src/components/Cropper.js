@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import propTypes from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
-const Cropper = ({ cropperInfo, startResize }) => {
+const Cropper = ({ startResize }) => {
+  const { state } = useContext(CropperInfoContext);
   return (
     <div
       role="button"
       tabIndex={0}
       className="crop-area"
       style={{
-        left: `${cropperInfo.left}px`,
-        top: `${cropperInfo.top}px`,
-        width: `${cropperInfo.width}px`,
-        height: `${cropperInfo.height}px`,
+        left: `${state.left}px`,
+        top: `${state.top}px`,
+        width: `${state.width}px`,
+        height: `${state.height}px`,
       }}
     >
       <div
@@ -49,6 +52,10 @@ const Cropper = ({ cropperInfo, startResize }) => {
       />
     </div>
   );
+};
+
+Cropper.propTypes = {
+  startResize: propTypes.func.isRequired,
 };
 
 export default Cropper;
