@@ -4,19 +4,29 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import PropTypes from 'prop-types';
 
-const CanvasTypeModal = props => {
+const getWidthHeight = type => {
+  switch (type) {
+    case 'horizontal':
+      return [640, 360];
+    case 'vertical':
+      return [400, 300];
+    default:
+      return [0, 0];
+  }
+};
+
+const CanvasTypeModal = ({ canvasRef, setCanvasScale }) => {
   const [open, setOpen] = useState(true);
   const [canvasType, setCanvasType] = useState(null);
 
   const handleSubmit = e => {
     e.preventDefault();
     if (canvasType === null) return;
-    const { offsetLeft, offsetTop } = props.canvasRef.current;
-    console.log('size', props.canvasRef.current.parentNode.parentNode.offsetHeight);
-    const [width, height] =
-      canvasType === 'horizontal' ? [640, 360] : canvasType === 'vertical' ? [400, 300] : [0, 0];
-    props.setCanvasScale({
+    const { offsetLeft, offsetTop } = canvasRef.current;
+    const [width, height] = getWidthHeight(canvasType);
+    setCanvasScale({
       left: offsetLeft,
       top: offsetTop,
       width,
@@ -63,6 +73,11 @@ const CanvasTypeModal = props => {
       </DialogActions>
     </Dialog>
   );
+};
+
+CanvasTypeModal.propTypes = {
+  canvasRef: PropTypes.func.isRequired,
+  setCanvasScale: PropTypes.func.isRequired,
 };
 
 export default CanvasTypeModal;

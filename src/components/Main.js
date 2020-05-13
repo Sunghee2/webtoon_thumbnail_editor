@@ -9,7 +9,7 @@ const Main = () => {
   const [canvasScale, setCanvasScale] = useState({});
 
   useEffect(() => {
-    if (Object.keys(canvasScale)) {
+    if (Object.keys(canvasScale).length) {
       const canvasEl = canvasRef.current;
 
       canvasEl.style.width = `${canvasScale.width}px`;
