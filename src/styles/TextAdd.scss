@@ -35,7 +35,7 @@ $focusedColor: rgb(3, 207, 93);
 
 .remove-text-content {
   color: white;
-  background-color: rgb(248, 43, 43);
+  background-color: red;
   clip-path: circle();
   position: absolute;
   width: 15px !important;
@@ -43,6 +43,7 @@ $focusedColor: rgb(3, 207, 93);
   top: -10px;
   left: -10px;
   padding: 1px;
+  cursor: pointer;
 }
 
 .rotate-text-content {

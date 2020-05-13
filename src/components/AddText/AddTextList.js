@@ -2,7 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AddTextContent from './AddTextContent';
 
-const AddTextList = ({ focusedTextID, textContents, handleTextPosition, handleFocusedID }) => {
+const AddTextList = ({
+  focusedTextID,
+  textContents,
+  handleTextPosition,
+  handleFocusedID,
+  removeTextContent,
+}) => {
   return (
     <div>
       {textContents.map(item => (
@@ -11,6 +17,7 @@ const AddTextList = ({ focusedTextID, textContents, handleTextPosition, handleFo
           contentAttribute={{ ...item, focused: item.id === focusedTextID }}
           handleTextPosition={handleTextPosition}
           handleFocusedID={handleFocusedID}
+          removeTextContent={removeTextContent}
         />
       ))}
     </div>

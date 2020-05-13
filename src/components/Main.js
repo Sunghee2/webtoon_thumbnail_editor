@@ -99,6 +99,11 @@ const Main = props => {
     );
   };
 
+  const removeTextContent = id => {
+    if (focusedTextID === id) setFocusedTextID('');
+    setTextContents(prevState => prevState.filter(item => item.id !== id));
+  };
+
   const [visibleDrawer, setVisibleDrawer] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -147,6 +152,7 @@ const Main = props => {
             textContents={textContents}
             handleTextPosition={handleTextPosition}
             handleFocusedID={setFocusedTextID}
+            removeTextContent={removeTextContent}
           />
         )}
       </article>

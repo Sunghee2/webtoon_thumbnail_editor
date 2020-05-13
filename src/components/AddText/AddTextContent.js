@@ -3,7 +3,12 @@ import CloseIcon from '@material-ui/icons/Close';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
 import PropTypes from 'prop-types';
 
-const AddTextContent = ({ contentAttribute, handleTextPosition, handleFocusedID }) => {
+const AddTextContent = ({
+  contentAttribute,
+  handleTextPosition,
+  handleFocusedID,
+  removeTextContent,
+}) => {
   const { id, top, left, text, font, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
@@ -58,7 +63,7 @@ const AddTextContent = ({ contentAttribute, handleTextPosition, handleFocusedID 
       onMouseDown={handleMouseDown}
     >
       <div className="add-text-string unselectable">{text}</div>
-      <CloseIcon className="remove-text-content" />
+      <CloseIcon className="remove-text-content" onClick={() => removeTextContent(id)} />
       <AutorenewIcon className="rotate-text-content" />
     </div>
   );
