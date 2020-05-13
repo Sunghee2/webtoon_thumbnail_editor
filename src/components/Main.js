@@ -9,15 +9,6 @@ import AddTextList from './AddText/AddTextList';
 const Main = props => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [visibleDrawer, setVisibleDrawer] = useState(false);
-
-  const handleDrawerOpen = () => {
-    setVisibleDrawer(true);
-  };
-
-  const handleDrawerClose = () => {
-    setVisibleDrawer(false);
-  };
 
   const openImage = evt => {
     const canvasEl = canvasRef.current;
@@ -80,7 +71,7 @@ const Main = props => {
       width,
       height,
       top: height / 2,
-      left: width / 2,
+      left: width / 2 - 50,
       text: `글자를 입력하세요.`,
       font: `BlackHanSans`,
       focused: true,
@@ -94,6 +85,29 @@ const Main = props => {
     setTextContents(prevState =>
       prevState.map(item => (item.id === id ? { ...item, top, left } : item)),
     );
+  };
+
+  const handleTextString = (id, newText) => {
+    setTextContents(prevState =>
+      prevState.map(item => (item.id === id ? { ...item, text: newText } : item)),
+    );
+  };
+
+  const handleTextFont = (id, newFont) => {
+    setTextContents(prevState =>
+      prevState.map(item => (item.id === id ? { ...item, font: newFont } : item)),
+    );
+  };
+
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setVisibleDrawer(true);
+  };
+
+  const handleDrawerClose = () => {
+    setVisibleDrawer(false);
+    setFocusedTextID('');
   };
 
   return (
@@ -147,6 +161,8 @@ const Main = props => {
               addTextContent={addTextContent}
               focusedTextID={focusedTextID}
               textContents={textContents}
+              handleTextString={handleTextString}
+              handleTextFont={handleTextFont}
             />
           </div>
         </div>

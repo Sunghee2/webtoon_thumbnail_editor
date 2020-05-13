@@ -14,13 +14,23 @@ $focusedColor: rgb(3, 207, 93);
 
 .add-text-content {
   color: black;
+  width: 200px;
   position: absolute;
-  padding: 10px;
-  cursor: move;
+  overflow-wrap: break-word;
+  text-align: center;
+  :hover {
+    border: 1px solid red !important;
+  }
 }
 
 .add-text-content.focused {
-  border: 1px solid $focusedColor;
+  border: 3px solid $focusedColor;
+}
+
+.add-text-string {
+  cursor: move;
+  padding: 10px;
+  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
 }
 
 .remove-text-content {
@@ -45,6 +55,15 @@ $focusedColor: rgb(3, 207, 93);
   right: -10px;
   bottom: -10px;
   padding: 1px;
+}
+
+.unselectable {
+  -moz-user-select: -moz-none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  /*IE 10*/
+  -ms-user-select: none;
+  user-select: none;
 }
 
 @font-face {

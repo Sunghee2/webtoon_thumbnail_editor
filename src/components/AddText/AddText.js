@@ -1,10 +1,17 @@
 import React from 'react';
 import '../../styles/TextAdd.scss';
-import Button from '@material-ui/core/Button';
+import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import AddTextSetting from './AddTextSetting';
 
-const AddText = ({ focusedTextID, addTextContent }) => {
+const AddText = ({
+  focusedTextID,
+  addTextContent,
+  textContents,
+  handleTextString,
+  handleTextFont,
+}) => {
+  const focusedTextAttribute = textContents.filter(item => item.id === focusedTextID)[0];
   return (
     <div className="add-text">
       <Button
@@ -15,7 +22,13 @@ const AddText = ({ focusedTextID, addTextContent }) => {
       >
         + add text
       </Button>
-      {focusedTextID && <AddTextSetting />}
+      {focusedTextID !== '' && (
+        <AddTextSetting
+          textAttribute={focusedTextAttribute}
+          handleTextString={handleTextString}
+          handleTextFont={handleTextFont}
+        />
+      )}
     </div>
   );
 };

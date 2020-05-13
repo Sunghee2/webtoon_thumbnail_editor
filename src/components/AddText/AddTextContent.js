@@ -34,12 +34,17 @@ const AddTextContent = ({ contentAttribute, handleTextPosition, handleFocusedID 
   if (!focused)
     return (
       <div
-        className="add-text-content"
+        role="textbox"
+        tabIndex="-1"
+        className="add-text-content unselectable"
         ref={textContentRef}
         style={{ top, left, fontFamily: font }}
-        onMouseMove={() => handleFocusedID(id)}
+        onMouseDown={() => {
+          handleFocusedID(id);
+          handleMouseDown();
+        }}
       >
-        {text}
+        <div className="add-text-string unselectable">{text}</div>
       </div>
     );
 
@@ -47,12 +52,12 @@ const AddTextContent = ({ contentAttribute, handleTextPosition, handleFocusedID 
     <div
       role="textbox"
       tabIndex="-1"
-      className="add-text-content focused"
+      className="add-text-content focused unselectable"
       ref={textContentRef}
       style={{ top, left, fontFamily: font }}
       onMouseDown={handleMouseDown}
     >
-      <div onDragStart={e => e.preventDefault()}>{text}</div>
+      <div className="add-text-string unselectable">{text}</div>
       <CloseIcon className="remove-text-content" />
       <AutorenewIcon className="rotate-text-content" />
     </div>
