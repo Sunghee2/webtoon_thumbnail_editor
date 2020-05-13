@@ -43,6 +43,12 @@ const reducer = (state, action) => {
         width: cropperChange.prevWidth + diffX,
         height: cropperChange.prevHeight + diffY,
       };
+    case 'move':
+      return {
+        ...state,
+        top: cropperChange.prevY - diffY,
+        left: cropperChange.prevX - diffX,
+      };
     default:
       return initialState;
   }

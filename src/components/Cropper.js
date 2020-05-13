@@ -4,7 +4,7 @@ import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 
-const Cropper = ({ startResize }) => {
+const Cropper = ({ startResize, startMove, moving }) => {
   const { state } = useContext(CropperInfoContext);
   return (
     <div
@@ -17,6 +17,8 @@ const Cropper = ({ startResize }) => {
         width: `${state.width}px`,
         height: `${state.height}px`,
       }}
+      onMouseDown={startMove}
+      onMouseMove={moving}
     >
       <div
         role="button"
@@ -56,6 +58,8 @@ const Cropper = ({ startResize }) => {
 
 Cropper.propTypes = {
   startResize: propTypes.func.isRequired,
+  startMove: propTypes.func.isRequired,
+  moving: propTypes.func.isRequired,
 };
 
 export default Cropper;

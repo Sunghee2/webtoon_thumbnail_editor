@@ -15,24 +15,32 @@ const CanvasContainer = ({ children, cropIsActive }) => {
     startX: 0,
     startY: 0,
   });
-  const startResize = e => {
-    e.preventDefault();
-    setActiveResize(true);
-    setDirection(e.target.dataset.dir);
-    setCropperChange({
+  const getCropperChange = e => {
+    return {
       prevWidth: state.width,
       prevHeight: state.height,
       prevX: state.left,
       prevY: state.top,
       startX: e.clientX,
       startY: e.clientY,
-    });
+    };
+  };
+  const getDifference = e => {
+    return {
+      diffX: cropperChange.startX - e.clientX,
+      diffY: cropperChange.startY - e.clientY,
+    };
+  };
+  const startResize = e => {
+    e.preventDefault();
+    setActiveResize(true);
+    setDirection(e.target.dataset.dir);
+    setCropperChange(getCropperChange(e));
   };
   const cropperResizing = e => {
     e.preventDefault();
     if (activeResize) {
-      const diffX = cropperChange.startX - e.clientX;
-      const diffY = cropperChange.startY - e.clientY;
+      const { diffX, diffY } = getDifference(e);
       dispatch({ type: direction, diffX, diffY, cropperChange });
     }
   };
@@ -40,16 +48,42 @@ const CanvasContainer = ({ children, cropIsActive }) => {
     e.preventDefault();
     setActiveResize(false);
   };
+  const [activeMove, setActiveMove] = useState(false);
+  const startMove = e => {
+    if (e.target.dataset.dir) return;
+    e.preventDefault();
+    setActiveMove(true);
+    setCropperChange(getCropperChange(e));
+  };
+  const moving = e => {
+    e.preventDefault();
+    if (activeMove) {
+      const { diffX, diffY } = getDifference(e);
+      dispatch({ type: 'move', diffX, diffY, cropperChange });
+    }
+  };
+  const finishMove = e => {
+    e.preventDefault();
+    setActiveMove(false);
+  };
   return (
-    <div role="button" tabIndex={0} onMouseMove={cropperResizing} onMouseUp={finishResize}>
+    <div
+      role="button"
+      tabIndex={0}
+      onMouseMove={cropperResizing}
+      onMouseUp={e => {
+        finishResize(e);
+        finishMove(e);
+      }}
+    >
       {children}
-      {cropIsActive && <Cropper startResize={startResize} />}
+      {cropIsActive && <Cropper startResize={startResize} startMove={startMove} moving={moving} />}
     </div>
   );
 };
 
 CanvasContainer.propTypes = {
-  children: PropTypes.elementType.isRequired,
+  children: PropTypes.element.isRequired,
   cropIsActive: PropTypes.bool.isRequired,
 };
 
