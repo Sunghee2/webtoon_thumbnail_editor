@@ -1,14 +1,14 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
+import { defaultAdjust } from '../utils/const';
+
 const AdjustContext = createContext();
 
-const initialState = {
-  brightness: 0,
-  contrast: 0,
-  gray: 0,
-  blur: 0,
-};
+let initialState = {};
+Object.entries(defaultAdjust).forEach(([key, value]) => {
+  initialState = { ...initialState, ...{ [key]: value.default } };
+});
 
 const reducer = (state, action) => {
   switch (action.type) {

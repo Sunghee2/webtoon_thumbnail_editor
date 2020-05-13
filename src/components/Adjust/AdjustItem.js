@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import PropTypes from 'prop-types';
 import { Typography, Slider } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
-const AdjustItem = memo(({ header, value, setValue }) => {
+const AdjustItem = memo(({ header, value, min, max, step, setValue }) => {
   const handleChange = (_, newValue) => {
     setValue(header, newValue);
   };
@@ -14,9 +14,9 @@ const AdjustItem = memo(({ header, value, setValue }) => {
         value={value}
         onChange={handleChange}
         aria-labelledby="continuous-slider"
-        min={0}
-        max={100}
-        step={1}
+        min={min}
+        max={max}
+        step={step}
         valueLabelDisplay="auto"
       />
     </>
@@ -26,6 +26,9 @@ const AdjustItem = memo(({ header, value, setValue }) => {
 AdjustItem.propTypes = {
   header: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
+  min: PropTypes.number.isRequired,
+  max: PropTypes.number.isRequired,
+  step: PropTypes.number.isRequired,
   setValue: PropTypes.func.isRequired,
 };
 

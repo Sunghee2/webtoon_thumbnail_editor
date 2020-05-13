@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import { defaultAdjust } from '../../utils/const';
 import AdjustItem from './AdjustItem';
 import { AdjustContext } from '../../context/adjustContext';
 import { brightnessFilter, grayscaleFilter } from '../../utils/filter';
