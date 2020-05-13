@@ -5,6 +5,7 @@ import { defaultAdjust } from '../../utils/const';
 import AdjustItem from './AdjustItem';
 import { AdjustContext } from '../../context/adjustContext';
 import { brightnessFilter, grayscaleFilter } from '../../utils/filter';
+import AdjustCheckbox from './AdjustCheckbox';
 
 const AdjustList = ({ canvasRef }) => {
   const [adjust, dispatch] = useContext(AdjustContext);
@@ -37,9 +38,25 @@ const AdjustList = ({ canvasRef }) => {
 
   return (
     <>
-      {Object.entries(adjust).map(([key, value]) => (
-        <AdjustItem key={key} header={key} value={value} setValue={setValue} />
-      ))}
+      {Object.entries(defaultAdjust).map(([key, value]) => {
+        if (value.type === 'slider') {
+          return (
+            <AdjustItem
+              key={key}
+              header={key}
+              value={adjust[key]}
+              step={value.step}
+              min={value.min}
+              max={value.max}
+              setValue={setValue}
+            />
+          );
+        }
+        if (value.type === 'checkbox') {
+          return <AdjustCheckbox header={key} value={adjust[key]} setValue={setValue} />;
+        }
+        return <></>;
+      })}
     </>
   );
 };
