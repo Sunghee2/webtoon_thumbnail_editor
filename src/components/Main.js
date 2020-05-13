@@ -1,12 +1,13 @@
 import React, { useRef, useState } from 'react';
-import '../styles/Main.scss';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
+import AdjustList from './Adjust/AdjustList';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
+import '../styles/Main.scss';
 
-const Main = props => {
+const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
 
@@ -116,46 +117,57 @@ const Main = props => {
   };
 
   return (
-    <section>
-      <aside>
-        <Button className="open-btn" variant="contained" color="primary">
-          OPEN IMAGE
-          <input
-            className="open-file"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={openImage}
-          />
-        </Button>
-        {canvasRef.current && (
-          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
+    <>
+      <section>
+        <aside>
+          <Button className="open-btn" variant="contained" color="primary">
+            OPEN IMAGE
+            <input
+              className="open-file"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              onChange={openImage}
+            />
           </Button>
-        )}
-        {canvasRef.current && (
-          <Button
-            className="add-text-btn open-btn"
-            variant="contained"
-            color="primary"
-            onClick={handleDrawerOpen}
-          >
-            TEXT ADD
-          </Button>
-        )}
-      </aside>
-      <article className="editor-container horizontal">
-        <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper canvasScale={canvasScale} />}
-        {textContents.length > 0 && (
-          <AddTextList
-            focusedTextID={focusedTextID}
-            textContents={textContents}
-            handleTextPosition={handleTextPosition}
-            handleFocusedID={setFocusedTextID}
-            removeTextContent={removeTextContent}
-          />
-        )}
-      </article>
+
+          {canvasRef.current && (
+            <>
+              <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+                Crop
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                Adjust
+              </Button>
+              <Button
+                className="add-text-btn open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                TEXT ADD
+              </Button>
+            </>
+          )}
+        </aside>
+        <article className="editor-container horizontal">
+          <canvas className="editor" ref={canvasRef} />
+          {cropIsActive && <Cropper canvasScale={canvasScale} />}
+          {textContents.length > 0 && (
+            <AddTextList
+              focusedTextID={focusedTextID}
+              textContents={textContents}
+              handleTextPosition={handleTextPosition}
+              handleFocusedID={setFocusedTextID}
+              removeTextContent={removeTextContent}
+            />
+          )}
+        </article>
+      </section>
       <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
         <div className="drawer">
           <IconButton onClick={handleDrawerClose}>
@@ -163,6 +175,7 @@ const Main = props => {
           </IconButton>
           <Divider />
           <div className="drawer-content">
+            {/* <AdjustList /> */}
             <AddText
               addTextContent={addTextContent}
               focusedTextID={focusedTextID}
@@ -173,7 +186,7 @@ const Main = props => {
           </div>
         </div>
       </Drawer>
-    </section>
+    </>
   );
 };
 
