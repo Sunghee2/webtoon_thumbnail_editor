@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
+import { AddTextContext } from '../../context/AddTextContext';
 
-const AddTextResizer = ({ contentAttribute, dispatch, textContentRef }) => {
+const AddTextResizer = ({ contentAttribute, textContentRef }) => {
+  const { textContentsDispatch } = useContext(AddTextContext);
   const { id, width, focused } = contentAttribute;
   const handleTextResize = () => {
     const textContent = textContentRef.current;
@@ -19,7 +21,7 @@ const AddTextResizer = ({ contentAttribute, dispatch, textContentRef }) => {
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', () => {
-      dispatch({ type: 'CHANGE_WIDTH', id, width: X });
+      textContentsDispatch({ type: 'CHANGE_WIDTH', id, width: X });
       document.removeEventListener('mousemove', handleMouseMove);
       document.onMouseup = null;
     });
@@ -40,6 +42,5 @@ AddTextResizer.propTypes = {
     width: PropTypes.number.isRequired,
     focused: PropTypes.bool.isRequired,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   textContentRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
 };

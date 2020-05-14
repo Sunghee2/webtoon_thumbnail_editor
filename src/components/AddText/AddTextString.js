@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { AddTextContext } from '../../context/AddTextContext';
 
-const AddTextString = ({
-  textContentRef,
-  contentAttribute,
-  dispatch,
-  handleFocusedID,
-  canvasScale,
-}) => {
+const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, canvasScale }) => {
+  const { textContentsDispatch } = useContext(AddTextContext);
   const { id, top, left, text } = contentAttribute;
   const { width, height } = canvasScale;
   const handleTextMove = () => {
@@ -44,7 +40,7 @@ const AddTextString = ({
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', () => {
-      dispatch({ type: 'CHANGE_TEXT_POSITION', id, left: X, top: Y });
+      textContentsDispatch({ type: 'CHANGE_TEXT_POSITION', id, left: X, top: Y });
       document.removeEventListener('mousemove', handleMouseMove);
       document.onMouseup = null;
     });
@@ -54,7 +50,7 @@ const AddTextString = ({
     <div
       className="add-text-string unselectable"
       onMouseDown={() => {
-        handleFocusedID(id);
+        setFocusedTextID(id);
         handleTextMove();
       }}
       role="textbox"
@@ -73,9 +69,8 @@ AddTextString.propTypes = {
     left: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
   }).isRequired,
-  dispatch: PropTypes.func.isRequired,
   textContentRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
-  handleFocusedID: PropTypes.func.isRequired,
+  setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,

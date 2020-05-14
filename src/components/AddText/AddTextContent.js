@@ -1,10 +1,12 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
+import { AddTextContext } from '../../context/AddTextContext';
 import AddTextResizer from './AddTextResizer';
 import AddTextString from './AddTextString';
 
-const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID, canvasScale }) => {
+const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => {
+  const { textContentsDispatch } = useContext(AddTextContext);
   const { id, top, left, width, font, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
@@ -16,20 +18,21 @@ const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID, canvasSca
     >
       <AddTextString
         contentAttribute={contentAttribute}
-        dispatch={dispatch}
-        handleFocusedID={handleFocusedID}
+        setFocusedTextID={setFocusedTextID}
         textContentRef={textContentRef}
         canvasScale={canvasScale}
       />
       <CloseIcon
         className={`remove-text-content${focused ? `` : ` hide`}`}
-        onClick={() => dispatch({ type: 'REMOVE_TEXT_CONTENT', id })}
+        onClick={() =>
+          textContentsDispatch({
+            type: 'REMOVE_TEXT_CONTENT',
+            setFocusedTextID,
+            id,
+          })
+        }
       />
-      <AddTextResizer
-        contentAttribute={contentAttribute}
-        dispatch={dispatch}
-        textContentRef={textContentRef}
-      />
+      <AddTextResizer contentAttribute={contentAttribute} textContentRef={textContentRef} />
     </div>
   );
 };
@@ -45,7 +48,6 @@ AddTextContent.propTypes = {
     font: PropTypes.string.isRequired,
     focused: PropTypes.bool.isRequired,
   }).isRequired,
-  handleFocusedID: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({}).isRequired,
 };

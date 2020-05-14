@@ -1,6 +1,7 @@
-import React, { useRef, useState, useReducer } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
+import { AddTextContext } from '../context/AddTextContext';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
@@ -61,43 +62,8 @@ const Main = () => {
   };
 
   const [focusedTextID, setFocusedTextID] = useState('');
-
-  const textReducer = (state, action) => {
-    const { type, id, top, left, width, text, font } = action;
-    switch (type) {
-      case 'ADD_TEXT_CONTENT': {
-        const newID = `text_${new Date().getTime()}`;
-        const newContent = {
-          id: newID,
-          width: 200,
-          top: canvasScale.height / 2,
-          left: canvasScale.width / 2 - 100,
-          text: `글자를 입력하세요.`,
-          font: `BlackHanSans`,
-        };
-        setFocusedTextID(newID);
-        return [...state, newContent];
-      }
-      case 'CHANGE_TEXT_POSITION':
-        return state.map(item => (item.id === id ? { ...item, top, left } : item));
-      case 'CHANGE_WIDTH':
-        return state.map(item => (item.id === id ? { ...item, width } : item));
-      case 'CHANGE_TEXT_STRING':
-        return state.map(item => (item.id === id ? { ...item, text } : item));
-      case 'CHANGE_FONT':
-        return state.map(item => (item.id === id ? { ...item, font } : item));
-      case 'REMOVE_TEXT_CONTENT':
-        if (focusedTextID === id) setFocusedTextID('');
-        return state.filter(item => item.id !== id);
-      case 'EMPTY_TEXT_CONTENTS':
-        setFocusedTextID('');
-        return [];
-      default:
-        return state;
-    }
-  };
-
-  const [textContents, textContentsDispatch] = useReducer(textReducer, []);
+  const [addTextIsActive, setAddTextActive] = useState(false);
+  const { textContents, textContentsDispatch } = useContext(AddTextContext);
 
   const [visibleDrawer, setVisibleDrawer] = useState(false);
 
@@ -157,6 +123,7 @@ const Main = () => {
       context.fillText(line, left, top);
     });
     textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
+    setFocusedTextID('');
   };
 
   return (
@@ -211,9 +178,7 @@ const Main = () => {
           {textContents.length > 0 && (
             <AddTextList
               focusedTextID={focusedTextID}
-              textContents={textContents}
-              dispatch={textContentsDispatch}
-              handleFocusedID={setFocusedTextID}
+              setFocusedTextID={setFocusedTextID}
               canvasScale={canvasScale}
             />
           )}
@@ -229,8 +194,8 @@ const Main = () => {
             {/* <AdjustList /> */}
             <AddText
               focusedTextID={focusedTextID}
-              textContents={textContents}
-              dispatch={textContentsDispatch}
+              canvasScale={canvasScale}
+              setFocusedTextID={setFocusedTextID}
             />
           </div>
         </div>
