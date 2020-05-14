@@ -1,79 +1,61 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useRef, useState, useEffect } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
 import Resizer from './Resizer';
+import readImgAsync from '../Utils/FileRead';
 
-const Main = props => {
+const Main = () => {
   const canvasRef = useRef(null);
-  const [canvasScale, setCanvasScale] = useState({});
+  // const [canvasScale, setCanvasScale] = useState({});
   const [cropperInfo, setCropperInfo] = useState({});
-  const [imgSrc, setImgSrc] = useState(null);
+  const [imgEl, setImgEl] = useState(null);
   const [isResize, setIsResize] = useState(false);
-
-  const readImgAsync = img => {
-    return new Promise((res, rej) => {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        res(reader.result);
-      };
-
-      reader.onerror = rej;
-      reader.readAsDataURL(img);
-    });
-  };
-
-  const loadImgAsync = src => {
-    return new Promise((res, rej) => {
-      const canvasEl = canvasRef.current;
-      const context = canvasEl.getContext(`2d`);
-      const image = new Image();
-
-      image.src = src;
-      image.onload = () => {
-        setImgSrc(image);
-
-        const maxWidth = 800;
-        let { width } = image;
-        let { height } = image;
-
-        if (width > height) {
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
-          }
-        } else if (height > maxWidth) {
-          width *= maxWidth / height;
-          height = maxWidth;
-        }
-        canvasEl.width = width;
-        canvasEl.height = height;
-        context.drawImage(image, 0, 0, width, height);
-        if (canvasRef.current) {
-          const { offsetLeft, offsetTop } = canvasRef.current;
-          setCanvasScale({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
-          setCropperInfo({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
-        }
-      };
-      if (image) res(true);
-    });
-  };
 
   const openImage = async evt => {
     const img = evt.target.files[0];
     const imgSrc = await readImgAsync(img);
-    const flag = await loadImgAsync(imgSrc);
+    const canvasEl = canvasRef.current;
+    const context = canvasEl.getContext(`2d`);
+    const image = new Image();
+
+    image.src = imgSrc;
+    image.onload = () => {
+      setImgEl(image);
+
+      const maxWidth = 800;
+      let { width } = image;
+      let { height } = image;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else if (height > maxWidth) {
+        width *= maxWidth / height;
+        height = maxWidth;
+      }
+      canvasEl.width = width;
+      canvasEl.height = height;
+      context.drawImage(image, 0, 0, width, height);
+      if (canvasRef.current) {
+        const { offsetLeft, offsetTop } = canvasRef.current;
+        // setCanvasScale({
+        //   left: offsetLeft,
+        //   top: offsetTop,
+        //   width,
+        //   height,
+        // });
+        setCropperInfo({
+          left: offsetLeft,
+          top: offsetTop,
+          width,
+          height,
+        });
+      }
+    };
   };
 
   const [cropIsActive, setCropIsActive] = useState(false);
@@ -230,7 +212,7 @@ const Main = props => {
         const { left, top, width, height } = cropperInfo;
 
         context.clearRect(0, 0, canvasEl.width, canvasEl.height);
-        context.drawImage(imgSrc, left, top, width, height);
+        context.drawImage(imgEl, left, top, width, height);
       }
     }
   }, [cropperInfo]);

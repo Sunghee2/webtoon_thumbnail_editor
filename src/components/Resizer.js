@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/prop-types */
 import React from 'react';
 import '../styles/Main.scss';
 
@@ -5,6 +7,7 @@ const Resizer = props => {
   const { startImgResize, startImgMove, cropperInfo } = props;
   return (
     <div
+      // eslint-disable-next-line jsx-a11y/aria-role
       role="section"
       className="crop-area"
       style={{

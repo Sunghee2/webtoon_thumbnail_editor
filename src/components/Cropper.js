@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 
+// eslint-disable-next-line react/prop-types
 const Cropper = ({ cropperInfo, startResize }) => {
   return (
     <div
@@ -9,6 +11,7 @@ const Cropper = ({ cropperInfo, startResize }) => {
       tabIndex={0}
       className="crop-area"
       style={{
+        // eslint-disable-next-line react/prop-types
         left: `${cropperInfo.left}px`,
         top: `${cropperInfo.top}px`,
         width: `${cropperInfo.width}px`,
