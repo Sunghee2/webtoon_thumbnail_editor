@@ -1,33 +1,64 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
+import propTypes from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
-const Cropper = ({ canvasScale }) => {
-  console.log(canvasScale);
-
-  const [cropperInfo, setCropperInfo] = useState({
-    top: canvasScale.top,
-    left: canvasScale.left,
-    width: canvasScale.width,
-    height: canvasScale.height,
-  });
-
+const Cropper = ({ startCropperResize, startCropperMove }) => {
+  const { state } = useContext(CropperInfoContext);
+  console.log('state', state);
   return (
     <div
+      role="button"
+      tabIndex={0}
       className="crop-area"
       style={{
-        left: `${cropperInfo.left}px`,
-        top: `${cropperInfo.top}px`,
-        width: `${cropperInfo.width}px`,
-        height: `${cropperInfo.height}px`,
+        left: `${state.left}px`,
+        top: `${state.top}px`,
+        width: `${state.width}px`,
+        height: `${state.height}px`,
       }}
+      onMouseDown={startCropperMove}
     >
-      <div className="crop-square-margin ne" />
-      <div className="crop-square-margin se" />
-      <div className="crop-square-margin sw" />
-      <div className="crop-square-margin nw" />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north east"
+        className="crop-square-margin ne"
+        data-dir="ne"
+        onMouseDown={startCropperResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south east"
+        className="crop-square-margin se"
+        data-dir="se"
+        onMouseDown={startCropperResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from south west"
+        className="crop-square-margin sw"
+        data-dir="sw"
+        onMouseDown={startCropperResize}
+      />
+      <div
+        role="button"
+        tabIndex={0}
+        aria-label="resize from north west"
+        className="crop-square-margin nw"
+        data-dir="nw"
+        onMouseDown={startCropperResize}
+      />
     </div>
   );
+};
+
+Cropper.propTypes = {
+  startCropperResize: propTypes.func.isRequired,
+  startCropperMove: propTypes.func.isRequired,
 };
 
 export default Cropper;

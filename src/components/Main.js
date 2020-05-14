@@ -1,12 +1,19 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
-import Cropper from './Cropper';
+// import Resizer from './Resizer';
+import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
+import CanvasContainer from './CanvasContainer';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
 const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
+  // const [cropperInfo, setCropperInfo] = useState({});
+
+  // const [isResize, setIsResize] = useState(false);
+  const { state, dispatch } = useContext(CropperInfoContext);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -17,45 +24,94 @@ const Main = () => {
     }
   }, [canvasScale]);
 
-  const openImage = evt => {
+  const openImage = async evt => {
+    const img = evt.target.files[0];
+    const imgSrc = await readImgAsync(img);
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
-    const img = evt.target.files[0];
-    const reader = new FileReader();
+    const image = new Image();
 
-    reader.onload = readerEvt => {
-      const image = new Image();
+    image.src = imgSrc;
+    image.onload = () => {
+      canvasEl.width = image.width;
+      canvasEl.height = image.height;
 
-      image.src = readerEvt.target.result;
-      image.onload = () => {
-        canvasEl.width = image.width;
-        canvasEl.height = image.height;
+      context.drawImage(image, 0, 0);
 
-        context.drawImage(image, 0, 0);
-
-        canvasEl.style.width = `${canvasScale.width}px`;
-        canvasEl.style.height = `${canvasScale.height}px`;
-      };
+      canvasEl.style.width = `${canvasScale.width}px`;
+      canvasEl.style.height = `${canvasScale.height}px`;
+      if (canvasRef.current) {
+        const { offsetLeft, offsetTop } = canvasRef.current;
+        setCanvasScale({
+          left: offsetLeft,
+          top: offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
+        dispatch({
+          type: 'init',
+          offsetLeft,
+          offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
+      }
     };
-    if (img) {
-      reader.readAsDataURL(img);
-    }
   };
 
   const [cropIsActive, setCropIsActive] = useState(false);
+
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
-    if (canvasRef.current) {
-      const { offsetLeft, offsetTop, width, height } = canvasRef.current;
-      setCanvasScale({
-        left: offsetLeft,
-        top: offsetTop,
-        width,
-        height,
-      });
-    }
   };
+
+  const getScale = () => {
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    const { naturalWidth, naturalHeight } = currentImage;
+    const { width, height } = canvasRef.current;
+    return { x: naturalWidth / width, y: naturalHeight / height };
+  };
+
+  const applyCropper = e => {
+    e.preventDefault();
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    currentImage.onload = () => {
+      const ctx = canvasRef.current.getContext('2d');
+      const scale = getScale();
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(
+        currentImage,
+        state.left * scale.x,
+        state.top * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        state.left,
+        state.top,
+        state.width,
+        state.height,
+      );
+    };
+    setCropIsActive(false);
+  };
+
+  // const [isImgMove, setIsImgMove] = useState(false);
+
+  // useEffect(() => {
+  //   if (isResize || isImgMove) {
+  //     if (canvasRef.current) {
+  //       const canvasEl = canvasRef.current;
+  //       const context = canvasEl.getContext(`2d`);
+
+  //       const { left, top, width, height } = cropperInfo;
+
+  //       context.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  //       context.drawImage(imgEl, left, top, width, height);
+  //     }
+  //   }
+  // }, [cropperInfo]);
 
   return (
     <>
@@ -71,15 +127,18 @@ const Main = () => {
               onChange={openImage}
             />
           </Button>
-          {canvasRef.current && (
-            <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-              Crop
-            </Button>
-          )}
+          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+            Crop
+          </Button>
         </aside>
         <article className="editor-container horizontal">
-          <canvas className="editor" ref={canvasRef} />
-          {cropIsActive && <Cropper canvasScale={canvasScale} />}
+          <CanvasContainer
+            canvasScale={canvasScale}
+            cropIsActive={cropIsActive}
+            applyCropper={applyCropper}
+          >
+            <canvas className="editor" ref={canvasRef} />
+          </CanvasContainer>
         </article>
       </section>
     </>
