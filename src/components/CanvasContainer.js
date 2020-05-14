@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { number } from 'prop-types';
+import Button from '@material-ui/core/Button';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 import Cropper from './Cropper';
 
-const CanvasContainer = ({ children, cropIsActive }) => {
+const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) => {
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
@@ -15,42 +16,89 @@ const CanvasContainer = ({ children, cropIsActive }) => {
     startX: 0,
     startY: 0,
   });
-  const startResize = e => {
-    e.preventDefault();
-    setActiveResize(true);
-    setDirection(e.target.dataset.dir);
-    setCropperChange({
+  const getCropperChange = e => {
+    return {
       prevWidth: state.width,
       prevHeight: state.height,
       prevX: state.left,
       prevY: state.top,
       startX: e.clientX,
       startY: e.clientY,
-    });
+    };
+  };
+  const getDifference = e => {
+    return {
+      diffX: cropperChange.startX - e.clientX,
+      diffY: cropperChange.startY - e.clientY,
+    };
+  };
+  const startCropperResize = e => {
+    e.preventDefault();
+    setActiveResize(true);
+    setDirection(e.target.dataset.dir);
+    setCropperChange(getCropperChange(e));
   };
   const cropperResizing = e => {
     e.preventDefault();
     if (activeResize) {
-      const diffX = cropperChange.startX - e.clientX;
-      const diffY = cropperChange.startY - e.clientY;
-      dispatch({ type: direction, diffX, diffY, cropperChange });
+      const { diffX, diffY } = getDifference(e);
+      dispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
     }
   };
-  const finishResize = e => {
+  const finishCropperResize = e => {
     e.preventDefault();
     setActiveResize(false);
   };
+  const [activeMove, setActiveMove] = useState(false);
+  const startCropperMove = e => {
+    if (e.target.dataset.dir) return;
+    e.preventDefault();
+    setActiveMove(true);
+    setCropperChange(getCropperChange(e));
+  };
+  const cropperMoving = e => {
+    e.preventDefault();
+    if (activeMove) {
+      const { diffX, diffY } = getDifference(e);
+      dispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
+    }
+  };
+  const finishCropperMove = e => {
+    e.preventDefault();
+    setActiveMove(false);
+  };
+
   return (
-    <div role="button" tabIndex={0} onMouseMove={cropperResizing} onMouseUp={finishResize}>
+    <div
+      role="button"
+      tabIndex={0}
+      onMouseMove={e => {
+        cropperResizing(e);
+        cropperMoving(e);
+      }}
+      onMouseUp={e => {
+        finishCropperResize(e);
+        finishCropperMove(e);
+      }}
+    >
       {children}
-      {cropIsActive && <Cropper startResize={startResize} />}
+      {cropIsActive && (
+        <>
+          <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
+          <Button color="primary" onClick={applyCropper}>
+            적용하기
+          </Button>
+        </>
+      )}
     </div>
   );
 };
 
 CanvasContainer.propTypes = {
-  children: PropTypes.elementType.isRequired,
+  children: PropTypes.element.isRequired,
   cropIsActive: PropTypes.bool.isRequired,
+  applyCropper: PropTypes.func.isRequired,
+  canvasScale: PropTypes.objectOf(number).isRequired,
 };
 
 export default CanvasContainer;

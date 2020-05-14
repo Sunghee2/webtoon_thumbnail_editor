@@ -4,7 +4,7 @@ import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 
-const Cropper = ({ startResize }) => {
+const Cropper = ({ startCropperResize, startCropperMove }) => {
   const { state } = useContext(CropperInfoContext);
   return (
     <div
@@ -17,6 +17,7 @@ const Cropper = ({ startResize }) => {
         width: `${state.width}px`,
         height: `${state.height}px`,
       }}
+      onMouseDown={startCropperMove}
     >
       <div
         role="button"
@@ -24,7 +25,7 @@ const Cropper = ({ startResize }) => {
         aria-label="resize from north east"
         className="crop-square-margin ne"
         data-dir="ne"
-        onMouseDown={startResize}
+        onMouseDown={startCropperResize}
       />
       <div
         role="button"
@@ -32,7 +33,7 @@ const Cropper = ({ startResize }) => {
         aria-label="resize from south east"
         className="crop-square-margin se"
         data-dir="se"
-        onMouseDown={startResize}
+        onMouseDown={startCropperResize}
       />
       <div
         role="button"
@@ -40,7 +41,7 @@ const Cropper = ({ startResize }) => {
         aria-label="resize from south west"
         className="crop-square-margin sw"
         data-dir="sw"
-        onMouseDown={startResize}
+        onMouseDown={startCropperResize}
       />
       <div
         role="button"
@@ -48,14 +49,15 @@ const Cropper = ({ startResize }) => {
         aria-label="resize from north west"
         className="crop-square-margin nw"
         data-dir="nw"
-        onMouseDown={startResize}
+        onMouseDown={startCropperResize}
       />
     </div>
   );
 };
 
 Cropper.propTypes = {
-  startResize: propTypes.func.isRequired,
+  startCropperResize: propTypes.func.isRequired,
+  startCropperMove: propTypes.func.isRequired,
 };
 
 export default Cropper;

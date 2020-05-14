@@ -58,6 +58,35 @@ const Main = props => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
   };
+  const getScale = () => {
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    const { naturalWidth, naturalHeight } = currentImage;
+    const { width, height } = canvasRef.current;
+    return { x: naturalWidth / width, y: naturalHeight / height };
+  };
+  const applyCropper = e => {
+    e.preventDefault();
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    currentImage.onload = () => {
+      const ctx = canvasRef.current.getContext('2d');
+      const scale = getScale();
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(
+        currentImage,
+        state.left * scale.x,
+        state.top * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        state.left,
+        state.top,
+        state.width,
+        state.height,
+      );
+    };
+    setCropIsActive(false);
+  };
   return (
     <section>
       <aside>
@@ -75,7 +104,11 @@ const Main = props => {
         </Button>
       </aside>
       <article className="editor-container horizontal">
-        <CanvasContainer cropIsActive={cropIsActive}>
+        <CanvasContainer
+          canvasScale={canvasScale}
+          cropIsActive={cropIsActive}
+          applyCropper={applyCropper}
+        >
           <canvas className="editor" ref={canvasRef} />
         </CanvasContainer>
       </article>
