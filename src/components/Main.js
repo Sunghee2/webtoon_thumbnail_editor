@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useReducer } from 'react';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
-import AdjustList from './Adjust/AdjustList';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
@@ -62,53 +61,40 @@ const Main = () => {
   };
 
   const [focusedTextID, setFocusedTextID] = useState('');
-  const [textContents, setTextContents] = useState([]);
 
-  const addTextContent = () => {
-    const { width, height } = canvasScale;
-    const id = `text_${new Date().getTime()}`;
-    const newContent = {
-      id,
-      width: 200,
-      top: height / 2,
-      left: width / 2 - 100,
-      text: `글자를 입력하세요.`,
-      font: `BlackHanSans`,
-      focused: true,
-    };
-    setFocusedTextID(id);
-    setTextContents(prevState => [...prevState, newContent]);
+  const textReducer = (state, action) => {
+    const { type, id, top, left, width, text, font } = action;
+    switch (type) {
+      case 'ADD_TEXT_CONTENT': {
+        const newID = `text_${new Date().getTime()}`;
+        const newContent = {
+          id: newID,
+          width: 200,
+          top: canvasScale.height / 2,
+          left: canvasScale.width / 2 - 100,
+          text: `글자를 입력하세요.`,
+          font: `BlackHanSans`,
+        };
+        setFocusedTextID(newID);
+        return [...state, newContent];
+      }
+      case 'CHANGE_TEXT_POSITION':
+        return state.map(item => (item.id === id ? { ...item, top, left } : item));
+      case 'CHANGE_WIDTH':
+        return state.map(item => (item.id === id ? { ...item, width } : item));
+      case 'CHANGE_TEXT_STRING':
+        return state.map(item => (item.id === id ? { ...item, text } : item));
+      case 'CHANGE_FONT':
+        return state.map(item => (item.id === id ? { ...item, font } : item));
+      case 'REMOVE_TEXT_CONTENT':
+        if (focusedTextID === id) setFocusedTextID('');
+        return state.filter(item => item.id !== id);
+      default:
+        return state;
+    }
   };
 
-  const handleTextPosition = (id, position) => {
-    const { top, left } = position;
-    setTextContents(prevState =>
-      prevState.map(item => (item.id === id ? { ...item, top, left } : item)),
-    );
-  };
-
-  const handleWidth = (id, width) => {
-    setTextContents(prevState =>
-      prevState.map(item => (item.id === id ? { ...item, width } : item)),
-    );
-  };
-
-  const handleTextString = (id, newText) => {
-    setTextContents(prevState =>
-      prevState.map(item => (item.id === id ? { ...item, text: newText } : item)),
-    );
-  };
-
-  const handleTextFont = (id, newFont) => {
-    setTextContents(prevState =>
-      prevState.map(item => (item.id === id ? { ...item, font: newFont } : item)),
-    );
-  };
-
-  const removeTextContent = id => {
-    if (focusedTextID === id) setFocusedTextID('');
-    setTextContents(prevState => prevState.filter(item => item.id !== id));
-  };
+  const [textContents, textContentsDispatch] = useReducer(textReducer, []);
 
   const [visibleDrawer, setVisibleDrawer] = useState(false);
 
@@ -166,10 +152,8 @@ const Main = () => {
             <AddTextList
               focusedTextID={focusedTextID}
               textContents={textContents}
-              handleTextPosition={handleTextPosition}
+              dispatch={textContentsDispatch}
               handleFocusedID={setFocusedTextID}
-              removeTextContent={removeTextContent}
-              handleWidth={handleWidth}
             />
           )}
         </article>
@@ -183,11 +167,9 @@ const Main = () => {
           <div className="drawer-content">
             {/* <AdjustList /> */}
             <AddText
-              addTextContent={addTextContent}
               focusedTextID={focusedTextID}
               textContents={textContents}
-              handleTextString={handleTextString}
-              handleTextFont={handleTextFont}
+              dispatch={textContentsDispatch}
             />
           </div>
         </div>
