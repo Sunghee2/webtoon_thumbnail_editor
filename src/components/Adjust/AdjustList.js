@@ -5,7 +5,7 @@ import AdjustSlider from './AdjustSlider';
 import AdjustCheckbox from './AdjustCheckbox';
 import { defaultAdjust } from '../../utils/const';
 import { AdjustContext } from '../../context/adjustContext';
-import { brightnessFilter, grayscaleFilter, contrastFilter } from '../../utils/filter';
+import { brightnessFilter, grayscaleFilter, contrastFilter, blurFilter } from '../../utils/filter';
 
 const AdjustList = ({ canvasRef, image }) => {
   const [adjust, dispatch] = useContext(AdjustContext);
@@ -29,7 +29,7 @@ const AdjustList = ({ canvasRef, image }) => {
               imgData = grayscaleFilter(imgData);
               break;
             case 'blur':
-              // imgData = blur(imgData, -1);
+              imgData = blurFilter(imgData, value, width * 4);
               break;
             default:
               break;
