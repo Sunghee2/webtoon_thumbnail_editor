@@ -11,7 +11,7 @@ const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
   // const [cropperInfo, setCropperInfo] = useState({});
-  const [imgEl, setImgEl] = useState(null);
+
   // const [isResize, setIsResize] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
 
@@ -33,11 +33,10 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      setImgEl(image);
       canvasEl.width = image.width;
       canvasEl.height = image.height;
 
-      context.drawImage(imgEl, 0, 0);
+      context.drawImage(image, 0, 0);
 
       canvasEl.style.width = `${canvasScale.width}px`;
       canvasEl.style.height = `${canvasScale.height}px`;
