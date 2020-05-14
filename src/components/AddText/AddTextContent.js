@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AddTextResizer from './AddTextResizer';
 import AddTextString from './AddTextString';
 
-const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID }) => {
+const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID, canvasScale }) => {
   const { id, top, left, width, font, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
@@ -19,6 +19,7 @@ const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID }) => {
         dispatch={dispatch}
         handleFocusedID={handleFocusedID}
         textContentRef={textContentRef}
+        canvasScale={canvasScale}
       />
       <CloseIcon
         className={`remove-text-content${focused ? `` : ` hide`}`}
@@ -46,4 +47,5 @@ AddTextContent.propTypes = {
   }).isRequired,
   handleFocusedID: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  canvasScale: PropTypes.shape({}).isRequired,
 };

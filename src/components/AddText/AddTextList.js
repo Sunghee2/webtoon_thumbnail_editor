@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import AddTextContent from './AddTextContent';
 
-const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID }) => {
+const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID, canvasScale }) => {
   return (
     <div>
       {textContents.map(item => (
@@ -11,6 +11,7 @@ const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID })
           contentAttribute={{ ...item, focused: item.id === focusedTextID }}
           dispatch={dispatch}
           handleFocusedID={handleFocusedID}
+          canvasScale={canvasScale}
         />
       ))}
     </div>
@@ -27,4 +28,5 @@ AddTextList.propTypes = {
   ).isRequired,
   handleFocusedID: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
+  canvasScale: PropTypes.shape({}).isRequired,
 };

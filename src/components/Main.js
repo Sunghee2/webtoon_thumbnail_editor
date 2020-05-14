@@ -214,6 +214,7 @@ const Main = () => {
               textContents={textContents}
               dispatch={textContentsDispatch}
               handleFocusedID={setFocusedTextID}
+              canvasScale={canvasScale}
             />
           )}
         </article>

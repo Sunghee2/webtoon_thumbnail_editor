@@ -1,16 +1,39 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const AddTextString = ({ textContentRef, contentAttribute, dispatch, handleFocusedID }) => {
+const AddTextString = ({
+  textContentRef,
+  contentAttribute,
+  dispatch,
+  handleFocusedID,
+  canvasScale,
+}) => {
   const { id, top, left, text } = contentAttribute;
+  const { width, height } = canvasScale;
   const handleTextMove = () => {
     const textContent = textContentRef.current;
     let X = left;
     let Y = top;
 
+    const nextX = dX => {
+      const nX = X + dX;
+      const endX = width - textContent.offsetWidth;
+      if (nX < 0) return 0;
+      if (nX > endX) return endX;
+      return nX;
+    };
+
+    const nextY = dY => {
+      const nY = Y + dY;
+      const endY = height - textContent.offsetHeight;
+      if (nY < 0) return 0;
+      if (nY > endY) return endY;
+      return nY;
+    };
+
     const move = (dX, dY) => {
-      X += dX;
-      Y += dY;
+      X = nextX(dX);
+      Y = nextY(dY);
       textContent.style.left = `${X}px`;
       textContent.style.top = `${Y}px`;
     };
@@ -53,4 +76,8 @@ AddTextString.propTypes = {
   dispatch: PropTypes.func.isRequired,
   textContentRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
   handleFocusedID: PropTypes.func.isRequired,
+  canvasScale: PropTypes.shape({
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  }).isRequired,
 };
