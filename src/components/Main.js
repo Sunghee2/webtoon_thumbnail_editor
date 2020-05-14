@@ -110,12 +110,16 @@ const Main = () => {
   const startResize = e => {
     e.preventDefault();
 
-    const canvasEl = canvasRef.current;
-    const { offsetLeft, offsetTop } = canvasEl;
-    const { width, height } = canvasScale;
+    if (canvasRef.current) {
+      const canvasEl = canvasRef.current;
+      const { offsetLeft, offsetTop } = canvasEl;
+      const { width, height } = canvasScale;
 
-    resizerDispatch({ type: 'init', offsetLeft, offsetTop, width, height });
-    setIsResize(true);
+      console.log(offsetLeft, offsetTop);
+
+      resizerDispatch({ type: 'init', offsetLeft, offsetTop, width, height });
+      setIsResize(true);
+    }
   };
 
   return (

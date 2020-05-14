@@ -118,12 +118,12 @@ const reducer = (state, action) => {
         ),
       };
     default:
-      return { left: 0, right: 0, width: 0, height: 0 };
+      return { left: 0, top: 0, width: 0, height: 0 };
   }
 };
-const ResizerContext = createContext({ left: 0, right: 0, width: 0, height: 0 });
+const ResizerContext = createContext({ left: 0, top: 0, width: 0, height: 0 });
 const ResizerProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, { left: 0, right: 0, width: 0, height: 0 });
+  const [state, dispatch] = useReducer(reducer, { left: 0, top: 0, width: 0, height: 0 });
   return <ResizerContext.Provider value={[state, dispatch]}>{children}</ResizerContext.Provider>;
 };
 

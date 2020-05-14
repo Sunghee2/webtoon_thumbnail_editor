@@ -132,7 +132,7 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, is
         finishCropperResize(e);
         finishCropperMove(e);
       }}
-      style={{ position: 'relative' }}
+      style={{ position: 'relative', width: canvasScale.width, height: canvasScale.height }}
     >
       {children}
       {cropIsActive && (
