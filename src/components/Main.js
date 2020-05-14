@@ -1,10 +1,11 @@
-/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import React, { useRef, useState, useEffect } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
 import Cropper from './Cropper';
 import Resizer from './Resizer';
 import readImgAsync from '../Utils/FileRead';
+import CanvasTypeModal from './CanvasTypeModal';
+
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -12,6 +13,16 @@ const Main = () => {
   const [cropperInfo, setCropperInfo] = useState({});
   const [imgEl, setImgEl] = useState(null);
   const [isResize, setIsResize] = useState(false);
+  
+  useEffect(() => {
+    if (Object.keys(canvasScale).length) {
+      const canvasEl = canvasRef.current;
+
+      canvasEl.style.width = `${canvasScale.width}px`;
+      canvasEl.style.height = `${canvasScale.height}px`;
+    }
+  }, [canvasScale]);
+
 
   const openImage = async evt => {
     const img = evt.target.files[0];
@@ -23,41 +34,14 @@ const Main = () => {
     image.src = imgSrc;
     image.onload = () => {
       setImgEl(image);
+      canvasEl.width = image.width;
+      canvasEl.height = image.height;
 
-      const maxWidth = 800;
-      let { width } = image;
-      let { height } = image;
+      context.drawImage(image, 0, 0);
 
-      if (width > height) {
-        if (width > maxWidth) {
-          height *= maxWidth / width;
-          width = maxWidth;
-        }
-      } else if (height > maxWidth) {
-        width *= maxWidth / height;
-        height = maxWidth;
-      }
-      canvasEl.width = width;
-      canvasEl.height = height;
-      context.drawImage(image, 0, 0, width, height);
-      if (canvasRef.current) {
-        const { offsetLeft, offsetTop } = canvasRef.current;
-        // setCanvasScale({
-        //   left: offsetLeft,
-        //   top: offsetTop,
-        //   width,
-        //   height,
-        // });
-        setCropperInfo({
-          left: offsetLeft,
-          top: offsetTop,
-          width,
-          height,
-        });
-      }
-    };
-  };
-
+      canvasEl.style.width = `${canvasScale.width}px`;
+      canvasEl.style.height = `${canvasScale.height}px`;
+    }
   const [cropIsActive, setCropIsActive] = useState(false);
   const startCrop = e => {
     e.preventDefault();
@@ -232,35 +216,26 @@ const Main = () => {
   };
 
   return (
-    <section>
-      <aside>
-        <Button className="open-btn" variant="contained" color="primary">
-          OPEN IMAGE
-          <input
-            className="open-file"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={openImage}
-          />
-        </Button>
-        {canvasRef.current && (
-          <>
+    <>
+      <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />
+      <section>
+        <aside>
+          <Button className="open-btn" variant="contained" color="primary">
+            OPEN IMAGE
+            <input
+              className="open-file"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              onChange={openImage}
+            />
+          </Button>
+          {canvasRef.current && (
             <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
               Crop
             </Button>
-            <Button
-              className="open-btn"
-              variant="contained"
-              color="primary"
-              onClick={startImgResize}
-            >
-              Resize
-            </Button>
-          </>
-        )}
-      </aside>
-      <article className="editor-container horizontal" onMouseUp={finishResize}>
-        <div onMouseMove={resizing}>
+          )}
+        </aside>
+        <article className="editor-container horizontal">
           <canvas className="editor" ref={canvasRef} />
           {cropIsActive && <Cropper startResize={startResize} cropperInfo={cropperInfo} />}
           {isResize && (
@@ -270,9 +245,9 @@ const Main = () => {
               cropperInfo={cropperInfo}
             />
           )}
-        </div>
-      </article>
-    </section>
+        </article>
+      </section>
+    </>
   );
 };
 
