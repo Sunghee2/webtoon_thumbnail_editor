@@ -1,28 +1,33 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useContext } from 'react';
 import '../styles/Main.scss';
+import propTypes from 'prop-types';
+import { ResizerContext } from '../context/ResizerContext';
 
 const Resizer = props => {
-  const { startImgResize, startImgMove, cropperInfo } = props;
+  const { startImgResize, startImgMove } = props;
+  const [resizer] = useContext(ResizerContext);
+
   return (
     <div
       // eslint-disable-next-line jsx-a11y/aria-role
       role="section"
       className="crop-area"
       style={{
-        left: `${cropperInfo.left}px`,
-        top: `${cropperInfo.top}px`,
-        width: `${cropperInfo.width}px`,
-        height: `${cropperInfo.height}px`,
+        left: `${resizer.left}px`,
+        top: `${resizer.top}px`,
+        width: `${resizer.width}px`,
+        height: `${resizer.height}px`,
       }}
     >
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="empty-div"
         style={{
-          left: `${cropperInfo.left}px`,
-          top: `${cropperInfo.top}px`,
-          width: `${cropperInfo.width}px`,
-          height: `${cropperInfo.height}px`,
+          left: `${resizer.left}px`,
+          top: `${resizer.top}px`,
+          width: `${resizer.width}px`,
+          height: `${resizer.height}px`,
         }}
         onMouseDown={startImgMove}
       />
@@ -60,6 +65,11 @@ const Resizer = props => {
       />
     </div>
   );
+};
+
+Resizer.propTypes = {
+  startImgResize: propTypes.func.isRequired,
+  startImgMove: propTypes.func.isRequired,
 };
 
 export default Resizer;

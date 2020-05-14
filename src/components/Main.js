@@ -6,6 +6,7 @@ import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import { CropperInfoContext } from '../context/CropperInfoContext';
+import { ResizerContext } from '../context/ResizerContext';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -14,6 +15,7 @@ const Main = () => {
 
   // const [isResize, setIsResize] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
+  const [, resizerDispatch] = useContext(ResizerContext);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -33,13 +35,20 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      canvasEl.width = image.width;
-      canvasEl.height = image.height;
+      canvasEl.width = canvasScale.width;
+      canvasEl.height = canvasScale.height;
+      context.drawImage(
+        image,
+        0,
+        0,
+        image.width,
+        image.height,
+        0,
+        0,
+        canvasScale.width,
+        canvasScale.height,
+      );
 
-      context.drawImage(image, 0, 0);
-
-      canvasEl.style.width = `${canvasScale.width}px`;
-      canvasEl.style.height = `${canvasScale.height}px`;
       if (canvasRef.current) {
         const { offsetLeft, offsetTop } = canvasRef.current;
         setCanvasScale({
@@ -97,21 +106,17 @@ const Main = () => {
     setCropIsActive(false);
   };
 
-  // const [isImgMove, setIsImgMove] = useState(false);
+  const [isResize, setIsResize] = useState(false);
+  const startResize = e => {
+    e.preventDefault();
 
-  // useEffect(() => {
-  //   if (isResize || isImgMove) {
-  //     if (canvasRef.current) {
-  //       const canvasEl = canvasRef.current;
-  //       const context = canvasEl.getContext(`2d`);
+    const canvasEl = canvasRef.current;
+    const { offsetLeft, offsetTop } = canvasEl;
+    const { width, height } = canvasScale;
 
-  //       const { left, top, width, height } = cropperInfo;
-
-  //       context.clearRect(0, 0, canvasEl.width, canvasEl.height);
-  //       context.drawImage(imgEl, left, top, width, height);
-  //     }
-  //   }
-  // }, [cropperInfo]);
+    resizerDispatch({ type: 'init', offsetLeft, offsetTop, width, height });
+    setIsResize(true);
+  };
 
   return (
     <>
@@ -130,12 +135,16 @@ const Main = () => {
           <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
             Crop
           </Button>
+          <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
+            Resize
+          </Button>
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
             canvasScale={canvasScale}
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
+            isResize={isResize}
           >
             <canvas className="editor" ref={canvasRef} />
           </CanvasContainer>
