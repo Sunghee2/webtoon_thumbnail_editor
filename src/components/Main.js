@@ -11,11 +11,13 @@ import { ResizerContext } from '../context/ResizerContext';
 const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
+  const [isResize, setIsResize] = useState(false);
   // const [cropperInfo, setCropperInfo] = useState({});
 
   // const [isResize, setIsResize] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
-  const [, resizerDispatch] = useContext(ResizerContext);
+  const [resizerState, resizerDispatch] = useContext(ResizerContext);
+  const [imgEl, setImgEl] = useState(null);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -26,6 +28,18 @@ const Main = () => {
     }
   }, [canvasScale]);
 
+  useEffect(() => {
+    if (isResize) {
+      if (canvasRef.current) {
+        const context = canvasRef.current.getContext('2d');
+        const { left, top, width, height } = resizerState;
+
+        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        context.drawImage(imgEl, left, top, width, height);
+      }
+    }
+  }, [resizerState]);
+
   const openImage = async evt => {
     const img = evt.target.files[0];
     const imgSrc = await readImgAsync(img);
@@ -35,6 +49,8 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
+      setImgEl(image);
+
       canvasEl.width = canvasScale.width;
       canvasEl.height = canvasScale.height;
       context.drawImage(
@@ -106,7 +122,6 @@ const Main = () => {
     setCropIsActive(false);
   };
 
-  const [isResize, setIsResize] = useState(false);
   const startResize = e => {
     e.preventDefault();
 
@@ -119,6 +134,19 @@ const Main = () => {
 
       resizerDispatch({ type: 'init', offsetLeft, offsetTop, width, height });
       setIsResize(true);
+    }
+  };
+
+  const finishResize = e => {
+    e.preventDefault();
+
+    if (canvasRef.current) {
+      const newImg = new Image();
+
+      newImg.src = canvasRef.current.toDataURL();
+
+      setImgEl(newImg);
+      setIsResize(false);
     }
   };
 
@@ -149,6 +177,7 @@ const Main = () => {
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
             isResize={isResize}
+            finishResize={finishResize}
           >
             <canvas className="editor" ref={canvasRef} />
           </CanvasContainer>
