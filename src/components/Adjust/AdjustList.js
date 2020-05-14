@@ -12,10 +12,10 @@ const AdjustList = ({ canvasRef, image }) => {
 
   useEffect(() => {
     if (image) {
-      const canvas = canvasRef.current.getContext('2d');
+      const context = canvasRef.current.getContext('2d');
       const { width, height } = canvasRef.current;
-      canvas.drawImage(image, 0, 0, width, height);
-      let imgData = canvas.getImageData(0, 0, width, height);
+      context.drawImage(image, 0, 0, width, height);
+      let imgData = context.getImageData(0, 0, width, height);
       Object.entries(adjust).forEach(([key, value]) => {
         if (value !== defaultAdjust[key].default) {
           switch (key) {
@@ -36,7 +36,7 @@ const AdjustList = ({ canvasRef, image }) => {
           }
         }
       });
-      canvas.putImageData(imgData, 0, 0);
+      context.putImageData(imgData, 0, 0);
     }
   }, [adjust]);
 
