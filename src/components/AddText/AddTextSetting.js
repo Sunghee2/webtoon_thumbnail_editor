@@ -44,7 +44,7 @@ const AddTextSetting = ({ textAttribute, dispatch }) => {
 export default AddTextSetting;
 
 AddTextSetting.propTypes = {
-  textAttribute: PropTypes.arrayOf({
+  textAttribute: PropTypes.shape({
     id: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
     font: PropTypes.string.isRequired,

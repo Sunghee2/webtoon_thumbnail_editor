@@ -89,6 +89,9 @@ const Main = () => {
       case 'REMOVE_TEXT_CONTENT':
         if (focusedTextID === id) setFocusedTextID('');
         return state.filter(item => item.id !== id);
+      case 'EMPTY_TEXT_CONTENTS':
+        setFocusedTextID('');
+        return [];
       default:
         return state;
     }
@@ -105,6 +108,58 @@ const Main = () => {
   const handleDrawerClose = () => {
     setVisibleDrawer(false);
     setFocusedTextID('');
+  };
+
+  const drawTextOnCanvas = () => {
+    const context = canvasRef.current.getContext('2d');
+    const lineHeight = 30;
+    const padding = 10;
+    textContents.forEach(item => {
+      const { top, width, font, text } = item;
+      let { left } = item;
+      left += width / 2;
+      context.textBaseline = 'top';
+      context.textAlign = 'center';
+      context.font = `30px ${font}`;
+      context.strokeStyle = 'white';
+      context.lineWidth = 2;
+
+      const words = text.split(' ');
+      const maxWidth = width - padding * 2;
+      let line = '';
+      let test;
+      let metrics;
+      const x = left + 5;
+      let y = top + 15;
+
+      for (let i = 0; i < words.length; i += 1) {
+        test = words[i];
+        metrics = context.measureText(test);
+        while (metrics.width > maxWidth) {
+          test = test.substring(0, test.length - 1);
+          metrics = context.measureText(test);
+        }
+        if (words[i] !== test) {
+          words.splice(i + 1, 0, words[i].substr(test.length));
+          words[i] = test;
+        }
+
+        test = `${line + words[i]} `;
+        metrics = context.measureText(test);
+
+        if (metrics.width > maxWidth && i > 0) {
+          context.strokeText(line, x, y);
+          context.fillText(line, x, y);
+          line = `${words[i]} `;
+          y += lineHeight;
+        } else {
+          line = test;
+        }
+      }
+      context.strokeText(line, x, y);
+      context.fillText(line, x, y);
+    });
+    textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
   };
 
   return (
@@ -141,6 +196,14 @@ const Main = () => {
                 onClick={handleDrawerOpen}
               >
                 TEXT ADD
+              </Button>
+              <Button
+                className="add-text-btn open-btn"
+                variant="contained"
+                color="primary"
+                onClick={drawTextOnCanvas}
+              >
+                SAVE
               </Button>
             </>
           )}

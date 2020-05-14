@@ -27,6 +27,10 @@ export default AddText;
 
 AddText.propTypes = {
   focusedTextID: PropTypes.string.isRequired,
-  textContents: PropTypes.arrayOf(PropTypes.object).isRequired,
+  textContents: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   dispatch: PropTypes.func.isRequired,
 };

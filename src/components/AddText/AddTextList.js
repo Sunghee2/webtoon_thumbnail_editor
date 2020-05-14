@@ -20,7 +20,11 @@ const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID })
 export default AddTextList;
 AddTextList.propTypes = {
   focusedTextID: PropTypes.string.isRequired,
-  textContents: PropTypes.arrayOf(PropTypes.object).isRequired,
+  textContents: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   handleFocusedID: PropTypes.func.isRequired,
   dispatch: PropTypes.func.isRequired,
 };
