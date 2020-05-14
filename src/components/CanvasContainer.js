@@ -42,7 +42,7 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
     e.preventDefault();
     if (activeResize) {
       const { diffX, diffY } = getDifference(e);
-      dispatch({ type: direction, diffX, diffY, cropperChange });
+      dispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
     }
   };
   const finishCropperResize = e => {
@@ -60,7 +60,7 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
     e.preventDefault();
     if (activeMove) {
       const { diffX, diffY } = getDifference(e);
-      dispatch({ type: 'move', diffX, diffY, cropperChange });
+      dispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
     }
   };
   const finishCropperMove = e => {
