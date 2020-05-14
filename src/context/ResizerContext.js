@@ -27,6 +27,17 @@ const reducer = (state, action) => {
         top: offsetTop,
         width,
         height,
+        first: {},
+      };
+    case 'first':
+      return {
+        ...state,
+        first: {
+          left: state.left,
+          top: state.top,
+          width: state.width,
+          height: state.height,
+        },
       };
     case 'se':
       return {

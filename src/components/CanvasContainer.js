@@ -58,7 +58,7 @@ const CanvasContainer = ({
     if (activeResize) {
       const { diffX, diffY } = getDifference(e);
       dispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
-      if (isResize) resizerDispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
+      resizerDispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
     }
   };
 
@@ -81,7 +81,7 @@ const CanvasContainer = ({
     if (activeMove) {
       const { diffX, diffY } = getDifference(e);
       dispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
-      if (isResize) resizerDispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
+      resizerDispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
     }
   };
 

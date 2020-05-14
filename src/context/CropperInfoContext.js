@@ -25,6 +25,7 @@ const reducer = (state, action) => {
     diffY,
     canvasScale,
   } = action;
+
   switch (type) {
     case 'init':
       return {

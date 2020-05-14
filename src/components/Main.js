@@ -33,6 +33,8 @@ const Main = () => {
       if (canvasRef.current) {
         const context = canvasRef.current.getContext('2d');
         const { left, top, width, height } = resizerState;
+        // console.log('first', first);
+        // console.log('img', imgEl);
 
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         context.drawImage(imgEl, left, top, width, height);
@@ -80,6 +82,13 @@ const Main = () => {
           width: canvasScale.width,
           height: canvasScale.height,
         });
+        resizerDispatch({
+          type: 'init',
+          offsetLeft,
+          offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
       }
     };
   };
@@ -104,7 +113,8 @@ const Main = () => {
     const currentImage = new Image();
     currentImage.src = canvasRef.current.toDataURL();
     currentImage.onload = () => {
-      const ctx = canvasRef.current.getContext('2d');
+      const canvasEl = canvasRef.current;
+      const ctx = canvasEl.getContext('2d');
       const scale = getScale();
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       ctx.drawImage(
@@ -118,36 +128,31 @@ const Main = () => {
         state.width,
         state.height,
       );
+
+      const newImg = new Image();
+      newImg.src = canvasEl.toDataURL();
+      newImg.onload = () => {
+        setImgEl(newImg);
+      };
     };
+    resizerDispatch({ type: 'first' });
     setCropIsActive(false);
   };
 
   const startResize = e => {
     e.preventDefault();
-
-    if (canvasRef.current) {
-      const canvasEl = canvasRef.current;
-      const { offsetLeft, offsetTop } = canvasEl;
-      const { width, height } = canvasScale;
-
-      console.log(offsetLeft, offsetTop);
-
-      resizerDispatch({ type: 'init', offsetLeft, offsetTop, width, height });
-      setIsResize(true);
-    }
+    // if (canvasRef.current) {
+    //   if (imgEl) {
+    //     resizerDispatch({ type: 'init',  });
+    //   }
+    // }
+    resizerDispatch({ type: 'first' });
+    setIsResize(true);
   };
 
   const finishResize = e => {
     e.preventDefault();
-
-    if (canvasRef.current) {
-      const newImg = new Image();
-
-      newImg.src = canvasRef.current.toDataURL();
-
-      setImgEl(newImg);
-      setIsResize(false);
-    }
+    setIsResize(false);
   };
 
   return (
