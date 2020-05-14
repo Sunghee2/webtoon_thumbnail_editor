@@ -61,7 +61,7 @@ const AdjustList = ({ canvasRef, image }) => {
           );
         }
         if (value.type === 'checkbox') {
-          return <AdjustCheckbox header={key} value={adjust[key]} setValue={setValue} />;
+          return <AdjustCheckbox key={key} header={key} value={adjust[key]} setValue={setValue} />;
         }
         return <></>;
       })}
