@@ -41,8 +41,6 @@ const Main = () => {
           width *= maxWidth / height;
           height = maxWidth;
         }
-        // canvasEl.width = width;
-        // canvasEl.height = height;
         canvasEl.width = image.width;
         canvasEl.height = image.height;
 
