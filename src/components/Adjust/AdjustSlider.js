@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { Typography, Slider } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-const AdjustItem = memo(({ header, value, min, max, step, setValue }) => {
+const AdjustSlider = memo(({ header, value, min, max, step, setValue }) => {
   const handleChange = (_, newValue) => {
     setValue(header, newValue);
   };
@@ -23,7 +23,7 @@ const AdjustItem = memo(({ header, value, min, max, step, setValue }) => {
   );
 });
 
-AdjustItem.propTypes = {
+AdjustSlider.propTypes = {
   header: PropTypes.string.isRequired,
   value: PropTypes.number.isRequired,
   min: PropTypes.number.isRequired,
@@ -32,4 +32,4 @@ AdjustItem.propTypes = {
   setValue: PropTypes.func.isRequired,
 };
 
-export default AdjustItem;
+export default AdjustSlider;

@@ -1,11 +1,11 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
+import AdjustSlider from './AdjustSlider';
+import AdjustCheckbox from './AdjustCheckbox';
 import { defaultAdjust } from '../../utils/const';
-import AdjustItem from './AdjustItem';
 import { AdjustContext } from '../../context/adjustContext';
 import { brightnessFilter, grayscaleFilter, contrastFilter } from '../../utils/filter';
-import AdjustCheckbox from './AdjustCheckbox';
 
 const AdjustList = ({ canvasRef, image }) => {
   const [adjust, dispatch] = useContext(AdjustContext);
@@ -29,6 +29,7 @@ const AdjustList = ({ canvasRef, image }) => {
               imgData = grayscaleFilter(imgData);
               break;
             case 'blur':
+              // imgData = blur(imgData, -1);
               break;
             default:
               break;
@@ -48,7 +49,7 @@ const AdjustList = ({ canvasRef, image }) => {
       {Object.entries(defaultAdjust).map(([key, value]) => {
         if (value.type === 'slider') {
           return (
-            <AdjustItem
+            <AdjustSlider
               key={key}
               header={key}
               value={adjust[key]}
