@@ -112,52 +112,49 @@ const Main = () => {
 
   const drawTextOnCanvas = () => {
     const context = canvasRef.current.getContext('2d');
-    const lineHeight = 30;
+    const fontSize = 30;
     const padding = 10;
     textContents.forEach(item => {
-      const { top, width, font, text } = item;
-      let { left } = item;
-      left += width / 2;
+      const { width, font, text } = item;
+      let { top, left } = item;
       context.textBaseline = 'top';
       context.textAlign = 'center';
-      context.font = `30px ${font}`;
+      context.font = `${fontSize}px ${font}`;
       context.strokeStyle = 'white';
       context.lineWidth = 2;
 
-      const words = text.split(' ');
+      const textSplits = text.split(' ');
       const maxWidth = width - padding * 2;
       let line = '';
-      let test;
-      let metrics;
-      const x = left + 5;
-      let y = top + 15;
+      left += width / 2 + 5;
+      top += 15;
 
-      for (let i = 0; i < words.length; i += 1) {
-        test = words[i];
-        metrics = context.measureText(test);
+      for (let i = 0; i < textSplits.length; i += 1) {
+        let test = textSplits[i];
+        let metrics = context.measureText(test);
         while (metrics.width > maxWidth) {
           test = test.substring(0, test.length - 1);
           metrics = context.measureText(test);
         }
-        if (words[i] !== test) {
-          words.splice(i + 1, 0, words[i].substr(test.length));
-          words[i] = test;
+        if (textSplits[i] !== test) {
+          textSplits.splice(i + 1, 0, textSplits[i].substr(test.length));
+          textSplits[i] = test;
         }
 
-        test = `${line + words[i]} `;
+        test = `${line + textSplits[i]} `;
         metrics = context.measureText(test);
 
         if (metrics.width > maxWidth && i > 0) {
-          context.strokeText(line, x, y);
-          context.fillText(line, x, y);
-          line = `${words[i]} `;
-          y += lineHeight;
+          context.strokeText(line, left, top);
+          context.fillText(line, left, top);
+          line = `${textSplits[i]} `;
+          top += fontSize;
         } else {
           line = test;
         }
       }
-      context.strokeText(line, x, y);
-      context.fillText(line, x, y);
+      context.strokeText(line, left, top);
+      context.fillText(line, left, top);
     });
     textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
   };
