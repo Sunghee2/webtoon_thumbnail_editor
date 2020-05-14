@@ -28,19 +28,6 @@ const Main = () => {
 
       image.src = readerEvt.target.result;
       image.onload = () => {
-        const maxWidth = 800;
-        let { width } = image;
-        let { height } = image;
-
-        if (width > height) {
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
-          }
-        } else if (height > maxWidth) {
-          width *= maxWidth / height;
-          height = maxWidth;
-        }
         canvasEl.width = image.width;
         canvasEl.height = image.height;
 
