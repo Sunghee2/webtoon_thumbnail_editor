@@ -62,7 +62,6 @@ const Main = () => {
   };
 
   const [focusedTextID, setFocusedTextID] = useState('');
-  const [addTextIsActive, setAddTextActive] = useState(false);
   const { textContents, textContentsDispatch } = useContext(AddTextContext);
 
   const [visibleDrawer, setVisibleDrawer] = useState(false);
@@ -78,10 +77,9 @@ const Main = () => {
 
   const drawTextOnCanvas = () => {
     const context = canvasRef.current.getContext('2d');
-    const fontSize = 30;
     const padding = 10;
     textContents.forEach(item => {
-      const { width, font, text } = item;
+      const { width, font, text, fontSize } = item;
       let { top, left } = item;
       context.textBaseline = 'top';
       context.textAlign = 'center';

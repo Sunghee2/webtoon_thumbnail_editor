@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
-import { TextField, FormControl, InputLabel, Select } from '@material-ui/core';
+import { TextField, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import '../../styles/TextAdd.scss';
 import PropTypes from 'prop-types';
 import { AddTextContext } from '../../context/AddTextContext';
+import AddTextSlider from './AddTextSlider';
 
 const AddTextSetting = ({ textAttribute }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
-  const { id, text, font } = textAttribute;
+  const { id, text, font, fontSize } = textAttribute;
+
   if (id !== undefined)
     return (
       <div className="add-text-setting">
@@ -17,12 +19,13 @@ const AddTextSetting = ({ textAttribute }) => {
           rows={4}
           variant="outlined"
           value={text}
+          style={{ marginBottom: `20px` }}
           onChange={e =>
             textContentsDispatch({ type: 'CHANGE_TEXT_STRING', id, text: e.target.value })
           }
         />
 
-        <FormControl variant="outlined" style={{ width: `100%` }}>
+        <FormControl variant="outlined" style={{ width: `100%`, marginBottom: `20px` }}>
           <InputLabel htmlFor="outlined-age-native-simple">Font</InputLabel>
           <Select
             className="add-text-font"
@@ -42,6 +45,9 @@ const AddTextSetting = ({ textAttribute }) => {
             </option>
           </Select>
         </FormControl>
+
+        <Typography>Font size</Typography>
+        <AddTextSlider fontSize={fontSize} id={id} />
       </div>
     );
 };

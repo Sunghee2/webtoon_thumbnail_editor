@@ -4,7 +4,7 @@ import { AddTextContext } from '../../context/AddTextContext';
 
 const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, canvasScale }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
-  const { id, top, left, text } = contentAttribute;
+  const { id, top, left, text, font, fontSize } = contentAttribute;
   const { width, height } = canvasScale;
   const handleTextMove = () => {
     const textContent = textContentRef.current;
@@ -55,6 +55,7 @@ const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, can
       }}
       role="textbox"
       tabIndex="-1"
+      style={{ fontFamily: font, fontSize }}
     >
       {text}
     </div>
@@ -68,6 +69,8 @@ AddTextString.propTypes = {
     top: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
     text: PropTypes.string.isRequired,
+    font: PropTypes.string.isRequired,
+    fontSize: PropTypes.number.isRequired,
   }).isRequired,
   textContentRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) }).isRequired,
   setFocusedTextID: PropTypes.func.isRequired,

@@ -2,7 +2,18 @@ import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
 const reducer = (state, action) => {
-  const { canvasScale, setFocusedTextID, focusedTextID, id, top, left, width, text, font } = action;
+  const {
+    canvasScale,
+    setFocusedTextID,
+    focusedTextID,
+    id,
+    top,
+    left,
+    width,
+    text,
+    font,
+    fontSize,
+  } = action;
   switch (action.type) {
     case 'ADD_TEXT_CONTENT': {
       const newID = `text_${new Date().getTime()}`;
@@ -13,6 +24,7 @@ const reducer = (state, action) => {
         left: canvasScale.width / 2 - 100,
         text: `글자를 입력하세요.`,
         font: `BlackHanSans`,
+        fontSize: 30,
       };
       setFocusedTextID(newID);
       return [...state, newContent];
@@ -28,6 +40,8 @@ const reducer = (state, action) => {
     case 'REMOVE_TEXT_CONTENT':
       if (focusedTextID === id) setFocusedTextID('');
       return state.filter(item => item.id !== id);
+    case 'CHANGE_FONT_SIZE':
+      return state.map(item => (item.id === id ? { ...item, fontSize } : item));
     case 'EMPTY_TEXT_CONTENTS':
       return [];
     default:

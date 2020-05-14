@@ -7,14 +7,14 @@ import AddTextString from './AddTextString';
 
 const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
-  const { id, top, left, width, font, focused } = contentAttribute;
+  const { id, top, left, width, font, focused, fontSize } = contentAttribute;
   const textContentRef = useRef(null);
 
   return (
     <div
       className={`add-text-content unselectable${focused ? ` focused` : ``}`}
       ref={textContentRef}
-      style={{ top, left, width, fontFamily: font }}
+      style={{ top, left, width }}
     >
       <AddTextString
         contentAttribute={contentAttribute}
@@ -47,6 +47,7 @@ AddTextContent.propTypes = {
     text: PropTypes.string.isRequired,
     font: PropTypes.string.isRequired,
     focused: PropTypes.bool.isRequired,
+    fontSize: PropTypes.number.isRequired,
   }).isRequired,
   setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({}).isRequired,
