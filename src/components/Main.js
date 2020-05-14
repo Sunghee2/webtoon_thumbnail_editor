@@ -1,19 +1,20 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
-import Cropper from './Cropper';
-import Resizer from './Resizer';
+// import Resizer from './Resizer';
 import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
-
+import CanvasContainer from './CanvasContainer';
+import { CropperInfoContext } from '../context/CropperInfoContext';
 
 const Main = () => {
   const canvasRef = useRef(null);
-  // const [canvasScale, setCanvasScale] = useState({});
-  const [cropperInfo, setCropperInfo] = useState({});
+  const [canvasScale, setCanvasScale] = useState({});
+  // const [cropperInfo, setCropperInfo] = useState({});
   const [imgEl, setImgEl] = useState(null);
-  const [isResize, setIsResize] = useState(false);
-  
+  // const [isResize, setIsResize] = useState(false);
+  const { state, dispatch } = useContext(CropperInfoContext);
+
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
       const canvasEl = canvasRef.current;
@@ -22,7 +23,6 @@ const Main = () => {
       canvasEl.style.height = `${canvasScale.height}px`;
     }
   }, [canvasScale]);
-
 
   const openImage = async evt => {
     const img = evt.target.files[0];
@@ -37,183 +37,82 @@ const Main = () => {
       canvasEl.width = image.width;
       canvasEl.height = image.height;
 
-      context.drawImage(image, 0, 0);
+      context.drawImage(imgEl, 0, 0);
 
       canvasEl.style.width = `${canvasScale.width}px`;
       canvasEl.style.height = `${canvasScale.height}px`;
-    }
+      if (canvasRef.current) {
+        const { offsetLeft, offsetTop } = canvasRef.current;
+        setCanvasScale({
+          left: offsetLeft,
+          top: offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
+        dispatch({
+          type: 'init',
+          offsetLeft,
+          offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
+      }
+    };
+  };
+
   const [cropIsActive, setCropIsActive] = useState(false);
+
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
   };
 
-  const [cropperChange, setCropperChange] = useState({
-    prevWidth: 0,
-    prevHeight: 0,
-    prevX: 0,
-    prevY: 0,
-    startX: 0,
-    startY: 0,
-  });
-
-  const [activeResize, setActiveResize] = useState(false);
-  const [activeImgResize, setActiveImgResize] = useState(false);
-  const [activeImgMove, setActiveImgMove] = useState(false);
-  const [direction, setDirection] = useState('');
-  const [isImgMove, setIsImgMove] = useState(false);
-
-  const startResize = e => {
-    e.preventDefault();
-    setActiveResize(true);
-    setDirection(e.target.dataset.dir);
-    setCropperChange({
-      prevWidth: cropperInfo.width,
-      prevHeight: cropperInfo.height,
-      prevX: cropperInfo.left,
-      prevY: cropperInfo.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    });
+  const getScale = () => {
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    const { naturalWidth, naturalHeight } = currentImage;
+    const { width, height } = canvasRef.current;
+    return { x: naturalWidth / width, y: naturalHeight / height };
   };
 
-  const startImgResize = e => {
+  const applyCropper = e => {
     e.preventDefault();
-    setIsResize(true);
-    setActiveImgResize(true);
-    setIsImgMove(false);
-    setActiveImgMove(false);
-    setDirection(e.target.dataset.dir);
-    setCropperChange({
-      prevWidth: cropperInfo.width,
-      prevHeight: cropperInfo.height,
-      prevX: cropperInfo.left,
-      prevY: cropperInfo.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    });
+    const currentImage = new Image();
+    currentImage.src = canvasRef.current.toDataURL();
+    currentImage.onload = () => {
+      const ctx = canvasRef.current.getContext('2d');
+      const scale = getScale();
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(
+        currentImage,
+        state.left * scale.x,
+        state.top * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        state.left,
+        state.top,
+        state.width,
+        state.height,
+      );
+    };
+    setCropIsActive(false);
   };
 
-  const resizing = e => {
-    e.preventDefault();
-    const diffX = cropperChange.startX - e.clientX;
-    const diffY = cropperChange.startY - e.clientY;
-    const { prevWidth, prevHeight, prevX, prevY } = cropperChange;
-    if (activeResize) {
-      switch (direction) {
-        case 'se':
-          setCropperInfo(prev => ({
-            ...prev,
-            width: prevWidth - diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'ne':
-          setCropperInfo(prev => ({
-            ...prev,
-            top: prevY - diffY,
-            width: prevWidth - diffX,
-            height: prevHeight + diffY,
-          }));
-          break;
-        case 'sw':
-          setCropperInfo(prev => ({
-            ...prev,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'nw':
-          setCropperInfo({
-            top: prevY - diffY,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight + diffY,
-          });
-          break;
-        default:
-          break;
-      }
-    } else if (activeImgResize) {
-      switch (direction) {
-        case 'se':
-          setCropperInfo(prev => ({
-            ...prev,
-            width: prevWidth - diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'ne':
-          setCropperInfo(prev => ({
-            ...prev,
-            top: prevY - diffY,
-            width: prevWidth - diffX,
-            height: prevHeight + diffY,
-          }));
-          break;
-        case 'sw':
-          setCropperInfo(prev => ({
-            ...prev,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight - diffY,
-          }));
-          break;
-        case 'nw':
-          setCropperInfo(prev => ({
-            ...prev,
-            top: prevY - diffY,
-            left: prevX - diffX,
-            width: prevWidth + diffX,
-            height: prevHeight + diffY,
-          }));
-          break;
-        default:
-          break;
-      }
-    } else if (activeImgMove) {
-      setCropperInfo(prev => ({
-        ...prev,
-        top: prevY - diffY,
-        left: prevX - diffX,
-      }));
-    }
-  };
-  const finishResize = e => {
-    e.preventDefault();
-    setActiveResize(false);
-    setActiveImgResize(false);
-    setActiveImgMove(false);
-  };
+  // const [isImgMove, setIsImgMove] = useState(false);
 
-  useEffect(() => {
-    if (isResize || isImgMove) {
-      if (canvasRef.current) {
-        const canvasEl = canvasRef.current;
-        const context = canvasEl.getContext(`2d`);
+  // useEffect(() => {
+  //   if (isResize || isImgMove) {
+  //     if (canvasRef.current) {
+  //       const canvasEl = canvasRef.current;
+  //       const context = canvasEl.getContext(`2d`);
 
-        const { left, top, width, height } = cropperInfo;
+  //       const { left, top, width, height } = cropperInfo;
 
-        context.clearRect(0, 0, canvasEl.width, canvasEl.height);
-        context.drawImage(imgEl, left, top, width, height);
-      }
-    }
-  }, [cropperInfo]);
-
-  const startImgMove = e => {
-    e.preventDefault();
-    setIsImgMove(true);
-    setActiveImgMove(true);
-    setCropperChange({
-      prevWidth: cropperInfo.width,
-      prevHeight: cropperInfo.height,
-      prevX: cropperInfo.left,
-      prevY: cropperInfo.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    });
-  };
+  //       context.clearRect(0, 0, canvasEl.width, canvasEl.height);
+  //       context.drawImage(imgEl, left, top, width, height);
+  //     }
+  //   }
+  // }, [cropperInfo]);
 
   return (
     <>
@@ -229,22 +128,18 @@ const Main = () => {
               onChange={openImage}
             />
           </Button>
-          {canvasRef.current && (
-            <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-              Crop
-            </Button>
-          )}
+          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+            Crop
+          </Button>
         </aside>
         <article className="editor-container horizontal">
-          <canvas className="editor" ref={canvasRef} />
-          {cropIsActive && <Cropper startResize={startResize} cropperInfo={cropperInfo} />}
-          {isResize && (
-            <Resizer
-              startImgResize={startImgResize}
-              startImgMove={startImgMove}
-              cropperInfo={cropperInfo}
-            />
-          )}
+          <CanvasContainer
+            canvasScale={canvasScale}
+            cropIsActive={cropIsActive}
+            applyCropper={applyCropper}
+          >
+            <canvas className="editor" ref={canvasRef} />
+          </CanvasContainer>
         </article>
       </section>
     </>

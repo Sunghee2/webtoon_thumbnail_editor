@@ -3,13 +3,16 @@ import './styles/reset.scss';
 import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
-import Footer from './components/Footer';
+// import Footer from './components/Footer';
+import { CropperInfoProvider } from './context/CropperInfoContext';
 
 const App = () => {
   return (
     <div className="App">
       <Header />
-      <Main />
+      <CropperInfoProvider>
+        <Main />
+      </CropperInfoProvider>
     </div>
   );
 };
