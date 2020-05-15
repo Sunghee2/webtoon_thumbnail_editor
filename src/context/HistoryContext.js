@@ -9,12 +9,7 @@ if (!firebase.apps.length) {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'init':
-      return {
-        thumbnails: {},
-      };
     case 'update':
-      console.log('update!');
       return {
         ...state,
         thumbnails: action.data,
