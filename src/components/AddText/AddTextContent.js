@@ -7,7 +7,7 @@ import AddTextString from './AddTextString';
 
 const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
-  const { id, top, left, width, font, focused, fontSize } = contentAttribute;
+  const { id, top, left, width, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
   return (

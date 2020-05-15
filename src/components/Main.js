@@ -5,6 +5,7 @@ import { AddTextContext } from '../context/AddTextContext';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
+import AddTextDraw from './AddText/AddTextDraw';
 import '../styles/Main.scss';
 
 const Main = () => {
@@ -62,7 +63,13 @@ const Main = () => {
   };
 
   const [focusedTextID, setFocusedTextID] = useState('');
-  const { textContents, textContentsDispatch } = useContext(AddTextContext);
+  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
+  const { textContents } = useContext(AddTextContext);
+
+  const drawTextCanvas = textCanvas => {
+    const context = canvasRef.current.getContext('2d');
+    context.drawImage(textCanvas, 0, 0);
+  };
 
   const [visibleDrawer, setVisibleDrawer] = useState(false);
 
@@ -72,55 +79,6 @@ const Main = () => {
 
   const handleDrawerClose = () => {
     setVisibleDrawer(false);
-    setFocusedTextID('');
-  };
-
-  const drawTextOnCanvas = () => {
-    const context = canvasRef.current.getContext('2d');
-    const padding = 10;
-    textContents.forEach(item => {
-      const { width, font, text, fontSize } = item;
-      let { top, left } = item;
-      context.textBaseline = 'top';
-      context.textAlign = 'center';
-      context.font = `${fontSize}px ${font}`;
-      context.strokeStyle = 'white';
-      context.lineWidth = 2;
-
-      const textSplits = text.split(' ');
-      const maxWidth = width - padding * 2;
-      let line = '';
-      left += width / 2 + 5;
-      top += 15;
-
-      for (let i = 0; i < textSplits.length; i += 1) {
-        let test = textSplits[i];
-        let metrics = context.measureText(test);
-        while (metrics.width > maxWidth) {
-          test = test.substring(0, test.length - 1);
-          metrics = context.measureText(test);
-        }
-        if (textSplits[i] !== test) {
-          textSplits.splice(i + 1, 0, textSplits[i].substr(test.length));
-          textSplits[i] = test;
-        }
-
-        test = `${line + textSplits[i]} `;
-        metrics = context.measureText(test);
-
-        if (metrics.width > maxWidth && i > 0) {
-          context.strokeText(line, left, top);
-          context.fillText(line, left, top);
-          line = `${textSplits[i]} `;
-          top += fontSize;
-        } else {
-          line = test;
-        }
-      }
-      context.strokeText(line, left, top);
-      context.fillText(line, left, top);
-    });
-    textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
     setFocusedTextID('');
   };
 
@@ -163,7 +121,7 @@ const Main = () => {
                 className="add-text-btn open-btn"
                 variant="contained"
                 color="primary"
-                onClick={drawTextOnCanvas}
+                onClick={() => setTextCanvasSaving(true)}
               >
                 SAVE
               </Button>
@@ -173,6 +131,14 @@ const Main = () => {
         <article className="editor-container horizontal">
           <canvas className="editor" ref={canvasRef} />
           {cropIsActive && <Cropper canvasScale={canvasScale} />}
+          {textCanvasIsSaving && (
+            <AddTextDraw
+              canvasScale={canvasScale}
+              setFocusedTextID={setFocusedTextID}
+              mergingCanvas={drawTextCanvas}
+              setTextCanvasSaving={setTextCanvasSaving}
+            />
+          )}
           {textContents.length > 0 && (
             <AddTextList
               focusedTextID={focusedTextID}
