@@ -236,55 +236,18 @@ const Main = () => {
             />
           </Button>
 
-          {imgEl && (
-            <>
+          {imgEl &&
+            Object.keys(Modes).map(key => (
               <Button
-                id="Crop"
+                id={key}
                 className="open-btn"
                 variant="contained"
                 color="primary"
                 onClick={handleButtonClick}
               >
-                Crop
+                {key}
               </Button>
-              <Button
-                id="Resize"
-                className="open-btn"
-                variant="contained"
-                color="primary"
-                onClick={handleButtonClick}
-              >
-                Resize
-              </Button>
-              <Button
-                id="Adjust"
-                className="open-btn"
-                variant="contained"
-                color="primary"
-                onClick={handleButtonClick}
-              >
-                Adjust
-              </Button>
-              <Button
-                id="Text"
-                className="open-btn"
-                variant="contained"
-                color="primary"
-                onClick={handleButtonClick}
-              >
-                TEXT ADD
-              </Button>
-              <Button
-                id="Save"
-                className="open-btn"
-                variant="contained"
-                color="primary"
-                onClick={handleButtonClick}
-              >
-                SAVE
-              </Button>
-            </>
-          )}
+            ))}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
