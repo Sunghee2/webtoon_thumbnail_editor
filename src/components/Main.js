@@ -6,6 +6,7 @@ import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 import { ResizerContext } from '../context/ResizerContext';
+import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -179,6 +180,7 @@ const Main = () => {
           <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
             Resize
           </Button>
+          <Save canvasRef={canvasRef} />
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
