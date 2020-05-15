@@ -8,7 +8,8 @@ import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
 import AddTextDraw from './AddText/AddTextDraw';
-import { CropperInfoContext, ResizerContext, AddTextContext } from '../context';
+import AdjustList from './Adjust/AdjustList';
+import { CropperInfoContext, ResizerContext, AddTextContext, AdjustContext } from '../context';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -16,13 +17,61 @@ const Main = () => {
   const [isResize, setIsResize] = useState(false);
   const [imgEl, setImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
-  const [textAddIsActive, setTextAddActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
   const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
   const [visibleDrawer, setVisibleDrawer] = useState(false);
+  const [mode, setMode] = useState('');
   const { state, dispatch } = useContext(CropperInfoContext);
   const [resizerState, resizerDispatch] = useContext(ResizerContext);
   const { textContents } = useContext(AddTextContext);
+  const [adjust, adjustDispatch] = useContext(AdjustContext);
+
+  const Modes = {
+    Crop: {
+      start: () => {
+        setCropIsActive(!cropIsActive);
+      },
+      end: () => {
+        setCropIsActive(false);
+      },
+    },
+    Resize: {
+      start: () => {
+        resizerDispatch({ type: 'first' });
+        setIsResize(true);
+      },
+      end: () => {
+        setIsResize(false);
+      },
+    },
+    Adjust: {
+      start: () => {
+        setVisibleDrawer(true);
+      },
+      end: () => {
+        setVisibleDrawer(false);
+      },
+    },
+    Text: {
+      start: () => {
+        setVisibleDrawer(true);
+      },
+      end: () => {
+        setVisibleDrawer(false);
+        setFocusedTextID('');
+      },
+    },
+    Save: {
+      start: () => {
+        setTextCanvasSaving(true);
+      },
+      end: () => {},
+    },
+  };
+
+  useEffect(() => {
+    adjustDispatch({ type: 'RESET' });
+  }, [imgEl]);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -110,11 +159,6 @@ const Main = () => {
     };
   };
 
-  const startCrop = e => {
-    e.preventDefault();
-    setCropIsActive(!cropIsActive);
-  };
-
   const getScale = () => {
     const currentImage = new Image();
     currentImage.src = canvasRef.current.toDataURL();
@@ -154,12 +198,6 @@ const Main = () => {
     setCropIsActive(false);
   };
 
-  const startResize = e => {
-    e.preventDefault();
-    resizerDispatch({ type: 'first' });
-    setIsResize(true);
-  };
-
   const finishResize = e => {
     e.preventDefault();
     resizerDispatch({ type: 'first' });
@@ -171,15 +209,16 @@ const Main = () => {
     context.drawImage(textCanvas, 0, 0);
   };
 
-  const handleDrawerOpen = () => {
-    setVisibleDrawer(true);
-    setTextAddActive(true);
-  };
-
   const handleDrawerClose = () => {
     setVisibleDrawer(false);
     setFocusedTextID('');
-    setTextAddActive(false);
+  };
+
+  const handleButtonClick = e => {
+    if (mode) Modes[mode].end();
+
+    Modes[e.currentTarget.id].start();
+    setMode(e.currentTarget.id);
   };
 
   return (
@@ -199,38 +238,48 @@ const Main = () => {
 
           {imgEl && (
             <>
-              <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-                Crop
-              </Button>
               <Button
+                id="Crop"
                 className="open-btn"
                 variant="contained"
                 color="primary"
-                onClick={startResize}
+                onClick={handleButtonClick}
+              >
+                Crop
+              </Button>
+              <Button
+                id="Resize"
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleButtonClick}
               >
                 Resize
               </Button>
               <Button
+                id="Adjust"
                 className="open-btn"
                 variant="contained"
                 color="primary"
-                onClick={handleDrawerOpen}
+                onClick={handleButtonClick}
               >
                 Adjust
               </Button>
               <Button
+                id="Text"
                 className="open-btn"
                 variant="contained"
                 color="primary"
-                onClick={handleDrawerOpen}
+                onClick={handleButtonClick}
               >
                 TEXT ADD
               </Button>
               <Button
+                id="Save"
                 className="open-btn"
                 variant="contained"
                 color="primary"
-                onClick={() => setTextCanvasSaving(true)}
+                onClick={handleButtonClick}
               >
                 SAVE
               </Button>
@@ -271,13 +320,14 @@ const Main = () => {
           </IconButton>
           <Divider />
           <div className="drawer-content">
-            {textAddIsActive && (
+            {mode === 'Text' && (
               <AddText
                 focusedTextID={focusedTextID}
                 canvasScale={canvasScale}
                 setFocusedTextID={setFocusedTextID}
               />
             )}
+            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={imgEl} />}
           </div>
         </div>
       </Drawer>
