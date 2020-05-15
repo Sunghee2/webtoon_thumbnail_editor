@@ -90,43 +90,6 @@ const CanvasContainer = ({
     setActiveMove(false);
   };
 
-  // const [, setActiveImgResize] = useState(false);
-  // const [, setActiveImgMove] = useState(false);
-
-  // const [, setIsImgMove] = useState(false);
-  // const [cropperInfo] = useState({});
-
-  // const startImgResize = e => {
-  //   e.preventDefault();
-  //   // setIsResize(true);
-  //   setActiveImgResize(true);
-  //   setIsImgMove(false);
-  //   setActiveImgMove(false);
-  //   setDirection(e.target.dataset.dir);
-  //   setCropperChange({
-  //     prevWidth: cropperInfo.width,
-  //     prevHeight: cropperInfo.height,
-  //     prevX: cropperInfo.left,
-  //     prevY: cropperInfo.top,
-  //     startX: e.clientX,
-  //     startY: e.clientY,
-  //   });
-  // };
-
-  // const startImgMove = e => {
-  //   e.preventDefault();
-  //   setIsImgMove(true);
-  //   setActiveImgMove(true);
-  //   setCropperChange({
-  //     prevWidth: cropperInfo.width,
-  //     prevHeight: cropperInfo.height,
-  //     prevX: cropperInfo.left,
-  //     prevY: cropperInfo.top,
-  //     startX: e.clientX,
-  //     startY: e.clientY,
-  //   });
-  // };
-
   return (
     <div
       role="button"

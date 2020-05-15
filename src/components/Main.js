@@ -30,14 +30,23 @@ const Main = () => {
 
   useEffect(() => {
     if (isResize) {
+      console.log('img', imgEl.width, imgEl.height);
       if (canvasRef.current) {
         const context = canvasRef.current.getContext('2d');
-        const { left, top, width, height } = resizerState;
-        // console.log('first', first);
-        // console.log('img', imgEl);
+        const { left, top, width, height, first } = resizerState;
 
         context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        context.drawImage(imgEl, left, top, width, height);
+        context.drawImage(
+          imgEl,
+          first.left,
+          first.top,
+          first.width,
+          first.height,
+          left,
+          top,
+          width,
+          height,
+        );
       }
     }
   }, [resizerState]);
