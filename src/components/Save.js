@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Button } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
+import { HistoryContext } from '../context/HistoryContext';
 
 const Save = props => {
   const { canvasRef } = props;
+  const { dispatch } = useContext(HistoryContext);
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
   const database = firebase.database();
 
   const getHistory = () => {
-    database.ref(`/`).once(`value`);
-    //   .then(result => {
-    //     setThumbnail(result.val());
-    //   });
+    database
+      .ref(`/`)
+      .once(`value`)
+      .then(result => {
+        dispatch({ type: 'update', data: result.val() });
+      });
   };
 
   const setHistory = (name, file) => {
@@ -45,12 +49,11 @@ const Save = props => {
       link.click();
 
       canvasRef.current.toBlob(blob => {
-        //   const image = new Image();
-        //   image.src = blob;
         setHistory('test', blob);
       });
     }
   };
+
   return (
     <>
       <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>

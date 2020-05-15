@@ -7,6 +7,7 @@ import Main from './components/Main';
 import { CropperInfoProvider } from './context/CropperInfoContext';
 import { ResizerProvider } from './context/ResizerContext';
 import History from './components/History';
+import { HistoryContextProvider } from './context/HistoryContext';
 
 const App = () => {
   return (
@@ -14,8 +15,10 @@ const App = () => {
       <Header />
       <CropperInfoProvider>
         <ResizerProvider>
-          <Main />
-          <History />
+          <HistoryContextProvider>
+            <Main />
+            <History />
+          </HistoryContextProvider>
         </ResizerProvider>
       </CropperInfoProvider>
     </div>

@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
 import Thumbnail from './Thumbnail';
+import { HistoryContext } from '../context/HistoryContext';
 import '../styles/History.scss';
 
 const History = () => {
@@ -12,6 +13,7 @@ const History = () => {
   const [selectedThumbnail, setSelectedThumbnail] = useState({});
   const database = firebase.database();
   const nameRef = useRef(null);
+  const { state, dispatch } = useContext(HistoryContext);
 
   const getHistory = () => {
     database
@@ -19,20 +21,9 @@ const History = () => {
       .once(`value`)
       .then(result => {
         setThumbnail(result.val());
+        dispatch({ type: 'update', data: result.val() });
       });
   };
-
-  // const setHistory = (name, file) => {
-  //   const storageRef = firebase.storage().ref();
-  //   const imageRef = storageRef.child(`${name}`);
-  //   const firebaseUrl = `https://firebasestorage.googleapis.com/v0/b/webtoon-thumbnail-editor.appspot.com/o/${name}?alt=media`;
-  //   const date = `&date=${new Date().toString().slice(0, 24)}`;
-  //   const url = firebaseUrl + date;
-
-  //   imageRef.put(file).then(() => {
-  //     firebase.database().ref(`/${name}`).set(url, getHistory);
-  //   });
-  // };
 
   useEffect(() => {
     getHistory();
@@ -58,10 +49,12 @@ const History = () => {
         <input type="text" ref={nameRef} placeholder="Search Thumbnail..." />
       </form>
       <ul>
-        {thumbnail && selectedThumbnail.length ? (
-          <Thumbnail name={selectedThumbnail} src={thumbnail[selectedThumbnail]} />
+        {state.thumbnails && selectedThumbnail.length ? (
+          <Thumbnail name={selectedThumbnail} src={state.thumbnails[selectedThumbnail]} />
         ) : (
-          Object.keys(thumbnail).map(key => <Thumbnail key={key} name={key} src={thumbnail[key]} />)
+          Object.keys(state.thumbnails).map(key => (
+            <Thumbnail key={key} name={key} src={state.thumbnails[key]} />
+          ))
         )}
       </ul>
     </section>
