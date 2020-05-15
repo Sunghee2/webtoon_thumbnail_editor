@@ -27,7 +27,7 @@ const reducer = (state, action) => {
         top: offsetTop,
         width,
         height,
-        first: {},
+        first: { left: offsetLeft, top: offsetTop, width, height },
       };
     case 'first':
       return {
@@ -93,6 +93,7 @@ const reducer = (state, action) => {
       };
     case 'nw':
       return {
+        ...state,
         top: getRightSize(
           cropperChange.prevY - diffY,
           0,
@@ -129,10 +130,22 @@ const reducer = (state, action) => {
         ),
       };
     default:
-      return { left: 0, top: 0, width: 0, height: 0 };
+      return {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+        first: { left: 0, top: 0, width: 0, height: 0 },
+      };
   }
 };
-const ResizerContext = createContext({ left: 0, top: 0, width: 0, height: 0 });
+const ResizerContext = createContext({
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+  first: { left: 0, top: 0, width: 0, height: 0 },
+});
 const ResizerProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, { left: 0, top: 0, width: 0, height: 0 });
   return <ResizerContext.Provider value={[state, dispatch]}>{children}</ResizerContext.Provider>;

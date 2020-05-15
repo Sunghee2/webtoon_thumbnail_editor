@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
-// import Resizer from './Resizer';
 import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
@@ -12,9 +11,6 @@ const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [isResize, setIsResize] = useState(false);
-  // const [cropperInfo, setCropperInfo] = useState({});
-
-  // const [isResize, setIsResize] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
   const [resizerState, resizerDispatch] = useContext(ResizerContext);
   const [imgEl, setImgEl] = useState(null);
@@ -30,7 +26,6 @@ const Main = () => {
 
   useEffect(() => {
     if (isResize) {
-      console.log('img', imgEl.width, imgEl.height);
       if (canvasRef.current) {
         const context = canvasRef.current.getContext('2d');
         const { left, top, width, height, first } = resizerState;
@@ -60,8 +55,6 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      setImgEl(image);
-
       canvasEl.width = canvasScale.width;
       canvasEl.height = canvasScale.height;
       context.drawImage(
@@ -75,6 +68,12 @@ const Main = () => {
         canvasScale.width,
         canvasScale.height,
       );
+      const canvasData = new Image();
+      canvasData.src = canvasEl.toDataURL();
+
+      canvasData.onload = () => {
+        setImgEl(canvasData);
+      };
 
       if (canvasRef.current) {
         const { offsetLeft, offsetTop } = canvasRef.current;
@@ -150,17 +149,13 @@ const Main = () => {
 
   const startResize = e => {
     e.preventDefault();
-    // if (canvasRef.current) {
-    //   if (imgEl) {
-    //     resizerDispatch({ type: 'init',  });
-    //   }
-    // }
     resizerDispatch({ type: 'first' });
     setIsResize(true);
   };
 
   const finishResize = e => {
     e.preventDefault();
+    resizerDispatch({ type: 'first' });
     setIsResize(false);
   };
 
