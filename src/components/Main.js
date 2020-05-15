@@ -1,19 +1,19 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import '../styles/Main.scss';
 import Button from '@material-ui/core/Button';
-// import Resizer from './Resizer';
 import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import { CropperInfoContext } from '../context/CropperInfoContext';
+import { ResizerContext } from '../context/ResizerContext';
 
 const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  // const [cropperInfo, setCropperInfo] = useState({});
-
-  // const [isResize, setIsResize] = useState(false);
+  const [isResize, setIsResize] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
+  const [resizerState, resizerDispatch] = useContext(ResizerContext);
+  const [imgEl, setImgEl] = useState(null);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -24,6 +24,28 @@ const Main = () => {
     }
   }, [canvasScale]);
 
+  useEffect(() => {
+    if (isResize) {
+      if (canvasRef.current) {
+        const context = canvasRef.current.getContext('2d');
+        const { left, top, width, height, first } = resizerState;
+
+        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+        context.drawImage(
+          imgEl,
+          first.left,
+          first.top,
+          first.width,
+          first.height,
+          left,
+          top,
+          width,
+          height,
+        );
+      }
+    }
+  }, [resizerState]);
+
   const openImage = async evt => {
     const img = evt.target.files[0];
     const imgSrc = await readImgAsync(img);
@@ -33,13 +55,26 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      canvasEl.width = image.width;
-      canvasEl.height = image.height;
+      canvasEl.width = canvasScale.width;
+      canvasEl.height = canvasScale.height;
+      context.drawImage(
+        image,
+        0,
+        0,
+        image.width,
+        image.height,
+        0,
+        0,
+        canvasScale.width,
+        canvasScale.height,
+      );
+      const canvasData = new Image();
+      canvasData.src = canvasEl.toDataURL();
 
-      context.drawImage(image, 0, 0);
+      canvasData.onload = () => {
+        setImgEl(canvasData);
+      };
 
-      canvasEl.style.width = `${canvasScale.width}px`;
-      canvasEl.style.height = `${canvasScale.height}px`;
       if (canvasRef.current) {
         const { offsetLeft, offsetTop } = canvasRef.current;
         setCanvasScale({
@@ -49,6 +84,13 @@ const Main = () => {
           height: canvasScale.height,
         });
         dispatch({
+          type: 'init',
+          offsetLeft,
+          offsetTop,
+          width: canvasScale.width,
+          height: canvasScale.height,
+        });
+        resizerDispatch({
           type: 'init',
           offsetLeft,
           offsetTop,
@@ -79,7 +121,8 @@ const Main = () => {
     const currentImage = new Image();
     currentImage.src = canvasRef.current.toDataURL();
     currentImage.onload = () => {
-      const ctx = canvasRef.current.getContext('2d');
+      const canvasEl = canvasRef.current;
+      const ctx = canvasEl.getContext('2d');
       const scale = getScale();
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       ctx.drawImage(
@@ -93,25 +136,28 @@ const Main = () => {
         state.width,
         state.height,
       );
+
+      const newImg = new Image();
+      newImg.src = canvasEl.toDataURL();
+      newImg.onload = () => {
+        setImgEl(newImg);
+      };
     };
+    resizerDispatch({ type: 'first' });
     setCropIsActive(false);
   };
 
-  // const [isImgMove, setIsImgMove] = useState(false);
+  const startResize = e => {
+    e.preventDefault();
+    resizerDispatch({ type: 'first' });
+    setIsResize(true);
+  };
 
-  // useEffect(() => {
-  //   if (isResize || isImgMove) {
-  //     if (canvasRef.current) {
-  //       const canvasEl = canvasRef.current;
-  //       const context = canvasEl.getContext(`2d`);
-
-  //       const { left, top, width, height } = cropperInfo;
-
-  //       context.clearRect(0, 0, canvasEl.width, canvasEl.height);
-  //       context.drawImage(imgEl, left, top, width, height);
-  //     }
-  //   }
-  // }, [cropperInfo]);
+  const finishResize = e => {
+    e.preventDefault();
+    resizerDispatch({ type: 'first' });
+    setIsResize(false);
+  };
 
   return (
     <>
@@ -130,12 +176,17 @@ const Main = () => {
           <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
             Crop
           </Button>
+          <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
+            Resize
+          </Button>
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
             canvasScale={canvasScale}
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
+            isResize={isResize}
+            finishResize={finishResize}
           >
             <canvas className="editor" ref={canvasRef} />
           </CanvasContainer>

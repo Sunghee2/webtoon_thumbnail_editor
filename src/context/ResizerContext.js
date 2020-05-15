@@ -1,18 +1,13 @@
 import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
-const initialState = {
-  left: 0,
-  top: 0,
-  width: 0,
-  height: 0,
-};
 const getRightSize = (current, min, max) => {
   if (current < 0) {
     return min;
   }
   return Math.min(current, max);
 };
+
 const reducer = (state, action) => {
   const {
     type,
@@ -25,7 +20,6 @@ const reducer = (state, action) => {
     diffY,
     canvasScale,
   } = action;
-
   switch (type) {
     case 'init':
       return {
@@ -33,6 +27,17 @@ const reducer = (state, action) => {
         top: offsetTop,
         width,
         height,
+        first: { left: offsetLeft, top: offsetTop, width, height },
+      };
+    case 'first':
+      return {
+        ...state,
+        first: {
+          left: state.left,
+          top: state.top,
+          width: state.width,
+          height: state.height,
+        },
       };
     case 'se':
       return {
@@ -88,6 +93,7 @@ const reducer = (state, action) => {
       };
     case 'nw':
       return {
+        ...state,
         top: getRightSize(
           cropperChange.prevY - diffY,
           0,
@@ -124,22 +130,29 @@ const reducer = (state, action) => {
         ),
       };
     default:
-      return initialState;
+      return {
+        left: 0,
+        top: 0,
+        width: 0,
+        height: 0,
+        first: { left: 0, top: 0, width: 0, height: 0 },
+      };
   }
 };
-
-const CropperInfoContext = createContext(initialState);
-const CropperInfoProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  return (
-    <CropperInfoContext.Provider value={{ state, dispatch }}>
-      {children}
-    </CropperInfoContext.Provider>
-  );
+const ResizerContext = createContext({
+  left: 0,
+  top: 0,
+  width: 0,
+  height: 0,
+  first: { left: 0, top: 0, width: 0, height: 0 },
+});
+const ResizerProvider = ({ children }) => {
+  const [state, dispatch] = useReducer(reducer, { left: 0, top: 0, width: 0, height: 0 });
+  return <ResizerContext.Provider value={[state, dispatch]}>{children}</ResizerContext.Provider>;
 };
 
-CropperInfoProvider.propTypes = {
+ResizerProvider.propTypes = {
   children: PropTypes.element.isRequired,
 };
 
-export { CropperInfoContext, CropperInfoProvider };
+export { ResizerContext, ResizerProvider };

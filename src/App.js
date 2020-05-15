@@ -5,13 +5,16 @@ import Header from './components/Header';
 import Main from './components/Main';
 // import Footer from './components/Footer';
 import { CropperInfoProvider } from './context/CropperInfoContext';
+import { ResizerProvider } from './context/ResizerContext';
 
 const App = () => {
   return (
     <div className="App">
       <Header />
       <CropperInfoProvider>
-        <Main />
+        <ResizerProvider>
+          <Main />
+        </ResizerProvider>
       </CropperInfoProvider>
     </div>
   );
