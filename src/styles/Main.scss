@@ -67,3 +67,30 @@ article {
   height: 0;
   width: 0;
 }
+
+.editor-container {
+  width: 60%;
+  margin-left: 20rem;
+  position: relative;
+}
+
+// .editor {
+//   display: block;
+//   // margin: 0 auto;
+// }
+
+.drawer {
+  width: 250px;
+
+  .drawer-content {
+    padding: 10px;
+  }
+}
+
+.drawer {
+  width: 200px;
+
+  .drawer-content {
+    padding: 10px;
+  }
+}

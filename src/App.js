@@ -3,7 +3,8 @@ import './styles/reset.scss';
 import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
-// import Footer from './components/Footer';
+import Footer from './components/Footer';
+import { AddTextProvider } from './context/AddTextContext';
 import { CropperInfoProvider } from './context/CropperInfoContext';
 import { ResizerProvider } from './context/ResizerContext';
 
@@ -13,7 +14,9 @@ const App = () => {
       <Header />
       <CropperInfoProvider>
         <ResizerProvider>
-          <Main />
+          <AddTextProvider>
+            <Main />
+          </AddTextProvider>
         </ResizerProvider>
       </CropperInfoProvider>
     </div>
