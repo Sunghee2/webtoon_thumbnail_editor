@@ -12,6 +12,7 @@ const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale }) => {
           key={item.id}
           contentAttribute={{ ...item, focused: item.id === focusedTextID }}
           setFocusedTextID={setFocusedTextID}
+          focusedTextID={focusedTextID}
           canvasScale={canvasScale}
         />
       ))}

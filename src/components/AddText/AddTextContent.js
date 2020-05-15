@@ -5,7 +5,7 @@ import { AddTextContext } from '../../context/AddTextContext';
 import AddTextResizer from './AddTextResizer';
 import AddTextString from './AddTextString';
 
-const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => {
+const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale, focusedTextID }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
   const { id, top, left, width, focused } = contentAttribute;
   const textContentRef = useRef(null);
@@ -24,13 +24,13 @@ const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => 
       />
       <CloseIcon
         className={`remove-text-content${focused ? `` : ` hide`}`}
-        onClick={() =>
+        onClick={() => {
           textContentsDispatch({
             type: 'REMOVE_TEXT_CONTENT',
-            setFocusedTextID,
             id,
-          })
-        }
+          });
+          if (focusedTextID === id) setFocusedTextID('');
+        }}
       />
       <AddTextResizer contentAttribute={contentAttribute} textContentRef={textContentRef} />
     </div>
@@ -51,4 +51,5 @@ AddTextContent.propTypes = {
   }).isRequired,
   setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({}).isRequired,
+  focusedTextID: PropTypes.string.isRequired,
 };

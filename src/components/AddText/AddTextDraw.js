@@ -9,6 +9,7 @@ const AddTextDraw = ({ canvasScale, setFocusedTextID, mergingCanvas, setTextCanv
     const textCanvas = textCanvasRef.current;
     const context = textCanvas.getContext('2d');
     const padding = 10;
+    const border = 3;
     textContents.forEach(item => {
       const { width, font, text, fontSize } = item;
       let { top, left } = item;
@@ -21,8 +22,8 @@ const AddTextDraw = ({ canvasScale, setFocusedTextID, mergingCanvas, setTextCanv
       const textSplits = text.split(' ');
       const maxWidth = width - padding * 2;
       let line = '';
-      left += width / 2 + 5;
-      top += 15;
+      left += width / 2 + border;
+      top += padding + border;
 
       for (let i = 0; i < textSplits.length; i += 1) {
         let test = textSplits[i];

@@ -23,6 +23,7 @@ const AddTextSlider = ({ id, fontSize }) => {
       value={fontSize}
       onChange={handleChange}
       min={1}
+      max={50}
     />
   );
 };
