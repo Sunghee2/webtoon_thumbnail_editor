@@ -7,7 +7,7 @@ import Footer from './components/Footer';
 import { AddTextProvider } from './context/AddTextContext';
 import { CropperInfoProvider } from './context/CropperInfoContext';
 import { ResizerProvider } from './context/ResizerContext';
-import { AdjustProvider } from './context/adjustContext';
+import { AdjustProvider } from './context/AdjustContext';
 
 const App = () => {
   return (
