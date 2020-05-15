@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { Button } from '@material-ui/core';
+import React, { useContext, useState } from 'react';
+import { Button, TextField } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
@@ -12,6 +12,7 @@ const Save = props => {
     firebase.initializeApp(firebaseConfig);
   }
   const database = firebase.database();
+  const [name, setName] = useState('');
 
   const getHistory = () => {
     database
@@ -22,7 +23,7 @@ const Save = props => {
       });
   };
 
-  const setHistory = (name, file) => {
+  const setHistory = (_name, file) => {
     const storageRef = firebase.storage().ref();
     const imageRef = storageRef.child(`${name}`);
     const firebaseUrl = `https://firebasestorage.googleapis.com/v0/b/webtoon-thumbnail-editor.appspot.com/o/${name}?alt=media`;
@@ -32,12 +33,17 @@ const Save = props => {
     imageRef.put(file);
 
     imageRef.put(file).then(() => {
-      firebase.database().ref(`/${name}`).set(url, getHistory);
+      firebase.database().ref(`/${_name}`).set(url, getHistory);
     });
   };
 
   const handleClick = e => {
     e.preventDefault();
+    if (name.trim().length === 0) {
+      // eslint-disable-next-line no-alert
+      window.alert('파일 이름을 확인해주세요');
+      return;
+    }
 
     if (canvasRef.current) {
       const canvasEl = canvasRef.current;
@@ -49,9 +55,14 @@ const Save = props => {
       link.click();
 
       canvasRef.current.toBlob(blob => {
-        setHistory('test', blob);
+        setHistory(name, blob);
       });
     }
+  };
+
+  const handleNameChange = e => {
+    e.preventDefault();
+    setName(e.target.value);
   };
 
   return (
@@ -59,6 +70,7 @@ const Save = props => {
       <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>
         저장
       </Button>
+      <TextField label="파일 제목" margin="dense" variant="outlined" onChange={handleNameChange} />
       <a id="link" href="default">
         {undefined}
       </a>
