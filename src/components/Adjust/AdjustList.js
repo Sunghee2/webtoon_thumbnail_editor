@@ -14,8 +14,12 @@ const AdjustList = ({ canvasRef, image }) => {
     if (image) {
       const context = canvasRef.current.getContext('2d');
       const { width, height } = canvasRef.current;
-      context.drawImage(image, 0, 0, width, height);
-      let imgData = context.getImageData(0, 0, width, height);
+
+      const backgroundCanvas = new OffscreenCanvas(width, height);
+      const backgroundContext = backgroundCanvas.getContext('2d');
+      backgroundContext.drawImage(image, 0, 0, width, height);
+      let imgData = backgroundContext.getImageData(0, 0, width, height);
+
       Object.entries(adjust).forEach(([key, value]) => {
         if (value !== defaultAdjust[key].default) {
           switch (key) {
