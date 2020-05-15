@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import AdjustSlider from './AdjustSlider';
 import AdjustCheckbox from './AdjustCheckbox';
 import { defaultAdjust } from '../../utils/const';
-import { AdjustContext } from '../../context/AdjustContext';
+import { AdjustContext } from '../../context';
 import { brightnessFilter, grayscaleFilter, contrastFilter, blurFilter } from '../../utils/filter';
 
 const AdjustList = ({ canvasRef, image }) => {

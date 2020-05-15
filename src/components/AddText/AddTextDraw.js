@@ -1,6 +1,6 @@
 import React, { useRef, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 
 const AddTextDraw = ({ canvasScale, setFocusedTextID, mergingCanvas, setTextCanvasSaving }) => {
   const textCanvasRef = useRef(null);

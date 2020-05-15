@@ -8,9 +8,7 @@ import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
 import AddTextDraw from './AddText/AddTextDraw';
-import { CropperInfoContext } from '../context/CropperInfoContext';
-import { ResizerContext } from '../context/ResizerContext';
-import { AddTextContext } from '../context/AddTextContext';
+import { CropperInfoContext, ResizerContext, AddTextContext } from '../context';
 
 const Main = () => {
   const canvasRef = useRef(null);

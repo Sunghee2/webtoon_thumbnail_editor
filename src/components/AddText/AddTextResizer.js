@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 
 const AddTextResizer = ({ contentAttribute, textContentRef }) => {
   const { textContentsDispatch } = useContext(AddTextContext);

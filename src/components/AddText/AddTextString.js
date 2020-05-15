@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 
 const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, canvasScale }) => {
   const { textContentsDispatch } = useContext(AddTextContext);

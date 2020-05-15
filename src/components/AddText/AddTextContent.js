@@ -1,7 +1,7 @@
 import React, { useRef, useContext } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 import AddTextResizer from './AddTextResizer';
 import AddTextString from './AddTextString';
 

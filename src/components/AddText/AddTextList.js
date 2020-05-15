@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 import AddTextContent from './AddTextContent';
 
 const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale }) => {

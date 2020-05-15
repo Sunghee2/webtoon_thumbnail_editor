@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react';
 import PropTypes, { number } from 'prop-types';
 import Button from '@material-ui/core/Button';
-import { CropperInfoContext } from '../context/CropperInfoContext';
+import { CropperInfoContext, ResizerContext } from '../context';
 import Cropper from './Cropper';
 import Resizer from './Resizer';
-import { ResizerContext } from '../context/ResizerContext';
 
 const CanvasContainer = ({
   children,
