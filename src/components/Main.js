@@ -70,10 +70,6 @@ const Main = () => {
   };
 
   useEffect(() => {
-    adjustDispatch({ type: 'RESET' });
-  }, [imgEl]);
-
-  useEffect(() => {
     if (Object.keys(canvasScale).length) {
       const canvasEl = canvasRef.current;
 
@@ -155,6 +151,7 @@ const Main = () => {
           width: canvasScale.width,
           height: canvasScale.height,
         });
+        adjustDispatch({ type: 'RESET' });
       }
     };
   };
@@ -165,6 +162,14 @@ const Main = () => {
     const { naturalWidth, naturalHeight } = currentImage;
     const { width, height } = canvasRef.current;
     return { x: naturalWidth / width, y: naturalHeight / height };
+  };
+
+  const saveNewImage = () => {
+    const newImg = new Image();
+    newImg.src = canvasRef.current.toDataURL();
+    newImg.onload = () => {
+      setImgEl(newImg);
+    };
   };
 
   const applyCropper = e => {
@@ -188,11 +193,7 @@ const Main = () => {
         state.height,
       );
 
-      const newImg = new Image();
-      newImg.src = canvasEl.toDataURL();
-      newImg.onload = () => {
-        setImgEl(newImg);
-      };
+      saveNewImage();
     };
     resizerDispatch({ type: 'first' });
     setCropIsActive(false);
@@ -200,6 +201,8 @@ const Main = () => {
 
   const finishResize = e => {
     e.preventDefault();
+
+    saveNewImage();
     resizerDispatch({ type: 'first' });
     setIsResize(false);
   };
