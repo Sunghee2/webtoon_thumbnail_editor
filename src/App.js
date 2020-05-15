@@ -4,12 +4,15 @@ import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
 import Footer from './components/Footer';
+import { AddTextProvider } from './context/AddTextContext';
 
 const App = () => {
   return (
     <div className="App">
       <Header />
-      <Main />
+      <AddTextProvider>
+        <Main />
+      </AddTextProvider>
     </div>
   );
 };

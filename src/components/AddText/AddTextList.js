@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
+import { AddTextContext } from '../../context/AddTextContext';
 import AddTextContent from './AddTextContent';
 
-const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID }) => {
+const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale }) => {
+  const { textContents } = useContext(AddTextContext);
   return (
     <div>
       {textContents.map(item => (
         <AddTextContent
           key={item.id}
           contentAttribute={{ ...item, focused: item.id === focusedTextID }}
-          dispatch={dispatch}
-          handleFocusedID={handleFocusedID}
+          setFocusedTextID={setFocusedTextID}
+          canvasScale={canvasScale}
         />
       ))}
     </div>
@@ -20,7 +22,6 @@ const AddTextList = ({ focusedTextID, textContents, dispatch, handleFocusedID })
 export default AddTextList;
 AddTextList.propTypes = {
   focusedTextID: PropTypes.string.isRequired,
-  textContents: PropTypes.arrayOf(PropTypes.object).isRequired,
-  handleFocusedID: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  setFocusedTextID: PropTypes.func.isRequired,
+  canvasScale: PropTypes.shape({}).isRequired,
 };

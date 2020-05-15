@@ -5,9 +5,6 @@
 .add-text-setting {
     margin: 5px;
     padding: 5px;
-    > * {
-        margin-bottom: 20px !important;
-    }
 }
 
 $focusedColor: rgb(3, 207, 93);
@@ -15,7 +12,7 @@ $focusedColor: rgb(3, 207, 93);
 .add-text-content {
     color: black;
     position: absolute;
-    overflow-wrap: break-word;
+    width: 200px;
     text-align:center;:hover {
         border: 1px solid red !important;
     }
@@ -31,7 +28,10 @@ $focusedColor: rgb(3, 207, 93);
 
 .add-text-string {
     cursor: move;
+    font-size: 30px;
     padding: 10px;
+    word-break: keep-all;
+    overflow-wrap: break-word;
     text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
 }
 
@@ -68,6 +68,13 @@ $focusedColor: rgb(3, 207, 93);
     /*IE 10*/
     -ms-user-select: none;
     user-select: none;
+}
+
+.add-text-canvas {
+    border: 3px solid black;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 @font-face {

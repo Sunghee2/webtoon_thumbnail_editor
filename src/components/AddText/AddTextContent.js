@@ -1,82 +1,38 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
-import SwapHorizIcon from '@material-ui/icons/SwapHoriz';
 import PropTypes from 'prop-types';
+import { AddTextContext } from '../../context/AddTextContext';
+import AddTextResizer from './AddTextResizer';
+import AddTextString from './AddTextString';
 
-const AddTextContent = ({ contentAttribute, dispatch, handleFocusedID }) => {
-  const { id, top, left, width, text, font, focused } = contentAttribute;
+const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale }) => {
+  const { textContentsDispatch } = useContext(AddTextContext);
+  const { id, top, left, width, focused } = contentAttribute;
   const textContentRef = useRef(null);
-
-  const handleTextMove = () => {
-    const textContent = textContentRef.current;
-    let X = left;
-    let Y = top;
-
-    const move = (dX, dY) => {
-      X += dX;
-      Y += dY;
-      textContent.style.left = `${X}px`;
-      textContent.style.top = `${Y}px`;
-    };
-
-    const handleMouseMove = e => {
-      move(e.movementX, e.movementY);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', () => {
-      dispatch({ type: 'CHANGE_TEXT_POSITION', id, left: X, top: Y });
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.onMouseup = null;
-    });
-  };
-
-  const handleTextResize = () => {
-    const textContent = textContentRef.current;
-    let X = width;
-
-    const move = dX => {
-      X += dX;
-      textContent.style.width = `${X < 50 ? 50 : X}px`;
-    };
-
-    const handleMouseMove = e => {
-      move(e.movementX);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', () => {
-      dispatch({ type: 'CHANGE_WIDTH', id, width: X });
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.onMouseup = null;
-    });
-  };
 
   return (
     <div
       className={`add-text-content unselectable${focused ? ` focused` : ``}`}
       ref={textContentRef}
-      style={{ top, left, width, fontFamily: font }}
+      style={{ top, left, width }}
     >
-      <div
-        className="add-text-string unselectable"
-        onMouseDown={() => {
-          handleFocusedID(id);
-          handleTextMove();
-        }}
-        role="textbox"
-        tabIndex="-1"
-      >
-        {text}
-      </div>
+      <AddTextString
+        contentAttribute={contentAttribute}
+        setFocusedTextID={setFocusedTextID}
+        textContentRef={textContentRef}
+        canvasScale={canvasScale}
+      />
       <CloseIcon
         className={`remove-text-content${focused ? `` : ` hide`}`}
-        onClick={() => dispatch({ type: 'REMOVE_TEXT_CONTENT', id })}
+        onClick={() =>
+          textContentsDispatch({
+            type: 'REMOVE_TEXT_CONTENT',
+            setFocusedTextID,
+            id,
+          })
+        }
       />
-      <SwapHorizIcon
-        className={`resize-text-content${focused ? `` : ` hide`}`}
-        onMouseDown={handleTextResize}
-      />
+      <AddTextResizer contentAttribute={contentAttribute} textContentRef={textContentRef} />
     </div>
   );
 };
@@ -91,7 +47,8 @@ AddTextContent.propTypes = {
     text: PropTypes.string.isRequired,
     font: PropTypes.string.isRequired,
     focused: PropTypes.bool.isRequired,
+    fontSize: PropTypes.number.isRequired,
   }).isRequired,
-  handleFocusedID: PropTypes.func.isRequired,
-  dispatch: PropTypes.func.isRequired,
+  setFocusedTextID: PropTypes.func.isRequired,
+  canvasScale: PropTypes.shape({}).isRequired,
 };
