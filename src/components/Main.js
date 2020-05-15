@@ -14,9 +14,15 @@ const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [isResize, setIsResize] = useState(false);
+  const [imgEl, setImgEl] = useState(null);
+  const [cropIsActive, setCropIsActive] = useState(false);
+  const [textAddIsActive, setTextAddActive] = useState(false);
+  const [focusedTextID, setFocusedTextID] = useState('');
+  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
   const { state, dispatch } = useContext(CropperInfoContext);
   const [resizerState, resizerDispatch] = useContext(ResizerContext);
-  const [imgEl, setImgEl] = useState(null);
+  const { textContents } = useContext(AddTextContext);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
@@ -104,8 +110,6 @@ const Main = () => {
     };
   };
 
-  const [cropIsActive, setCropIsActive] = useState(false);
-
   const startCrop = e => {
     e.preventDefault();
     setCropIsActive(!cropIsActive);
@@ -162,17 +166,10 @@ const Main = () => {
     setIsResize(false);
   };
 
-  const [textAddIsActive, setTextAddActive] = useState(false);
-  const [focusedTextID, setFocusedTextID] = useState('');
-  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
-  const { textContents } = useContext(AddTextContext);
-
   const drawTextCanvas = textCanvas => {
     const context = canvasRef.current.getContext('2d');
     context.drawImage(textCanvas, 0, 0);
   };
-
-  const [visibleDrawer, setVisibleDrawer] = useState(false);
 
   const handleDrawerOpen = () => {
     setVisibleDrawer(true);
