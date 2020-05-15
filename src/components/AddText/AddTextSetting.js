@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 import React, { useContext } from 'react';
 import { TextField, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import '../../styles/TextAdd.scss';

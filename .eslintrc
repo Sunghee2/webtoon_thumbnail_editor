@@ -23,6 +23,7 @@
       }
     ],
     "no-unused-vars": "warn",
-    "react/forbid-prop-types": "warn"
+    "react/forbid-prop-types": "warn",
+    "react/jsx-curly-newline": "warn"
   }
 }
