@@ -1,11 +1,16 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
+import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
+import { ChevronRight } from '@material-ui/icons';
 import '../styles/Main.scss';
-import Button from '@material-ui/core/Button';
 import readImgAsync from '../Utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
+import AddText from './AddText/AddText';
+import AddTextList from './AddText/AddTextList';
+import AddTextDraw from './AddText/AddTextDraw';
 import { CropperInfoContext } from '../context/CropperInfoContext';
 import { ResizerContext } from '../context/ResizerContext';
+import { AddTextContext } from '../context/AddTextContext';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -159,6 +164,29 @@ const Main = () => {
     setIsResize(false);
   };
 
+  const [textAddIsActive, setTextAddActive] = useState(false);
+  const [focusedTextID, setFocusedTextID] = useState('');
+  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
+  const { textContents } = useContext(AddTextContext);
+
+  const drawTextCanvas = textCanvas => {
+    const context = canvasRef.current.getContext('2d');
+    context.drawImage(textCanvas, 0, 0);
+  };
+
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setVisibleDrawer(true);
+    setTextAddActive(true);
+  };
+
+  const handleDrawerClose = () => {
+    setVisibleDrawer(false);
+    setFocusedTextID('');
+    setTextAddActive(false);
+  };
+
   return (
     <>
       <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />
@@ -173,12 +201,46 @@ const Main = () => {
               onChange={openImage}
             />
           </Button>
-          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
-          </Button>
-          <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
-            Resize
-          </Button>
+
+          {imgEl && (
+            <>
+              <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+                Crop
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={startResize}
+              >
+                Resize
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                Adjust
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                TEXT ADD
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={() => setTextCanvasSaving(true)}
+              >
+                SAVE
+              </Button>
+            </>
+          )}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
@@ -189,9 +251,41 @@ const Main = () => {
             finishResize={finishResize}
           >
             <canvas className="editor" ref={canvasRef} />
+            {textContents.length > 0 && (
+              <AddTextList
+                focusedTextID={focusedTextID}
+                setFocusedTextID={setFocusedTextID}
+                canvasScale={canvasScale}
+              />
+            )}
           </CanvasContainer>
+          {textCanvasIsSaving && (
+            <AddTextDraw
+              canvasScale={canvasScale}
+              setFocusedTextID={setFocusedTextID}
+              mergingCanvas={drawTextCanvas}
+              setTextCanvasSaving={setTextCanvasSaving}
+            />
+          )}
         </article>
       </section>
+      <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
+        <div className="drawer">
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronRight />
+          </IconButton>
+          <Divider />
+          <div className="drawer-content">
+            {textAddIsActive && (
+              <AddText
+                focusedTextID={focusedTextID}
+                canvasScale={canvasScale}
+                setFocusedTextID={setFocusedTextID}
+              />
+            )}
+          </div>
+        </div>
+      </Drawer>
     </>
   );
 };
