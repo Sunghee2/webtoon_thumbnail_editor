@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import { AddTextProvider } from './context/AddTextContext';
 import { CropperInfoProvider } from './context/CropperInfoContext';
 import { ResizerProvider } from './context/ResizerContext';
+import { AdjustProvider } from './context/adjustContext';
 
 const App = () => {
   return (
@@ -14,9 +15,11 @@ const App = () => {
       <Header />
       <CropperInfoProvider>
         <ResizerProvider>
-          <AddTextProvider>
-            <Main />
-          </AddTextProvider>
+          <AdjustProvider>
+            <AddTextProvider>
+              <Main />
+            </AddTextProvider>
+          </AdjustProvider>
         </ResizerProvider>
       </CropperInfoProvider>
     </div>

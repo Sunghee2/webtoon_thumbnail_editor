@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
 import '../styles/Main.scss';
-import readImgAsync from '../Utils/FileRead';
+import readImgAsync from '../utils/FileRead';
 import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
@@ -185,14 +185,6 @@ const Main = () => {
     setVisibleDrawer(false);
     setFocusedTextID('');
     setTextAddActive(false);
-  };
-
-  const handleDrawerOpen = () => {
-    setVisibleDrawer(true);
-  };
-
-  const handleDrawerClose = () => {
-    setVisibleDrawer(false);
   };
 
   return (

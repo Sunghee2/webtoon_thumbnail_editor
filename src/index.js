@@ -2,13 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { AdjustProvider } from './context/adjustContext';
 
 ReactDOM.render(
   <React.StrictMode>
-    <AdjustProvider>
-      <App />
-    </AdjustProvider>
+    <App />
   </React.StrictMode>,
   document.getElementById('root'),
 );
