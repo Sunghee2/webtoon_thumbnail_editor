@@ -1,11 +1,12 @@
-import React, { useRef, useState } from 'react';
-import '../styles/Main.scss';
-import Button from '@material-ui/core/Button';
+import React, { useRef, useState, useReducer } from 'react';
+import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
+import { ChevronRight } from '@material-ui/icons';
 import Cropper from './Cropper';
 import AddText from './AddText/AddText';
-import AddTextContent from './AddText/AddTextContent';
+import AddTextList from './AddText/AddTextList';
+import '../styles/Main.scss';
 
-const Main = props => {
+const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
 
@@ -59,60 +60,121 @@ const Main = props => {
     setCropIsActive(!cropIsActive);
   };
 
-  const [addTextActive, setAddTextActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
-  const [textContents, setTextContents] = useState([]);
 
-  const addTextContent = () => {
-    const { width, height, top, left } = canvasScale;
-    const id = `text_${new Date().getDate()}`;
-    const adjustedTop = top + height / 2;
-    const adjustedLeft = left + width / 2;
-    const text = `TEXT`;
-    const font = `Arial`;
-    const newContent = { id, width, height, top: adjustedTop, left: adjustedLeft, text, font };
-    setFocusedTextID(id);
-    setTextContents([...textContents, newContent]);
+  const textReducer = (state, action) => {
+    const { type, id, top, left, width, text, font } = action;
+    switch (type) {
+      case 'ADD_TEXT_CONTENT': {
+        const newID = `text_${new Date().getTime()}`;
+        const newContent = {
+          id: newID,
+          width: 200,
+          top: canvasScale.height / 2,
+          left: canvasScale.width / 2 - 100,
+          text: `글자를 입력하세요.`,
+          font: `BlackHanSans`,
+        };
+        setFocusedTextID(newID);
+        return [...state, newContent];
+      }
+      case 'CHANGE_TEXT_POSITION':
+        return state.map(item => (item.id === id ? { ...item, top, left } : item));
+      case 'CHANGE_WIDTH':
+        return state.map(item => (item.id === id ? { ...item, width } : item));
+      case 'CHANGE_TEXT_STRING':
+        return state.map(item => (item.id === id ? { ...item, text } : item));
+      case 'CHANGE_FONT':
+        return state.map(item => (item.id === id ? { ...item, font } : item));
+      case 'REMOVE_TEXT_CONTENT':
+        if (focusedTextID === id) setFocusedTextID('');
+        return state.filter(item => item.id !== id);
+      default:
+        return state;
+    }
+  };
+
+  const [textContents, textContentsDispatch] = useReducer(textReducer, []);
+
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setVisibleDrawer(true);
+  };
+
+  const handleDrawerClose = () => {
+    setVisibleDrawer(false);
+    setFocusedTextID('');
   };
 
   return (
-    <section>
-      <aside>
-        <Button className="open-btn" variant="contained" color="primary">
-          OPEN IMAGE
-          <input
-            className="open-file"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={openImage}
-          />
-        </Button>
-        {canvasRef.current && (
-          <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
+    <>
+      <section>
+        <aside>
+          <Button className="open-btn" variant="contained" color="primary">
+            OPEN IMAGE
+            <input
+              className="open-file"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              onChange={openImage}
+            />
           </Button>
-        )}
-        {canvasRef.current && (
-          <Button
-            className="add-text-btn open-btn"
-            variant="contained"
-            color="primary"
-            onClick={setAddTextActive}
-          >
-            TEXT ADD
-          </Button>
-        )}
-      </aside>
-      <article className="editor-container horizontal">
-        <canvas className="editor" ref={canvasRef}></canvas>
-        {cropIsActive && <Cropper canvasScale={canvasScale} addTextContent={addTextContent} />}
-        {textContents.length > 0 &&
-          textContents.map(item => <AddTextContent key={item.id} contentAttribute={item} />)}
-      </article>
-      <nav>
-        {addTextActive && <AddText addTextContent={addTextContent} focusedTextID={focusedTextID} />}
-      </nav>
-    </section>
+
+          {canvasRef.current && (
+            <>
+              <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+                Crop
+              </Button>
+              <Button
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                Adjust
+              </Button>
+              <Button
+                className="add-text-btn open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleDrawerOpen}
+              >
+                TEXT ADD
+              </Button>
+            </>
+          )}
+        </aside>
+        <article className="editor-container horizontal">
+          <canvas className="editor" ref={canvasRef} />
+          {cropIsActive && <Cropper canvasScale={canvasScale} />}
+          {textContents.length > 0 && (
+            <AddTextList
+              focusedTextID={focusedTextID}
+              textContents={textContents}
+              dispatch={textContentsDispatch}
+              handleFocusedID={setFocusedTextID}
+            />
+          )}
+        </article>
+      </section>
+      <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
+        <div className="drawer">
+          <IconButton onClick={handleDrawerClose}>
+            <ChevronRight />
+          </IconButton>
+          <Divider />
+          <div className="drawer-content">
+            {/* <AdjustList /> */}
+            <AddText
+              focusedTextID={focusedTextID}
+              textContents={textContents}
+              dispatch={textContentsDispatch}
+            />
+          </div>
+        </div>
+      </Drawer>
+    </>
   );
 };
 
