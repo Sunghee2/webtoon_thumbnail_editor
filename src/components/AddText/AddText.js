@@ -3,7 +3,7 @@ import '../../styles/TextAdd.scss';
 import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import AddTextSetting from './AddTextSetting';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 
 const AddText = ({ focusedTextID, canvasScale, setFocusedTextID }) => {
   const { textContents, textContentsDispatch } = useContext(AddTextContext);

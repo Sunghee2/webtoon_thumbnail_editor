@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import propTypes from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
-import { CropperInfoContext } from '../context/CropperInfoContext';
+import { CropperInfoContext } from '../context';
 
 const Cropper = ({ startCropperResize, startCropperMove }) => {
   const { state } = useContext(CropperInfoContext);

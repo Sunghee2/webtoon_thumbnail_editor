@@ -1,8 +1,9 @@
+/* eslint-disable consistent-return */
 import React, { useContext } from 'react';
 import { TextField, FormControl, InputLabel, Select, Typography } from '@material-ui/core';
 import '../../styles/TextAdd.scss';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 import AddTextSlider from './AddTextSlider';
 
 const AddTextSetting = ({ textAttribute }) => {

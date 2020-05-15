@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import '../styles/Main.scss';
 import propTypes from 'prop-types';
-import { ResizerContext } from '../context/ResizerContext';
+import { ResizerContext } from '../context';
 
 const Resizer = props => {
   const { startImgResize, startImgMove } = props;

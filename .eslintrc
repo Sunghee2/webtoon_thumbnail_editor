@@ -21,6 +21,9 @@
       {
         "extensions": [".js", ".jsx"]
       }
-    ]
+    ],
+    "no-unused-vars": "warn",
+    "react/forbid-prop-types": "warn",
+    "react/jsx-curly-newline": "warn"
   }
 }

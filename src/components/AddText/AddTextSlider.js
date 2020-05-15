@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Slider, Tooltip } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import { AddTextContext } from '../../context/AddTextContext';
+import { AddTextContext } from '../../context';
 
 function ValueLabelComponent({ children, open, value }) {
   return (
