@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import * as firebase from 'firebase';
 import { TextField } from '@material-ui/core';
+import TrieSearch from 'trie-search';
 import firebaseConfig from './FirebaseConfig';
 import Thumbnail from './Thumbnail';
 import { HistoryContext } from '../context/HistoryContext';
@@ -10,10 +11,10 @@ const History = () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  const [selectedThumbnail, setSelectedThumbnail] = useState({});
+  const [selectedThumbnails, setSelectedThumbnails] = useState([]);
   const database = firebase.database();
-  const nameRef = useRef(null);
   const { state, dispatch } = useContext(HistoryContext);
+  const tsObj = new TrieSearch();
 
   const getHistory = () => {
     database
@@ -26,19 +27,19 @@ const History = () => {
       });
   };
 
+  useEffect(getHistory, []);
   useEffect(() => {
-    getHistory();
-  }, []);
+    tsObj.addFromObject(state.thumbnails);
+  });
 
   const filterThumbnail = evt => {
     const name = evt.target.value.trim();
-    const hasThumbnail = state.thumbnails[name];
+    const arr = tsObj.get(name);
 
-    if (hasThumbnail) {
-      setSelectedThumbnail(name);
-    } else {
-      setSelectedThumbnail({});
-      // nameRef.current.value = ``;
+    if (!name.length) {
+      setSelectedThumbnails([]);
+    } else if (arr.length) {
+      setSelectedThumbnails(arr);
     }
   };
 
@@ -47,13 +48,15 @@ const History = () => {
       <div className="title">이미지 목록</div>
       <TextField label="웹툰 제목" margin="dense" variant="outlined" onChange={filterThumbnail} />
       <ul>
-        {selectedThumbnail.length ? (
-          <Thumbnail name={selectedThumbnail} src={state.thumbnails[selectedThumbnail]} />
-        ) : (
-          Object.keys(state.thumbnails).map(key => (
-            <Thumbnail key={key} name={key} src={state.thumbnails[key]} />
-          ))
-        )}
+        {selectedThumbnails.length
+          ? selectedThumbnails.map(item => (
+              // eslint-disable-next-line
+              <Thumbnail key={item._key_} name={item._key_} src={item.value} />
+            ))
+          : Object.keys(state.thumbnails).map(key => (
+              // eslint-disable-next-line
+              <Thumbnail key={key} name={key} src={state.thumbnails[key]} />
+            ))}
       </ul>
     </section>
   );
