@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import * as firebase from 'firebase';
+import { TextField } from '@material-ui/core';
 import firebaseConfig from './FirebaseConfig';
 import Thumbnail from './Thumbnail';
 import { HistoryContext } from '../context/HistoryContext';
@@ -30,10 +31,9 @@ const History = () => {
   }, []);
 
   const filterThumbnail = evt => {
-    const name = nameRef.current.value.trim();
+    const name = evt.target.value.trim();
     const hasThumbnail = state.thumbnails[name];
 
-    evt.preventDefault();
     if (hasThumbnail) {
       setSelectedThumbnail(name);
     } else {
@@ -45,9 +45,7 @@ const History = () => {
   return (
     <section className="history-container">
       <div className="title">이미지 목록</div>
-      <form onSubmit={filterThumbnail}>
-        <input type="text" ref={nameRef} placeholder="Search Thumbnail..." />
-      </form>
+      <TextField label="웹툰 제목" margin="dense" variant="outlined" onChange={filterThumbnail} />
       <ul>
         {selectedThumbnail.length ? (
           <Thumbnail name={selectedThumbnail} src={state.thumbnails[selectedThumbnail]} />
