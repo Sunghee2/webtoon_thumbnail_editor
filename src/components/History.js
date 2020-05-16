@@ -9,7 +9,6 @@ const History = () => {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
-  const [thumbnail, setThumbnail] = useState({});
   const [selectedThumbnail, setSelectedThumbnail] = useState({});
   const database = firebase.database();
   const nameRef = useRef(null);
@@ -20,8 +19,9 @@ const History = () => {
       .ref(`/`)
       .once(`value`)
       .then(result => {
-        setThumbnail(result.val());
-        dispatch({ type: 'update', data: result.val() });
+        if (result.val()) {
+          dispatch({ type: 'update', data: result.val() });
+        }
       });
   };
 
@@ -31,7 +31,7 @@ const History = () => {
 
   const filterThumbnail = evt => {
     const name = nameRef.current.value.trim();
-    const hasThumbnail = thumbnail[name];
+    const hasThumbnail = state.thumbnails[name];
 
     evt.preventDefault();
     if (hasThumbnail) {
@@ -49,7 +49,7 @@ const History = () => {
         <input type="text" ref={nameRef} placeholder="Search Thumbnail..." />
       </form>
       <ul>
-        {state.thumbnails && selectedThumbnail.length ? (
+        {selectedThumbnail.length ? (
           <Thumbnail name={selectedThumbnail} src={state.thumbnails[selectedThumbnail]} />
         ) : (
           Object.keys(state.thumbnails).map(key => (
