@@ -62,12 +62,12 @@ const Main = () => {
         setFocusedTextID('');
       },
     },
-    Save: {
-      start: () => {
-        setTextCanvasSaving(true);
-      },
-      end: () => {},
-    },
+    // Save: {
+    //   start: () => {
+    //     setTextCanvasSaving(true);
+    //   },
+    //   end: () => {},
+    // },
   };
 
   useEffect(() => {
@@ -243,6 +243,7 @@ const Main = () => {
           {imgEl &&
             Object.keys(Modes).map(key => (
               <Button
+                key={key}
                 id={key}
                 className="open-btn"
                 variant="contained"
@@ -252,15 +253,7 @@ const Main = () => {
                 {key}
               </Button>
             ))}
-          {/* TODO: */}
-          {/* <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-            Crop
-          </Button>
-          <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
-            Resize
-          </Button> */}
-          <Save canvasRef={canvasRef} />
-          {/* TODO: */}
+          {imgEl && <Save canvasRef={canvasRef} />}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer

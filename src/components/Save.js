@@ -68,7 +68,7 @@ const Save = props => {
   return (
     <>
       <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>
-        저장
+        SAVE
       </Button>
       <TextField label="파일 제목" margin="dense" variant="outlined" onChange={handleNameChange} />
       <a id="link" href="default">
