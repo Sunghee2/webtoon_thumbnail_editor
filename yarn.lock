@@ -5672,6 +5672,13 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
+hasharray@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/hasharray/-/hasharray-1.1.1.tgz#0bfadd91c0ee76919c05eeef5a3dc1034b4ea4f1"
+  integrity sha512-L+WTUz5XcfQyh3652tOEDLL5ZG6MAS+iYqM2K0N9H/z7RpW0rjlFkXLRdqbwqrGCr9korJzyfDD7i7mtwo42wg==
+  dependencies:
+    jclass "^1.0.1"
+
 he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
@@ -6521,6 +6528,11 @@ istanbul-reports@^2.2.6:
   integrity sha512-uu1F/L1o5Y6LzPVSVZXNOoD/KXpJue9aeLRd0sM9uMXfZvzomB0WxVamWb5ue8kA2vVWEmW7EG+A5n3f1kqHKg==
   dependencies:
     html-escaper "^2.0.0"
+
+jclass@^1.0.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/jclass/-/jclass-1.2.1.tgz#eaafeec0dd6a5bf8b3ea43c04e010c637638768b"
+  integrity sha1-6q/uwN1qW/iz6kPATgEMY3Y4dos=
 
 jest-changed-files@^24.9.0:
   version "24.9.0"
@@ -11378,6 +11390,13 @@ tr46@^1.0.1:
   integrity sha1-qLE/1r/SSJUZZ0zN5VujaTtwbQk=
   dependencies:
     punycode "^2.1.0"
+
+trie-search@^1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/trie-search/-/trie-search-1.2.11.tgz#0edb1c3593bf4a5943686cb65c8589f4545c181c"
+  integrity sha512-iENSdED6uNFRkJg4c/WOpBDlM/Qk5ovihK98cCEhH8vh5eorldycLgPxgaeO+JBBslbq6pHMDSdP2fuLv9VZzA==
+  dependencies:
+    hasharray "^1.1.1"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
