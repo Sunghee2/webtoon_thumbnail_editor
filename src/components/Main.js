@@ -10,6 +10,7 @@ import AddTextList from './AddText/AddTextList';
 import AddTextDraw from './AddText/AddTextDraw';
 import AdjustList from './Adjust/AdjustList';
 import { CropperInfoContext, ResizerContext, AddTextContext, AdjustContext } from '../context';
+import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -251,6 +252,15 @@ const Main = () => {
                 {key}
               </Button>
             ))}
+          {/* TODO: */}
+          {/* <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
+            Crop
+          </Button>
+          <Button className="open-btn" variant="contained" color="primary" onClick={startResize}>
+            Resize
+          </Button> */}
+          <Save canvasRef={canvasRef} />
+          {/* TODO: */}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer

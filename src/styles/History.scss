@@ -1,0 +1,44 @@
+.history-container {
+  display: block;
+  color: black;
+  .title {
+    margin: 10px;
+    font-weight: bold;
+  }
+  input {
+    width: 200px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid gray;
+    border-radius: 1.5px;
+    font-size: 16px;
+    outline: 0;
+  }
+  li {
+    display: inline-block;
+    text-align: center;
+    img {
+      display: block;
+      margin: 0 auto;
+      padding-bottom: 10px;
+      max-width: 218px;
+      max-height: 120px;
+    }
+    button {
+      border: 0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      svg {
+        font-size: small;
+        margin-right: 3px;
+      }
+      &:hover {
+        text-decoration: underline;
+        svg {
+          transform: rotate(15deg);
+        }
+      }
+    }
+  }
+}
