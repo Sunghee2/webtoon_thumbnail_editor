@@ -38,7 +38,7 @@ const History = () => {
       setSelectedThumbnail(name);
     } else {
       setSelectedThumbnail({});
-      nameRef.current.value = ``;
+      // nameRef.current.value = ``;
     }
   };
 
