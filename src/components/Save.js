@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { Button, TextField } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as firebase from 'firebase';
@@ -50,7 +50,7 @@ const Save = props => {
       const canvasData = canvasEl.toDataURL();
       const link = document.getElementById('link');
 
-      link.setAttribute('download', 'download.png');
+      link.setAttribute('download', `${name}.png`);
       link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
       link.click();
 
