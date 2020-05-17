@@ -2,18 +2,7 @@ import React, { createContext, useReducer } from 'react';
 import PropTypes from 'prop-types';
 
 const reducer = (state, action) => {
-  const {
-    canvasScale,
-    setFocusedTextID,
-    focusedTextID,
-    id,
-    top,
-    left,
-    width,
-    text,
-    font,
-    fontSize,
-  } = action;
+  const { canvasScale, id, top, left, width, text, font, fontSize } = action;
   switch (action.type) {
     case 'ADD_TEXT_CONTENT': {
       const newID = `text_${new Date().getTime()}`;
@@ -26,7 +15,6 @@ const reducer = (state, action) => {
         font: `BlackHanSans`,
         fontSize: 20,
       };
-      setFocusedTextID(newID);
       return [...state, newContent];
     }
     case 'CHANGE_TEXT_POSITION':
@@ -40,7 +28,6 @@ const reducer = (state, action) => {
     case 'CHANGE_FONT_SIZE':
       return state.map(item => (item.id === id ? { ...item, fontSize } : item));
     case 'REMOVE_TEXT_CONTENT':
-      if (focusedTextID === id) setFocusedTextID('');
       return state.filter(item => item.id !== id);
     case 'EMPTY_TEXT_CONTENTS':
       return [];
