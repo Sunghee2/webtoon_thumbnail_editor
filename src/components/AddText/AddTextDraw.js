@@ -4,7 +4,7 @@ import { AddTextContext } from '../../context';
 
 const AddTextDraw = ({ canvasScale, setFocusedTextID, mergingCanvas, setTextCanvasSaving }) => {
   const textCanvasRef = useRef(null);
-  const { textContents } = useContext(AddTextContext);
+  const { textContents, textContentsDispatch } = useContext(AddTextContext);
   const drawText = () => {
     const textCanvas = textCanvasRef.current;
     const context = textCanvas.getContext('2d');
@@ -55,6 +55,7 @@ const AddTextDraw = ({ canvasScale, setFocusedTextID, mergingCanvas, setTextCanv
     mergingCanvas(textCanvas);
     setFocusedTextID('');
     setTextCanvasSaving(false);
+    textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
   };
   useEffect(() => {
     if (textCanvasRef) drawText();
