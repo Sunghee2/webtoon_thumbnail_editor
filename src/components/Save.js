@@ -30,8 +30,6 @@ const Save = props => {
     const date = `&date=${new Date().toString().slice(0, 24)}`;
     const url = firebaseUrl + date;
 
-    imageRef.put(file);
-
     imageRef.put(file).then(() => {
       firebase.database().ref(`/${_name}`).set(url, getHistory);
     });
