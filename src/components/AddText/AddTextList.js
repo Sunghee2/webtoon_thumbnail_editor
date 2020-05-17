@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { AddTextContext } from '../../context';
 import AddTextContent from './AddTextContent';
 
-const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale }) => {
+const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale, textMode }) => {
   const { textContents } = useContext(AddTextContext);
   return (
     <div>
@@ -14,6 +14,7 @@ const AddTextList = ({ focusedTextID, setFocusedTextID, canvasScale }) => {
           setFocusedTextID={setFocusedTextID}
           focusedTextID={focusedTextID}
           canvasScale={canvasScale}
+          textMode={textMode}
         />
       ))}
     </div>
@@ -25,4 +26,5 @@ AddTextList.propTypes = {
   focusedTextID: PropTypes.string.isRequired,
   setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({}).isRequired,
+  textMode: PropTypes.bool.isRequired,
 };

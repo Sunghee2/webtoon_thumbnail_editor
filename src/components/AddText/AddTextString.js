@@ -2,7 +2,13 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { AddTextContext } from '../../context';
 
-const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, canvasScale }) => {
+const AddTextString = ({
+  textContentRef,
+  contentAttribute,
+  setFocusedTextID,
+  canvasScale,
+  textMode,
+}) => {
   const { textContentsDispatch } = useContext(AddTextContext);
   const { id, top, left, text, font, fontSize } = contentAttribute;
   const { width, height } = canvasScale;
@@ -50,6 +56,8 @@ const AddTextString = ({ textContentRef, contentAttribute, setFocusedTextID, can
     <div
       className="add-text-string unselectable"
       onMouseDown={() => {
+        if (!textMode) return;
+
         setFocusedTextID(id);
         handleTextMove();
       }}
@@ -78,4 +86,5 @@ AddTextString.propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
   }).isRequired,
+  textMode: PropTypes.bool.isRequired,
 };

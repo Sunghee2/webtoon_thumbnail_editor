@@ -266,6 +266,7 @@ const Main = () => {
                 focusedTextID={focusedTextID}
                 setFocusedTextID={setFocusedTextID}
                 canvasScale={canvasScale}
+                textMode={mode === 'Text'}
               />
             )}
           </CanvasContainer>
