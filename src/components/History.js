@@ -53,9 +53,9 @@ const History = () => {
               // eslint-disable-next-line
               <Thumbnail key={item._key_} name={item._key_} src={item.value} />
             ))
-          : Object.keys(state.thumbnails).map(key => (
+          : Object.entries(state.thumbnails).map(([key, value]) => (
               // eslint-disable-next-line
-              <Thumbnail key={key} name={key} src={state.thumbnails[key]} />
+              <Thumbnail key={key} name={key} src={value} />
             ))}
       </ul>
     </section>
