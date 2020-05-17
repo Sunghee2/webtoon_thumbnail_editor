@@ -1,0 +1,35 @@
+.history-container {
+  display: block;
+  color: black;
+  .title {
+    margin: 10px;
+    font-weight: bold;
+  }
+  li {
+    display: inline-block;
+    text-align: center;
+    img {
+      display: block;
+      margin: 0 auto;
+      padding-bottom: 10px;
+      max-width: 218px;
+      max-height: 120px;
+    }
+    button {
+      border: 0;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      svg {
+        font-size: small;
+        margin-right: 3px;
+      }
+      &:hover {
+        text-decoration: underline;
+        svg {
+          transform: rotate(15deg);
+        }
+      }
+    }
+  }
+}

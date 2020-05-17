@@ -10,6 +10,7 @@ import AddTextList from './AddText/AddTextList';
 import AddTextDraw from './AddText/AddTextDraw';
 import AdjustList from './Adjust/AdjustList';
 import { CropperInfoContext, ResizerContext, AddTextContext, AdjustContext } from '../context';
+import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -61,12 +62,12 @@ const Main = () => {
         setFocusedTextID('');
       },
     },
-    Save: {
-      start: () => {
-        setTextCanvasSaving(true);
-      },
-      end: () => {},
-    },
+    // Save: {
+    //   start: () => {
+    //     setTextCanvasSaving(true);
+    //   },
+    //   end: () => {},
+    // },
   };
 
   useEffect(() => {
@@ -242,6 +243,7 @@ const Main = () => {
           {imgEl &&
             Object.keys(Modes).map(key => (
               <Button
+                key={key}
                 id={key}
                 className="open-btn"
                 variant="contained"
@@ -251,6 +253,7 @@ const Main = () => {
                 {key}
               </Button>
             ))}
+          {imgEl && <Save canvasRef={canvasRef} />}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
