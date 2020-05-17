@@ -19,7 +19,7 @@ const CanvasTypeModal = ({ canvasRef, setCanvasScale }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (canvasType === null) return;
+    if (!canvasType) return;
     const { offsetLeft, offsetTop } = canvasRef.current;
     const [width, height] = getWidthHeight(canvasType);
     setCanvasScale({
