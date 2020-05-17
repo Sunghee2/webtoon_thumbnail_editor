@@ -4,12 +4,14 @@ import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
 // import Footer from './components/Footer';
-import { AddTextProvider } from './context/AddTextContext';
-import { CropperInfoProvider } from './context/CropperInfoContext';
-import { ResizerProvider } from './context/ResizerContext';
-import { AdjustProvider } from './context/AdjustContext';
+import {
+  AddTextProvider,
+  CropperInfoProvider,
+  ResizerProvider,
+  AdjustProvider,
+  HistoryContextProvider,
+} from './context';
 import History from './components/History';
-import { HistoryContextProvider } from './context/HistoryContext';
 
 const App = () => {
   return (
