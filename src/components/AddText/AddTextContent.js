@@ -5,14 +5,22 @@ import { AddTextContext } from '../../context';
 import AddTextResizer from './AddTextResizer';
 import AddTextString from './AddTextString';
 
-const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale, focusedTextID }) => {
+const AddTextContent = ({
+  contentAttribute,
+  setFocusedTextID,
+  canvasScale,
+  focusedTextID,
+  textMode,
+}) => {
   const { textContentsDispatch } = useContext(AddTextContext);
   const { id, top, left, width, focused } = contentAttribute;
   const textContentRef = useRef(null);
 
   return (
     <div
-      className={`add-text-content unselectable${focused ? ` focused` : ``}`}
+      className={`add-text-content unselectable${focused ? ` focused` : ``}${
+        textMode ? ` hover-allow` : ``
+      }`}
       ref={textContentRef}
       style={{ top, left, width }}
     >
@@ -21,6 +29,7 @@ const AddTextContent = ({ contentAttribute, setFocusedTextID, canvasScale, focus
         setFocusedTextID={setFocusedTextID}
         textContentRef={textContentRef}
         canvasScale={canvasScale}
+        textMode={textMode}
       />
       <CloseIcon
         className={`remove-text-content${focused ? `` : ` hide`}`}
@@ -52,4 +61,5 @@ AddTextContent.propTypes = {
   setFocusedTextID: PropTypes.func.isRequired,
   canvasScale: PropTypes.shape({}).isRequired,
   focusedTextID: PropTypes.string.isRequired,
+  textMode: PropTypes.bool.isRequired,
 };

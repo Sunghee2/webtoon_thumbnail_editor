@@ -15,9 +15,14 @@ $focusedColor: rgb(3, 207, 93);
   box-sizing: content-box;
   width: 200px;
   text-align: center;
-  :hover {
-    border: 1px solid red;
+  :focus {
+    outline: 0;
   }
+}
+
+.add-text-content.hover-allow:hover {
+  border: 1px solid red;
+  cursor: move;
 }
 
 .add-text-content.focused {
@@ -29,7 +34,6 @@ $focusedColor: rgb(3, 207, 93);
 }
 
 .add-text-string {
-  cursor: move;
   padding: 10px;
   word-break: keep-all;
   overflow-wrap: break-word;
