@@ -78,7 +78,7 @@ const Main = () => {
     image.src = imgSrc;
     image.onload = () => {
       let { width, height } = image;
-      const maxWidth = 800;
+      const maxWidth = 600;
 
       if (width > height) {
         if (width > maxWidth) {
@@ -249,7 +249,7 @@ const Main = () => {
             applyCropper={applyCropper}
             rotate={rotate}
           >
-            <canvas className="editor" style={{ border: '1px solid white' }} ref={canvasRef} />
+            <canvas className="editor" ref={canvasRef} />
             {textContents.length > 0 && (
               <AddTextList
                 focusedTextID={focusedTextID}
