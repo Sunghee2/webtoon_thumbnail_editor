@@ -6,13 +6,9 @@ const initialState = {
   top: 0,
   width: 0,
   height: 0,
+  isWide: true,
 };
-const getRightSize = (current, min, max) => {
-  if (current < 0) {
-    return min;
-  }
-  return Math.min(current, max);
-};
+
 const reducer = (state, action) => {
   const {
     type,
@@ -20,108 +16,67 @@ const reducer = (state, action) => {
     offsetLeft,
     width,
     height,
-    cropperChange,
-    diffX,
-    diffY,
-    canvasScale,
+    nextX,
+    nextY,
+    nextWidth,
+    nextHeight,
+    nextWidthReverse,
   } = action;
 
   switch (type) {
     case 'init':
       return {
+        ...state,
         left: offsetLeft,
         top: offsetTop,
         width,
-        height,
+        height: state.isWide ? (width * 9) / 16 : (width * 4) / 3,
+      };
+    case 'wide':
+      return {
+        ...state,
+        isWide: true,
+        height: (state.width * 9) / 16,
+      };
+    case 'tall':
+      return {
+        ...state,
+        isWide: false,
+        height: (state.width * 4) / 3,
       };
     case 'se':
       return {
         ...state,
-        width: getRightSize(
-          cropperChange.prevWidth - diffX,
-          10,
-          canvasScale.width - cropperChange.prevX,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight - diffY,
-          10,
-          canvasScale.height - cropperChange.prevY,
-        ),
+        width: nextWidth,
+        height: state.isWide ? (nextWidth * 9) / 16 : (nextWidth * 4) / 3,
       };
     case 'ne':
       return {
         ...state,
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth - diffX,
-          10,
-          canvasScale.width - cropperChange.prevX,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight + diffY,
-          10,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
+        top: nextY,
+        width: nextWidth,
+        height: state.isWide ? (nextWidth * 9) / 16 : (nextWidth * 4) / 3,
       };
     case 'sw':
       return {
         ...state,
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth + diffX,
-          10,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight - diffY,
-          10,
-          canvasScale.height - cropperChange.prevY,
-        ),
+        left: nextX,
+        width: nextWidthReverse,
+        height: state.isWide ? (nextWidthReverse * 9) / 16 : (nextWidthReverse * 4) / 3,
       };
     case 'nw':
       return {
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth + diffX,
-          10,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight + diffY,
-          10,
-          cropperChange.prevHeight + cropperChange.prevY,
-        ),
+        ...state,
+        top: nextY,
+        left: nextX,
+        width: nextWidthReverse,
+        height: state.isWide ? (nextWidthReverse * 9) / 16 : (nextWidthReverse * 4) / 3,
       };
     case 'move':
       return {
         ...state,
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          canvasScale.height - cropperChange.prevHeight,
-        ),
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          canvasScale.width - cropperChange.prevWidth,
-        ),
+        top: nextY,
+        left: nextX,
       };
     default:
       return initialState;
