@@ -9,13 +9,12 @@ import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
 import AddTextDraw from './AddText/AddTextDraw';
 import AdjustList from './Adjust/AdjustList';
-import { CropperInfoContext, ResizerContext, AddTextContext, AdjustContext } from '../context';
+import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
 import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [isResize, setIsResize] = useState(false);
   const [imgEl, setImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
@@ -23,7 +22,6 @@ const Main = () => {
   const [visibleDrawer, setVisibleDrawer] = useState(false);
   const [mode, setMode] = useState('');
   const { state, dispatch } = useContext(CropperInfoContext);
-  const [resizerState, resizerDispatch] = useContext(ResizerContext);
   const { textContents } = useContext(AddTextContext);
   const [adjust, adjustDispatch] = useContext(AdjustContext);
 
@@ -34,15 +32,6 @@ const Main = () => {
       },
       end: () => {
         setCropIsActive(false);
-      },
-    },
-    Resize: {
-      start: () => {
-        resizerDispatch({ type: 'first' });
-        setIsResize(true);
-      },
-      end: () => {
-        setIsResize(false);
       },
     },
     Adjust: {
@@ -79,28 +68,6 @@ const Main = () => {
     }
   }, [canvasScale]);
 
-  useEffect(() => {
-    if (isResize) {
-      if (canvasRef.current) {
-        const context = canvasRef.current.getContext('2d');
-        const { left, top, width, height, first } = resizerState;
-
-        context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-        context.drawImage(
-          imgEl,
-          first.left,
-          first.top,
-          first.width,
-          first.height,
-          left,
-          top,
-          width,
-          height,
-        );
-      }
-    }
-  }, [resizerState]);
-
   const openImage = async evt => {
     const img = evt.target.files[0];
     const imgSrc = await readImgAsync(img);
@@ -110,19 +77,22 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      canvasEl.width = canvasScale.width;
-      canvasEl.height = canvasScale.height;
-      context.drawImage(
-        image,
-        0,
-        0,
-        image.width,
-        image.height,
-        0,
-        0,
-        canvasScale.width,
-        canvasScale.height,
-      );
+      let { width, height } = image;
+      const maxWidth = 800;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        width *= maxWidth / height;
+        height = maxWidth;
+      }
+
+      canvasEl.width = width;
+      canvasEl.height = height;
+      context.drawImage(image, 0, 0, width, height);
       const canvasData = new Image();
       canvasData.src = canvasEl.toDataURL();
 
@@ -135,17 +105,10 @@ const Main = () => {
         setCanvasScale({
           left: offsetLeft,
           top: offsetTop,
-          width: canvasScale.width,
-          height: canvasScale.height,
+          width,
+          height,
         });
         dispatch({
-          type: 'init',
-          offsetLeft,
-          offsetTop,
-          width: canvasScale.width,
-          height: canvasScale.height,
-        });
-        resizerDispatch({
           type: 'init',
           offsetLeft,
           offsetTop,
@@ -196,16 +159,7 @@ const Main = () => {
 
       saveNewImage();
     };
-    resizerDispatch({ type: 'first' });
     setCropIsActive(false);
-  };
-
-  const finishResize = e => {
-    e.preventDefault();
-
-    saveNewImage();
-    resizerDispatch({ type: 'first' });
-    setIsResize(false);
   };
 
   const drawTextCanvas = textCanvas => {
@@ -227,7 +181,6 @@ const Main = () => {
 
   return (
     <>
-      <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />
       <section>
         <aside>
           <Button className="open-btn" variant="contained" color="primary">
@@ -260,8 +213,6 @@ const Main = () => {
             canvasScale={canvasScale}
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
-            isResize={isResize}
-            finishResize={finishResize}
           >
             <canvas className="editor" ref={canvasRef} />
             {textContents.length > 0 && (
