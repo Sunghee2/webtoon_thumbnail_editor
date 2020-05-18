@@ -91,6 +91,7 @@ const CanvasContainer = ({
 
   return (
     <div
+      className="canvas-container"
       role="button"
       tabIndex={0}
       onMouseMove={e => {

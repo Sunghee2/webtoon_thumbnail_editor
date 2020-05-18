@@ -18,6 +18,7 @@ const AddTextSlider = ({ id, fontSize }) => {
   };
   return (
     <Slider
+      className="naver-colored-slider"
       ValueLabelComponent={ValueLabelComponent}
       aria-label="custom thumb label"
       value={fontSize}

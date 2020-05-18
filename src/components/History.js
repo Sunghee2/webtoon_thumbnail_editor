@@ -46,7 +46,13 @@ const History = () => {
   return (
     <section className="history-container">
       <div className="title">이미지 목록</div>
-      <TextField label="웹툰 제목" margin="dense" variant="outlined" onChange={filterThumbnail} />
+      <TextField
+        className="naver-colored-text"
+        label="웹툰 제목"
+        margin="dense"
+        variant="outlined"
+        onChange={filterThumbnail}
+      />
       <ul>
         {selectedThumbnails.length
           ? selectedThumbnails.map(item => (
