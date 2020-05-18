@@ -80,6 +80,7 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
 
   return (
     <div
+      className="canvas-container"
       role="button"
       tabIndex={0}
       onMouseMove={e => {
