@@ -1,24 +1,43 @@
 .history-container {
   display: block;
-  color: black;
+  flex-direction: column;
   .title {
     margin: 10px;
-    font-weight: bold;
+  }
+  label {
+    color: #00a932;
+  }
+  input {
+    color: #ffffff;
+  }
+  fieldset {
+    border-color: #00a932;
+    span {
+      color: #00a932;
+    }
+  }
+  fieldset:hover {
+    border-color: #00ed47 !important;
+  }
+  ul {
+    overflow-x: scroll;
+    width: 90%;
+    white-space: nowrap;
+    display: flex;
   }
   li {
-    display: inline-block;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     img {
       display: block;
       margin: 0 auto;
-      padding-bottom: 10px;
-      max-width: 218px;
-      max-height: 120px;
+      padding: 10px;
+      width: 180px;
+      height: 130px;
     }
     button {
-      border: 0;
       font-size: 16px;
-      font-weight: 600;
       cursor: pointer;
       svg {
         font-size: small;
