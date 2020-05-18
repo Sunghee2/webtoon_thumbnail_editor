@@ -110,7 +110,18 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      const { width, height } = image;
+      let { width, height } = image;
+      const maxWidth = 800;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        width *= maxWidth / height;
+        height = maxWidth;
+      }
 
       canvasEl.width = width;
       canvasEl.height = height;
