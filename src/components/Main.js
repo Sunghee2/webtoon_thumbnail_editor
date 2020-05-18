@@ -110,19 +110,11 @@ const Main = () => {
 
     image.src = imgSrc;
     image.onload = () => {
-      canvasEl.width = canvasScale.width;
-      canvasEl.height = canvasScale.height;
-      context.drawImage(
-        image,
-        0,
-        0,
-        image.width,
-        image.height,
-        0,
-        0,
-        canvasScale.width,
-        canvasScale.height,
-      );
+      const { width, height } = image;
+
+      canvasEl.width = width;
+      canvasEl.height = height;
+      context.drawImage(image, 0, 0, width, height);
       const canvasData = new Image();
       canvasData.src = canvasEl.toDataURL();
 
@@ -135,8 +127,8 @@ const Main = () => {
         setCanvasScale({
           left: offsetLeft,
           top: offsetTop,
-          width: canvasScale.width,
-          height: canvasScale.height,
+          width,
+          height,
         });
         dispatch({
           type: 'init',
@@ -227,7 +219,6 @@ const Main = () => {
 
   return (
     <>
-      <CanvasTypeModal setCanvasScale={setCanvasScale} canvasRef={canvasRef} />
       <section>
         <aside>
           <Button className="open-btn" variant="contained" color="primary">
