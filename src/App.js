@@ -7,7 +7,6 @@ import Main from './components/Main';
 import {
   AddTextProvider,
   CropperInfoProvider,
-  ResizerProvider,
   AdjustProvider,
   HistoryContextProvider,
 } from './context';
@@ -18,16 +17,14 @@ const App = () => {
     <div className="App">
       <Header />
       <CropperInfoProvider>
-        <ResizerProvider>
-          <AdjustProvider>
-            <AddTextProvider>
-              <HistoryContextProvider>
-                <Main />
-                <History />
-              </HistoryContextProvider>
-            </AddTextProvider>
-          </AdjustProvider>
-        </ResizerProvider>
+        <AdjustProvider>
+          <AddTextProvider>
+            <HistoryContextProvider>
+              <Main />
+              <History />
+            </HistoryContextProvider>
+          </AddTextProvider>
+        </AdjustProvider>
       </CropperInfoProvider>
     </div>
   );
