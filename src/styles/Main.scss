@@ -1,3 +1,6 @@
+$default-color: #00a932;
+$focused-color: #00ed47;
+
 html {
   width: 100%;
   height: 100%;
@@ -24,7 +27,6 @@ body {
 
 section {
   position: relative;
-  // min-width: 1200px;
   width: 100%;
   height: 100%;
   display: flex;
@@ -47,7 +49,7 @@ article {
   justify-content: center;
 }
 button {
-  background-color: #00a932 !important;
+  background-color: $default-color !important;
   border: none !important;
   color: #ffffff !important;
 }
@@ -55,7 +57,7 @@ button:hover {
   opacity: 0.9;
 }
 button:focus {
-  background-color: #00ed47 !important;
+  background-color: $focused-color !important;
 }
 .open-btn {
   position: relative;
@@ -105,5 +107,31 @@ button:focus {
 
   .drawer-content {
     padding: 10px;
+  }
+}
+
+.naver-colored {
+  & label.Mui-focused {
+    color: $focused-color;
+  }
+
+  & label {
+    color: $default-color;
+  }
+
+  & .MuiOutlinedInput-root {
+    & input {
+      color: white;
+    }
+    & fieldset {
+      border-color: $default-color;
+      color: $default-color;
+    }
+    &:hover fieldset {
+      border-color: $focused-color;
+    }
+    &.Mui-focused fieldset {
+      border-color: $focused-color;
+    }
   }
 }

@@ -68,7 +68,13 @@ const Save = props => {
       <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>
         SAVE
       </Button>
-      <TextField label="파일 제목" margin="dense" variant="outlined" onChange={handleNameChange} />
+      <TextField
+        className="naver-colored"
+        label="파일 제목"
+        margin="dense"
+        variant="outlined"
+        onChange={handleNameChange}
+      />
       <a id="link" href="default">
         {undefined}
       </a>
