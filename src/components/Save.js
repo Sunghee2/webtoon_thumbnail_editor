@@ -69,7 +69,7 @@ const Save = props => {
         SAVE
       </Button>
       <TextField
-        className="naver-colored"
+        className="naver-colored-text"
         label="파일 제목"
         margin="dense"
         variant="outlined"

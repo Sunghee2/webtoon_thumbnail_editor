@@ -1,5 +1,7 @@
-$default-color: #00a932;
-$focused-color: #00ed47;
+$naver-color: #00a932;
+$naver-focused-color: #00ed47;
+$background-color: #222222;
+$drawer-color: #313131;
 
 html {
   width: 100%;
@@ -22,7 +24,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #222222;
+  background-color: $background-color;
 }
 
 section {
@@ -34,6 +36,7 @@ section {
   justify-content: flex-start;
   margin: 2rem;
 }
+
 aside {
   top: 200px;
   left: 40px;
@@ -41,6 +44,7 @@ aside {
   display: flex;
   flex-direction: column;
 }
+
 article {
   height: 100%;
   width: 100%;
@@ -48,17 +52,21 @@ article {
   flex-direction: column;
   justify-content: center;
 }
+
 button {
-  background-color: $default-color !important;
+  background-color: $naver-color !important;
   border: none !important;
   color: #ffffff !important;
 }
+
 button:hover {
   opacity: 0.9;
 }
+
 button:focus {
-  background-color: $focused-color !important;
+  background-color: $naver-focused-color !important;
 }
+
 .open-btn {
   position: relative;
   margin: 0.5rem !important;
@@ -86,21 +94,32 @@ button:focus {
   position: relative;
 }
 
+.MuiDrawer-paperAnchorDockedRight {
+  border-left: none !important;
+}
+
 .drawer {
-  width: 250px;
+  width: 280px;
+  height: 100%;
+  background-color: $drawer-color;
+  color: white;
 
   .drawer-content {
     padding: 10px;
   }
+
+  & > button {
+    margin: 10px;
+  }
 }
 
-.naver-colored {
+.naver-colored-text {
   & label.Mui-focused {
-    color: $focused-color;
+    color: $naver-focused-color;
   }
 
   & label {
-    color: $default-color;
+    color: $naver-color;
   }
 
   & .MuiOutlinedInput-root {
@@ -108,14 +127,31 @@ button:focus {
       color: white;
     }
     & fieldset {
-      border-color: $default-color;
-      color: $default-color;
+      border-color: $naver-color;
+      color: $naver-color;
     }
     &:hover fieldset {
-      border-color: $focused-color;
+      border-color: $naver-focused-color;
     }
     &.Mui-focused fieldset {
-      border-color: $focused-color;
+      border-color: $naver-focused-color;
+    }
+  }
+  & textarea {
+    color: white;
+  }
+  & select {
+    color: white;
+  }
+}
+
+.naver-colored-slider {
+  & span {
+    color: $naver-color;
+    background-color: $naver-color;
+    &:hover {
+      color: $naver-focused-color;
+      background-color: $naver-focused-color;
     }
   }
 }

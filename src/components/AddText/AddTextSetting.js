@@ -14,7 +14,7 @@ const AddTextSetting = ({ textAttribute }) => {
     return (
       <div className="add-text-setting">
         <TextField
-          className="naver-colored"
+          className="naver-colored-text"
           id="outlined-multiline-static"
           label="Text"
           multiline
@@ -28,7 +28,7 @@ const AddTextSetting = ({ textAttribute }) => {
         />
 
         <FormControl
-          className="naver-colored"
+          className="naver-colored-text"
           variant="outlined"
           style={{ width: `100%`, marginBottom: `20px` }}
         >
