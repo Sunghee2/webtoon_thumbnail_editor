@@ -59,14 +59,14 @@ const Main = () => {
     // },
   };
 
-  useEffect(() => {
-    if (Object.keys(canvasScale).length) {
-      const canvasEl = canvasRef.current;
+  // useEffect(() => {
+  //   if (Object.keys(canvasScale).length) {
+  //     const canvasEl = canvasRef.current;
 
-      canvasEl.style.width = `${canvasScale.width}px`;
-      canvasEl.style.height = `${canvasScale.height}px`;
-    }
-  }, [canvasScale]);
+  //     canvasEl.style.width = `${canvasScale.width}px`;
+  //     canvasEl.style.height = `${canvasScale.height}px`;
+  //   }
+  // }, [canvasScale]);
 
   const openImage = async evt => {
     const img = evt.target.files[0];
@@ -179,6 +179,40 @@ const Main = () => {
     setMode(e.currentTarget.id);
   };
 
+  const rotate = rightOrLeft => {
+    // 1: right, -1: left
+    const canvasEl = canvasRef.current;
+    const context = canvasEl.getContext(`2d`);
+    const { width, height } = canvasEl;
+    const rotateCount = (state.rotateCount + rightOrLeft) % 4;
+    dispatch({ type: 'rotate', rotateCount });
+
+    context.clearRect(0, 0, width, height);
+    context.save();
+    context.translate(width / 2, height / 2);
+    context.rotate((rotateCount * (90 * Math.PI)) / 180);
+    context.translate(-1 * (width / 2), -1 * (height / 2));
+    if (rotateCount % 2) {
+      if (width > height)
+        context.drawImage(
+          imgEl,
+          (width - height) / 2,
+          (height - height ** 2 / width) / 2,
+          height,
+          height ** 2 / width,
+        );
+      else
+        context.drawImage(
+          imgEl,
+          (width - width ** 2 / height) / 2,
+          (height - width) / 2,
+          width ** 2 / height,
+          width,
+        );
+    } else context.drawImage(imgEl, 0, 0);
+    context.restore();
+  };
+
   return (
     <>
       <section>
@@ -213,8 +247,9 @@ const Main = () => {
             canvasScale={canvasScale}
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
+            rotate={rotate}
           >
-            <canvas className="editor" ref={canvasRef} />
+            <canvas className="editor" style={{ border: '1px solid white' }} ref={canvasRef} />
             {textContents.length > 0 && (
               <AddTextList
                 focusedTextID={focusedTextID}

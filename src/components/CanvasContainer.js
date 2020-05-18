@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import { CropperInfoContext } from '../context';
 import Cropper from './Cropper';
 
-const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) => {
+const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, rotate }) => {
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
@@ -78,6 +78,16 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
     setActiveMove(false);
   };
 
+  const handleClickLeft = e => {
+    e.preventDefault();
+    rotate(-1);
+  };
+
+  const handleClickRight = e => {
+    e.preventDefault();
+    rotate(1);
+  };
+
   return (
     <div
       role="button"
@@ -96,9 +106,15 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
       {cropIsActive && (
         <>
           <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
-          <Button color="primary" onClick={applyCropper}>
-            적용하기
-          </Button>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Button color="primary" onClick={applyCropper}>
+              적용하기
+            </Button>
+            <div>
+              <Button onClick={handleClickLeft}>왼쪽</Button>
+              <Button onClick={handleClickRight}>오른쪽</Button>
+            </div>
+          </div>
         </>
       )}
     </div>
@@ -110,6 +126,7 @@ CanvasContainer.propTypes = {
   cropIsActive: PropTypes.bool.isRequired,
   applyCropper: PropTypes.func.isRequired,
   canvasScale: PropTypes.objectOf(number).isRequired,
+  rotate: PropTypes.func.isRequired,
 };
 
 export default CanvasContainer;

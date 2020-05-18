@@ -24,6 +24,7 @@ const reducer = (state, action) => {
     diffX,
     diffY,
     canvasScale,
+    rotateCount,
   } = action;
 
   switch (type) {
@@ -33,6 +34,12 @@ const reducer = (state, action) => {
         top: offsetTop,
         width,
         height,
+        rotateCount: 0,
+      };
+    case 'rotate':
+      return {
+        ...state,
+        rotateCount,
       };
     case 'se':
       return {
