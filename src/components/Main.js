@@ -13,7 +13,6 @@ const Main = () => {
   const canvasRef = useRef(null);
   const [backgroundCanvas, setBackgroundCanvas] = useState(null);
   const [canvasScale, setCanvasScale] = useState({});
-  const [imgEl, setImgEl] = useState(null);
   const [notFilteredImgEl, setNotFilteredImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
@@ -94,7 +93,6 @@ const Main = () => {
       canvasData.src = canvasEl.toDataURL();
 
       canvasData.onload = () => {
-        setImgEl(canvasData);
         setNotFilteredImgEl(canvasData);
       };
 
@@ -126,10 +124,6 @@ const Main = () => {
   };
 
   const saveNewImage = (sx, sy, swidth, sheight, x, y, width, height) => {
-    const newImg = new Image();
-    newImg.src = canvasRef.current.toDataURL();
-    newImg.onload = () => setImgEl(newImg);
-
     const backgroundContext = backgroundCanvas.getContext('2d');
     backgroundContext.clearRect(0, 0, backgroundContext.width, backgroundContext.height);
     backgroundContext.drawImage(notFilteredImgEl, sx, sy, swidth, sheight, x, y, width, height);
@@ -250,7 +244,7 @@ const Main = () => {
             />
           </Button>
 
-          {imgEl &&
+          {notFilteredImgEl &&
             Object.keys(Modes).map(key => (
               <Button
                 key={key}
