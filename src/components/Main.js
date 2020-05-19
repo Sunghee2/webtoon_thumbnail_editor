@@ -3,7 +3,6 @@ import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
 import '../styles/Main.scss';
 import readImgAsync from '../utils/FileRead';
-import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
@@ -58,15 +57,6 @@ const Main = () => {
     //   end: () => {},
     // },
   };
-
-  // useEffect(() => {
-  //   if (Object.keys(canvasScale).length) {
-  //     const canvasEl = canvasRef.current;
-
-  //     canvasEl.style.width = `${canvasScale.width}px`;
-  //     canvasEl.style.height = `${canvasScale.height}px`;
-  //   }
-  // }, [canvasScale]);
 
   const openImage = async evt => {
     const img = evt.target.files[0];
