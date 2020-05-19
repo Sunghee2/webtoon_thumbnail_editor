@@ -10,19 +10,7 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  const {
-    type,
-    offsetTop,
-    offsetLeft,
-    width,
-    height,
-    nextX,
-    nextY,
-    nextWidth,
-    nextHeight,
-    nextWidthReverse,
-  } = action;
-
+  const { type, offsetTop, offsetLeft, width, height, nextCropper, changeY } = action;
   switch (type) {
     case 'init':
       return {
@@ -42,41 +30,42 @@ const reducer = (state, action) => {
       return {
         ...state,
         isWide: false,
+        top: changeY || state.top,
         height: (state.width * 4) / 3,
       };
     case 'se':
       return {
         ...state,
-        width: nextWidth,
-        height: state.isWide ? (nextWidth * 9) / 16 : (nextWidth * 4) / 3,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'ne':
       return {
         ...state,
-        top: nextY,
-        width: nextWidth,
-        height: state.isWide ? (nextWidth * 9) / 16 : (nextWidth * 4) / 3,
+        top: nextCropper.y,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'sw':
       return {
         ...state,
-        left: nextX,
-        width: nextWidthReverse,
-        height: state.isWide ? (nextWidthReverse * 9) / 16 : (nextWidthReverse * 4) / 3,
+        left: nextCropper.x,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'nw':
       return {
         ...state,
-        top: nextY,
-        left: nextX,
-        width: nextWidthReverse,
-        height: state.isWide ? (nextWidthReverse * 9) / 16 : (nextWidthReverse * 4) / 3,
+        top: nextCropper.y,
+        left: nextCropper.x,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'move':
       return {
         ...state,
-        top: nextY,
-        left: nextX,
+        top: nextCropper.y,
+        left: nextCropper.x,
       };
     default:
       return initialState;

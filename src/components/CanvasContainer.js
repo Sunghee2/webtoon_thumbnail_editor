@@ -13,77 +13,123 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
-  const [cropperChange, setCropperChange] = useState({
-    prevWidth: 0,
-    prevHeight: 0,
-    prevX: 0,
-    prevY: 0,
-    startX: 0,
-    startY: 0,
+  const [prevCropper, setPrevCropper] = useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+  });
+  const [clientStart, setClientStart] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [nextCropper, setNextCropper] = useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
   });
 
-  const getCropperChange = e => {
-    return {
-      prevWidth: state.width,
-      prevHeight: state.height,
-      prevX: state.left,
-      prevY: state.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    };
+  const getRightSize = (current, min) => {
+    if (current < min) {
+      return min;
+    }
+    let max = canvasScale.height + canvasScale.top - state.top;
+    if (state.isWide) {
+      max = (max * 16) / 9;
+      return Math.min(current, max);
+    }
+    max = (max * 3) / 4;
+    return Math.min(current, max);
   };
-
-  const getDifference = e => {
-    return {
-      diffX: cropperChange.startX - e.clientX,
-      diffY: cropperChange.startY - e.clientY,
-    };
-  };
-
-  const getRightSize = (current, min, max) => {
+  const getRightPos = (current, min, max) => {
     if (current < min) {
       return min;
     }
     return Math.min(current, max);
   };
 
+  const [cropSize, setCropSize] = useState('wide');
+  const changeCropSize = e => {
+    e.preventDefault();
+    if (e.target.value === 'wide') {
+      setCropSize('wide');
+      dispatch({ type: 'wide' });
+    } else {
+      setCropSize('tall');
+      const nextW = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
+      if (nextW + state.top > canvasScale.height) {
+        const changeY = canvasScale.height + canvasScale.top - nextW;
+        dispatch({ type: 'tall', changeY });
+      } else {
+        dispatch({ type: 'tall' });
+      }
+    }
+  };
+
+  const getCropperChange = e => {
+    setPrevCropper({
+      width: state.width,
+      height: state.height,
+      x: state.left,
+      y: state.top,
+    });
+    setClientStart({
+      x: e.clientX,
+      y: e.clientY,
+    });
+  };
+
+  const getDifference = e => {
+    return {
+      diffX: clientStart.x - e.clientX,
+      diffY: clientStart.y - e.clientY,
+    };
+  };
+
+  const getNextPosition = e => {
+    const { diffX, diffY } = getDifference(e);
+    const nextX = getRightPos(
+      prevCropper.x - diffX,
+      canvasScale.left,
+      canvasScale.width + canvasScale.left - state.width,
+    );
+    const nextY = getRightPos(
+      prevCropper.y - diffY,
+      canvasScale.top,
+      canvasScale.height + canvasScale.top - prevCropper.height,
+    );
+    setNextCropper(prev => ({ ...prev, x: nextX, y: nextY }));
+  };
+  const getNextSize = e => {
+    const { diffX, diffY } = getDifference(e);
+    let nextWidth;
+    let nextHeight;
+    if (direction === 'se' || direction === 'ne') {
+      nextWidth = getRightSize(prevCropper.width - diffX, 20, canvasScale.width - prevCropper.x);
+      nextHeight = getRightSize(prevCropper.height - diffY, 20, canvasScale.height - prevCropper.y);
+    } else {
+      nextWidth = getRightSize(prevCropper.width + diffX, 20, canvasScale.width - prevCropper.x);
+      nextHeight = getRightSize(prevCropper.height + diffY, 20, canvasScale.height - state.top);
+    }
+    setNextCropper(prev => ({ ...prev, width: nextWidth, height: nextHeight }));
+  };
+
   const startCropperResize = e => {
     e.preventDefault();
     setActiveResize(true);
     setDirection(e.target.dataset.dir);
-    setCropperChange(getCropperChange(e));
+    getCropperChange(e);
   };
 
   const cropperResizing = e => {
     e.preventDefault();
     if (activeResize) {
-      const { diffX, diffY } = getDifference(e);
-      const nextX = getRightSize(
-        cropperChange.prevX - diffX,
-        canvasScale.left,
-        cropperChange.prevX + cropperChange.prevWidth,
-      );
-      const nextY = getRightSize(
-        cropperChange.prevY - diffY,
-        canvasScale.top,
-        cropperChange.prevY + cropperChange.prevHeight,
-      );
-      const nextWidth = getRightSize(cropperChange.prevWidth - diffX, 20, canvasScale.width);
-      const nextHeight = getRightSize(cropperChange.prevHeight - diffY, 20, canvasScale.height);
-      const nextWidthReverse = getRightSize(cropperChange.prevWidth + diffX, 20, canvasScale.width);
-      const nextHeightReverse = getRightSize(
-        cropperChange.prevHeight + diffY,
-        20,
-        canvasScale.height,
-      );
+      getNextPosition(e);
+      getNextSize(e);
       dispatch({
         type: direction,
-        nextX,
-        nextY,
-        nextWidth,
-        nextHeight,
-        nextWidthReverse,
-        nextHeightReverse,
+        nextCropper,
       });
     }
   };
@@ -99,42 +145,20 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) 
     if (e.target.dataset.dir) return;
     e.preventDefault();
     setActiveMove(true);
-    setCropperChange(getCropperChange(e));
+    getCropperChange(e);
   };
 
   const cropperMoving = e => {
     e.preventDefault();
     if (activeMove) {
-      const { diffX, diffY } = getDifference(e);
-      const nextX = getRightSize(
-        cropperChange.prevX - diffX,
-        canvasScale.left,
-        cropperChange.prevX + cropperChange.prevWidth,
-      );
-      const nextY = getRightSize(
-        cropperChange.prevY - diffY,
-        canvasScale.top,
-        cropperChange.prevY + cropperChange.prevHeight,
-      );
-      dispatch({ type: 'move', nextX, nextY });
+      getNextPosition(e);
+      dispatch({ type: 'move', nextCropper });
     }
   };
 
   const finishCropperMove = e => {
     e.preventDefault();
     setActiveMove(false);
-  };
-
-  const [cropSize, setCropSize] = useState('wide');
-  const changeCropSize = e => {
-    e.preventDefault();
-    if (e.target.value === 'wide') {
-      setCropSize('wide');
-      dispatch({ type: 'wide' });
-    } else {
-      setCropSize('tall');
-      dispatch({ type: 'tall' });
-    }
   };
 
   return (

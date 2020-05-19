@@ -60,4 +60,4 @@ Cropper.propTypes = {
   startCropperMove: propTypes.func.isRequired,
 };
 
-export default Cropper;
+export default React.memo(Cropper);
