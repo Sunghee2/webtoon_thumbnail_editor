@@ -11,8 +11,10 @@ import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
 
 const Main = () => {
   const canvasRef = useRef(null);
+  const [backgroundCanvas, setBackgroundCanvas] = useState(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [imgEl, setImgEl] = useState(null);
+  const [notFilteredImgEl, setNotFilteredImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
   const [visibleDrawer, setVisibleDrawer] = useState(false);
@@ -49,6 +51,24 @@ const Main = () => {
     },
   };
 
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasRef.current.width;
+    canvas.height = canvasRef.current.height;
+    setBackgroundCanvas(canvas);
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(canvasScale).length) {
+      const canvasEl = canvasRef.current;
+
+      canvasEl.style.width = `${canvasScale.width}px`;
+      canvasEl.style.height = `${canvasScale.height}px`;
+      backgroundCanvas.style.width = canvasEl.style.width;
+      backgroundCanvas.style.height = canvasEl.style.height;
+    }
+  }, [canvasScale]);
+
   const openImage = async evt => {
     const img = evt.target.files[0];
     const imgSrc = await readImgAsync(img);
@@ -79,6 +99,7 @@ const Main = () => {
 
       canvasData.onload = () => {
         setImgEl(canvasData);
+        setNotFilteredImgEl(canvasData);
       };
 
       if (canvasRef.current) {
@@ -108,12 +129,16 @@ const Main = () => {
     return { x: naturalWidth / width, y: naturalHeight / height };
   };
 
-  const saveNewImage = () => {
+  const saveNewImage = (sx, sy, swidth, sheight, x, y, width, height) => {
     const newImg = new Image();
     newImg.src = canvasRef.current.toDataURL();
-    newImg.onload = () => {
-      setImgEl(newImg);
-    };
+    newImg.onload = () => setImgEl(newImg);
+
+    const backgroundContext = backgroundCanvas.getContext('2d');
+    backgroundContext.drawImage(notFilteredImgEl, sx, sy, swidth, sheight, x, y, width, height);
+    const notFilteredImg = new Image();
+    notFilteredImg.src = backgroundCanvas.toDataURL();
+    notFilteredImgEl.onload = () => setNotFilteredImgEl(notFilteredImg);
   };
 
   const applyCropper = e => {
@@ -151,7 +176,17 @@ const Main = () => {
         offsetTop,
         width: canvasEl.width / 2,
       });
-      saveNewImage();
+
+      saveNewImage(
+        state.left * scale.x,
+        state.top * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        state.left,
+        state.top,
+        state.width,
+        state.height,
+      );
     };
     setCropIsActive(false);
   };
@@ -264,7 +299,7 @@ const Main = () => {
                 setFocusedTextID={setFocusedTextID}
               />
             )}
-            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={imgEl} />}
+            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={notFilteredImgEl} />}
           </div>
         </div>
       </Drawer>

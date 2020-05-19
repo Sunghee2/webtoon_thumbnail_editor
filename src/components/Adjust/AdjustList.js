@@ -40,7 +40,10 @@ const AdjustList = ({ canvasRef, image }) => {
           }
         }
       });
-      context.putImageData(imgData, 0, 0);
+      backgroundContext.putImageData(imgData, 0, 0);
+      const backgroundImage = backgroundCanvas.transferToImageBitmap();
+      context.clearRect(0, 0, width, height);
+      context.drawImage(backgroundImage, 0, 0);
     }
   }, [adjust]);
 
