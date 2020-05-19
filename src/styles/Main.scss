@@ -158,6 +158,13 @@ button:focus {
     }
   }
 }
+
+.naver-colored-checkbox, .naver-colored-button {
+  & span {
+    color: $naver-color;
+  }
+}
+
 .editor-container {
   width: 60%;
   position: relative;
