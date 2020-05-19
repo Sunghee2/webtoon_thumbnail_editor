@@ -1,6 +1,11 @@
 import React, { useContext, useState } from 'react';
 import PropTypes, { number } from 'prop-types';
+import '../styles/Cropper.scss';
 import Button from '@material-ui/core/Button';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import { CropperInfoContext } from '../context';
 import Cropper from './Cropper';
 
@@ -8,46 +13,124 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
-
-  const [cropperChange, setCropperChange] = useState({
-    prevWidth: 0,
-    prevHeight: 0,
-    prevX: 0,
-    prevY: 0,
-    startX: 0,
-    startY: 0,
+  const [prevCropper, setPrevCropper] = useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
+  });
+  const [clientStart, setClientStart] = useState({
+    x: 0,
+    y: 0,
+  });
+  const [nextCropper, setNextCropper] = useState({
+    width: 0,
+    height: 0,
+    x: 0,
+    y: 0,
   });
 
+  const getRightSize = (current, min) => {
+    if (current < min) {
+      return min;
+    }
+    let max = canvasScale.height + canvasScale.top - state.top;
+    if (state.isWide) {
+      max = (max * 16) / 9;
+      return Math.min(current, max);
+    }
+    max = (max * 3) / 4;
+    return Math.min(current, max);
+  };
+  const getRightPos = (current, min, max) => {
+    if (current < min) {
+      return min;
+    }
+    return Math.min(current, max);
+  };
+
+  const [cropSize, setCropSize] = useState('wide');
+  const changeCropSize = e => {
+    e.preventDefault();
+    if (e.target.value === 'wide') {
+      setCropSize('wide');
+      dispatch({ type: 'wide' });
+    } else {
+      setCropSize('tall');
+      const nextW = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
+      if (nextW + state.top > canvasScale.height) {
+        const changeY = canvasScale.height + canvasScale.top - nextW;
+        dispatch({ type: 'tall', changeY });
+      } else {
+        dispatch({ type: 'tall' });
+      }
+    }
+  };
+
   const getCropperChange = e => {
-    return {
-      prevWidth: state.width,
-      prevHeight: state.height,
-      prevX: state.left,
-      prevY: state.top,
-      startX: e.clientX,
-      startY: e.clientY,
-    };
+    setPrevCropper({
+      width: state.width,
+      height: state.height,
+      x: state.left,
+      y: state.top,
+    });
+    setClientStart({
+      x: e.clientX,
+      y: e.clientY,
+    });
   };
 
   const getDifference = e => {
     return {
-      diffX: cropperChange.startX - e.clientX,
-      diffY: cropperChange.startY - e.clientY,
+      diffX: clientStart.x - e.clientX,
+      diffY: clientStart.y - e.clientY,
     };
+  };
+
+  const getNextPosition = e => {
+    const { diffX, diffY } = getDifference(e);
+    const nextX = getRightPos(
+      prevCropper.x - diffX,
+      canvasScale.left,
+      canvasScale.width + canvasScale.left - state.width,
+    );
+    const nextY = getRightPos(
+      prevCropper.y - diffY,
+      canvasScale.top,
+      canvasScale.height + canvasScale.top - prevCropper.height,
+    );
+    setNextCropper(prev => ({ ...prev, x: nextX, y: nextY }));
+  };
+  const getNextSize = e => {
+    const { diffX, diffY } = getDifference(e);
+    let nextWidth;
+    let nextHeight;
+    if (direction === 'se' || direction === 'ne') {
+      nextWidth = getRightSize(prevCropper.width - diffX, 20, canvasScale.width - prevCropper.x);
+      nextHeight = getRightSize(prevCropper.height - diffY, 20, canvasScale.height - prevCropper.y);
+    } else {
+      nextWidth = getRightSize(prevCropper.width + diffX, 20, canvasScale.width - prevCropper.x);
+      nextHeight = getRightSize(prevCropper.height + diffY, 20, canvasScale.height - state.top);
+    }
+    setNextCropper(prev => ({ ...prev, width: nextWidth, height: nextHeight }));
   };
 
   const startCropperResize = e => {
     e.preventDefault();
     setActiveResize(true);
     setDirection(e.target.dataset.dir);
-    setCropperChange(getCropperChange(e));
+    getCropperChange(e);
   };
 
   const cropperResizing = e => {
     e.preventDefault();
     if (activeResize) {
-      const { diffX, diffY } = getDifference(e);
-      dispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
+      getNextPosition(e);
+      getNextSize(e);
+      dispatch({
+        type: direction,
+        nextCropper,
+      });
     }
   };
 
@@ -62,14 +145,14 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     if (e.target.dataset.dir) return;
     e.preventDefault();
     setActiveMove(true);
-    setCropperChange(getCropperChange(e));
+    getCropperChange(e);
   };
 
   const cropperMoving = e => {
     e.preventDefault();
     if (activeMove) {
-      const { diffX, diffY } = getDifference(e);
-      dispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
+      getNextPosition(e);
+      dispatch({ type: 'move', nextCropper });
     }
   };
 
@@ -89,35 +172,39 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
   };
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onMouseMove={e => {
-        cropperResizing(e);
-        cropperMoving(e);
-      }}
-      onMouseUp={e => {
-        finishCropperResize(e);
-        finishCropperMove(e);
-      }}
-      style={{ position: 'relative', width: canvasScale.width, height: canvasScale.height }}
-    >
-      {children}
+    <>
       {cropIsActive && (
-        <>
-          <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <FormControl component="fieldset">
+          <RadioGroup value={cropSize} onChange={changeCropSize}>
+            <FormControlLabel value="wide" control={<Radio />} label="가로형" />
+            <FormControlLabel value="tall" control={<Radio />} label="세로형" />
+          </RadioGroup>
+        </FormControl>
+      )}
+      <div
+        role="button"
+        tabIndex={0}
+        onMouseMove={e => {
+          cropperResizing(e);
+          cropperMoving(e);
+        }}
+        onMouseUp={e => {
+          finishCropperResize(e);
+          finishCropperMove(e);
+        }}
+        className="cropper-container"
+      >
+        {children}
+        {cropIsActive && (
+          <>
+            <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
             <Button color="primary" onClick={applyCropper}>
               적용하기
             </Button>
-            <div>
-              <Button onClick={handleClickLeft}>왼쪽</Button>
-              <Button onClick={handleClickRight}>오른쪽</Button>
-            </div>
-          </div>
-        </>
-      )}
-    </div>
+          </>
+        )}
+      </div>
+    </>
   );
 };
 

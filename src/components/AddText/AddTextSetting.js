@@ -14,6 +14,7 @@ const AddTextSetting = ({ textAttribute }) => {
     return (
       <div className="add-text-setting">
         <TextField
+          className="naver-colored-text"
           id="outlined-multiline-static"
           label="Text"
           multiline
@@ -26,7 +27,11 @@ const AddTextSetting = ({ textAttribute }) => {
           }
         />
 
-        <FormControl variant="outlined" style={{ width: `100%`, marginBottom: `20px` }}>
+        <FormControl
+          className="naver-colored-text"
+          variant="outlined"
+          style={{ width: `100%`, marginBottom: `20px` }}
+        >
           <InputLabel htmlFor="outlined-age-native-simple">Font</InputLabel>
           <Select
             className="add-text-font"
@@ -41,8 +46,11 @@ const AddTextSetting = ({ textAttribute }) => {
             <option value="NanumSquareR" style={{ fontFamily: 'NanumSquareR' }}>
               NamumSquareR
             </option>
-            <option value="NanumSqaureRoundR" style={{ fontFamily: 'NanumSqaureRoundR' }}>
-              NanumSquareRound
+            <option value="DabangguB" style={{ fontFamily: 'DabangguB' }}>
+              DabangguB
+            </option>
+            <option value="CrayonM" style={{ fontFamily: 'CrayonM' }}>
+              CrayonM
             </option>
           </Select>
         </FormControl>
