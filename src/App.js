@@ -15,11 +15,11 @@ import History from './components/History';
 const App = () => {
   return (
     <div className="App">
-      <Header />
       <CropperInfoProvider>
         <AdjustProvider>
           <AddTextProvider>
             <HistoryContextProvider>
+              <Header />
               <Main />
               <History />
             </HistoryContextProvider>

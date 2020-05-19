@@ -5,8 +5,7 @@ import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
 import { HistoryContext } from '../context/HistoryContext';
 
-const Save = props => {
-  const { canvasRef } = props;
+const Save = () => {
   const { dispatch } = useContext(HistoryContext);
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -38,35 +37,24 @@ const Save = props => {
   const handleClick = e => {
     e.preventDefault();
     if (name.trim().length === 0) {
-      // eslint-disable-next-line no-alert
       window.alert('파일 이름을 확인해주세요');
       return;
     }
-
-    // if (canvasRef.current) {
-    //   const canvasEl = canvasRef.current;
-    //   const canvasData = canvasEl.toDataURL();
-    //   const link = document.getElementById('link');
-
-    //   link.setAttribute('download', `${name}.png`);
-    //   link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
-    //   link.click();
-
-    //   canvasRef.current.toBlob(blob => {
-    //     setHistory(name, blob);
-    //   });
-    // }
     const canvasEl = document.getElementById('editor');
-    const canvasData = canvasEl.toDataURL();
-    const link = document.getElementById('link');
+    if (canvasEl) {
+      const canvasData = canvasEl.toDataURL();
+      const link = document.getElementById('link');
 
-    link.setAttribute('download', `${name}.png`);
-    link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
-    link.click();
+      link.setAttribute('download', `${name}.png`);
+      link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
+      link.click();
 
-    canvasEl.toBlob(blob => {
-      setHistory(name, blob);
-    });
+      canvasEl.toBlob(blob => {
+        setHistory(name, blob);
+      });
+    } else {
+      window.alert('이미지가 없습니다');
+    }
   };
 
   const handleNameChange = e => {
@@ -93,11 +81,6 @@ const Save = props => {
       </div>
     </>
   );
-};
-
-Save.propTypes = {
-  canvasRef: propTypes.oneOfType([propTypes.func, propTypes.shape({ current: propTypes.any })])
-    .isRequired,
 };
 
 export default Save;
