@@ -1,6 +1,5 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
-import propTypes from 'prop-types';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
 import { HistoryContext } from '../context/HistoryContext';
