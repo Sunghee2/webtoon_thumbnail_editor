@@ -1,20 +1,11 @@
 import React, { useContext, useState } from 'react';
 import PropTypes, { number } from 'prop-types';
 import Button from '@material-ui/core/Button';
-import { CropperInfoContext, ResizerContext } from '../context';
+import { CropperInfoContext } from '../context';
 import Cropper from './Cropper';
-import Resizer from './Resizer';
 
-const CanvasContainer = ({
-  children,
-  cropIsActive,
-  applyCropper,
-  canvasScale,
-  isResize,
-  finishResize,
-}) => {
+const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale }) => {
   const { state, dispatch } = useContext(CropperInfoContext);
-  const [, resizerDispatch] = useContext(ResizerContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
 
@@ -57,7 +48,6 @@ const CanvasContainer = ({
     if (activeResize) {
       const { diffX, diffY } = getDifference(e);
       dispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
-      resizerDispatch({ type: direction, diffX, diffY, cropperChange, canvasScale });
     }
   };
 
@@ -80,7 +70,6 @@ const CanvasContainer = ({
     if (activeMove) {
       const { diffX, diffY } = getDifference(e);
       dispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
-      resizerDispatch({ type: 'move', diffX, diffY, cropperChange, canvasScale });
     }
   };
 
@@ -113,14 +102,6 @@ const CanvasContainer = ({
           </Button>
         </>
       )}
-      {isResize && (
-        <>
-          <Resizer startImgResize={startCropperResize} startImgMove={startCropperMove} />
-          <Button color="primary" onClick={finishResize}>
-            완료
-          </Button>
-        </>
-      )}
     </div>
   );
 };
@@ -130,8 +111,6 @@ CanvasContainer.propTypes = {
   cropIsActive: PropTypes.bool.isRequired,
   applyCropper: PropTypes.func.isRequired,
   canvasScale: PropTypes.objectOf(number).isRequired,
-  isResize: PropTypes.bool.isRequired,
-  finishResize: PropTypes.func.isRequired,
 };
 
 export default CanvasContainer;

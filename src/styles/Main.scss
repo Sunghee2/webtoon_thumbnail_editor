@@ -31,10 +31,11 @@ section {
   position: relative;
   width: 100%;
   height: 100%;
+  min-height: 350px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  margin: 2rem;
+  padding: 2rem;
 }
 
 aside {
@@ -86,10 +87,6 @@ button:focus {
 .editor {
   display: block;
   margin: 0 auto;
-  border: 1px solid black;
-  height: 0;
-  width: 0;
-  background-color: #ffffff;
 }
 
 .editor-container {

@@ -45,10 +45,10 @@ const History = () => {
 
   return (
     <section className="history-container">
-      <div className="title">이미지 목록</div>
+      <div className="title">IMAGE LIST</div>
       <TextField
-        className="naver-colored-text"
-        label="웹툰 제목"
+        className="naver-colored-text name-filter"
+        label="NAME"
         margin="dense"
         variant="outlined"
         onChange={filterThumbnail}

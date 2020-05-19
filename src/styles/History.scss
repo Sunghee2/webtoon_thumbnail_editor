@@ -2,13 +2,19 @@
   display: block;
   flex-direction: column;
   .title {
+    font-family: 'S-CoreDream-6Bold';
     margin: 10px;
   }
+  .name-filter {
+    margin-left: 8px;
+    margin-bottom: 20px;
+  }
   ul {
-    overflow-x: scroll;
-    width: 90%;
-    white-space: nowrap;
     display: flex;
+    overflow-x: auto;
+    width: 90%;
+    padding-bottom: 50px;
+    white-space: nowrap;
   }
   li {
     display: flex;
@@ -22,14 +28,17 @@
       height: 130px;
     }
     button {
+      background-color: transparent !important;
       font-size: 16px;
       cursor: pointer;
       svg {
-        font-size: small;
         margin-right: 3px;
+        color: #00a932;
+        font-size: small;
       }
       &:hover {
-        text-decoration: underline;
+        color: #00ed47 !important;
+        // text-decoration: underline;
         svg {
           transform: rotate(15deg);
         }
