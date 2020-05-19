@@ -43,16 +43,17 @@ const Save = () => {
       return;
     }
     const canvasEl = document.getElementById('editor');
-
-    if (!canvasEl.hasAttribute('width')) {
-      window.alert('이미지가 없습니다');
-      return;
-    }
+    const blankCanvas = document.createElement('canvas');
 
     drawText(canvasEl, textContents);
     textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
 
     const canvasData = canvasEl.toDataURL();
+
+    if (canvasData === blankCanvas.toDataURL()) {
+      window.alert('이미지가 없습니다');
+      return;
+    }
 
     const link = document.getElementById('link');
 
