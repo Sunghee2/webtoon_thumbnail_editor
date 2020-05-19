@@ -3,10 +3,12 @@ import { Button, TextField } from '@material-ui/core';
 import propTypes from 'prop-types';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
-import { HistoryContext } from '../context/HistoryContext';
+import { HistoryContext, AddTextContext } from '../context';
+import drawText from '../utils/drawText';
 
 const Save = () => {
   const { dispatch } = useContext(HistoryContext);
+  const { textContents, textContentsDispatch } = useContext(AddTextContext);
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
@@ -41,13 +43,16 @@ const Save = () => {
       return;
     }
     const canvasEl = document.getElementById('editor');
-    const blankCanvas = document.createElement('canvas');
-    const canvasData = canvasEl.toDataURL();
 
-    if (canvasData === blankCanvas.toDataURL()) {
+    if (!canvasEl.hasAttribute('width')) {
       window.alert('이미지가 없습니다');
       return;
     }
+
+    drawText(canvasEl, textContents);
+    textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
+
+    const canvasData = canvasEl.toDataURL();
 
     const link = document.getElementById('link');
 
