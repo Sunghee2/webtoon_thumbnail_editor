@@ -11,6 +11,7 @@ const AdjustSlider = memo(({ header, value, min, max, step, setValue }) => {
     <>
       <Typography gutterBottom>{header}</Typography>
       <Slider
+        className="naver-colored-slider"
         value={value}
         onChange={handleChange}
         aria-labelledby="continuous-slider"

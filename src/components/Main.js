@@ -250,7 +250,7 @@ const Main = () => {
       </section>
       <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
         <div className="drawer">
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton className="close-drawer" onClick={handleDrawerClose}>
             <ChevronRight />
           </IconButton>
           <Divider />

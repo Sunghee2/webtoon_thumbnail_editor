@@ -1,3 +1,8 @@
+$naver-color: #00a932;
+$naver-focused-color: #00ed47;
+$background-color: #222222;
+$drawer-color: #313131;
+
 html {
   width: 100%;
   height: 100%;
@@ -19,19 +24,20 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #222222;
+  background-color: $background-color;
 }
 
 section {
   position: relative;
-  // min-width: 1200px;
   width: 100%;
   height: 100%;
+  min-height: 350px;
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  margin: 2rem;
+  padding: 2rem;
 }
+
 aside {
   top: 200px;
   left: 40px;
@@ -39,6 +45,7 @@ aside {
   display: flex;
   flex-direction: column;
 }
+
 article {
   height: 100%;
   width: 100%;
@@ -46,17 +53,25 @@ article {
   flex-direction: column;
   justify-content: center;
 }
+
+.canvas-container {
+  margin: 0 auto;
+}
+
 button {
-  background-color: #00a932 !important;
+  background-color: $naver-color !important;
   border: none !important;
   color: #ffffff !important;
 }
+
 button:hover {
   opacity: 0.9;
 }
+
 button:focus {
-  background-color: #00ed47 !important;
+  background-color: $naver-focused-color !important;
 }
+
 .open-btn {
   position: relative;
   margin: 0.5rem !important;
@@ -80,27 +95,65 @@ button:focus {
   position: relative;
 }
 
+.MuiDrawer-paperAnchorDockedRight {
+  border-left: none !important;
+}
+
 .drawer {
-  width: 250px;
+  width: 280px;
+  height: 100%;
+  background-color: $drawer-color;
+  color: white;
 
   .drawer-content {
     padding: 10px;
   }
-}
 
-.drawer {
-  width: 200px;
-
-  .drawer-content {
-    padding: 10px;
+  & > button {
+    margin: 10px;
   }
 }
 
-.drawer {
-  width: 200px;
+.naver-colored-text {
+  & label.Mui-focused {
+    color: $naver-focused-color;
+  }
 
-  .drawer-content {
-    padding: 10px;
+  & label {
+    color: $naver-color;
+  }
+
+  & .MuiOutlinedInput-root {
+    & input {
+      color: white;
+    }
+    & fieldset {
+      border-color: $naver-color;
+      color: $naver-color;
+    }
+    &:hover fieldset {
+      border-color: $naver-focused-color;
+    }
+    &.Mui-focused fieldset {
+      border-color: $naver-focused-color;
+    }
+  }
+  & textarea {
+    color: white;
+  }
+  & select {
+    color: white;
+  }
+}
+
+.naver-colored-slider {
+  & span {
+    color: $naver-color;
+    background-color: $naver-color;
+    &:hover {
+      color: $naver-focused-color;
+      background-color: $naver-focused-color;
+    }
   }
 }
 .editor-container {
