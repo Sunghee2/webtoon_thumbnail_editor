@@ -41,8 +41,11 @@ const AddTextSetting = ({ textAttribute }) => {
             <option value="NanumSquareR" style={{ fontFamily: 'NanumSquareR' }}>
               NamumSquareR
             </option>
-            <option value="NanumSqaureRoundR" style={{ fontFamily: 'NanumSqaureRoundR' }}>
-              NanumSquareRound
+            <option value="DabangguB" style={{ fontFamily: 'DabangguB' }}>
+              DabangguB
+            </option>
+            <option value="CrayonM" style={{ fontFamily: 'CrayonM' }}>
+              CrayonM
             </option>
           </Select>
         </FormControl>
