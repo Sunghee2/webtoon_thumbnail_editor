@@ -6,7 +6,6 @@ import { CropperInfoContext } from '../context';
 
 const Cropper = ({ startCropperResize, startCropperMove }) => {
   const { state } = useContext(CropperInfoContext);
-
   return (
     <div
       role="button"
@@ -61,4 +60,4 @@ Cropper.propTypes = {
   startCropperMove: propTypes.func.isRequired,
 };
 
-export default Cropper;
+export default React.memo(Cropper);

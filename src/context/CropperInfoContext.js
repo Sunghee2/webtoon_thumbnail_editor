@@ -6,122 +6,66 @@ const initialState = {
   top: 0,
   width: 0,
   height: 0,
+  isWide: true,
 };
-const getRightSize = (current, min, max) => {
-  if (current < 0) {
-    return min;
-  }
-  return Math.min(current, max);
-};
-const reducer = (state, action) => {
-  const {
-    type,
-    offsetTop,
-    offsetLeft,
-    width,
-    height,
-    cropperChange,
-    diffX,
-    diffY,
-    canvasScale,
-  } = action;
 
+const reducer = (state, action) => {
+  const { type, offsetTop, offsetLeft, width, height, nextCropper, changeY } = action;
   switch (type) {
     case 'init':
       return {
+        ...state,
         left: offsetLeft,
         top: offsetTop,
         width,
-        height,
+        height: state.isWide ? (width * 9) / 16 : (width * 4) / 3,
+      };
+    case 'wide':
+      return {
+        ...state,
+        isWide: true,
+        height: (state.width * 9) / 16,
+      };
+    case 'tall':
+      return {
+        ...state,
+        isWide: false,
+        top: changeY || state.top,
+        height: (state.width * 4) / 3,
       };
     case 'se':
       return {
         ...state,
-        width: getRightSize(
-          cropperChange.prevWidth - diffX,
-          10,
-          canvasScale.width - cropperChange.prevX,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight - diffY,
-          10,
-          canvasScale.height - cropperChange.prevY,
-        ),
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'ne':
       return {
         ...state,
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth - diffX,
-          10,
-          canvasScale.width - cropperChange.prevX,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight + diffY,
-          10,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
+        top: nextCropper.y,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'sw':
       return {
         ...state,
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth + diffX,
-          10,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight - diffY,
-          10,
-          canvasScale.height - cropperChange.prevY,
-        ),
+        left: nextCropper.x,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'nw':
       return {
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          cropperChange.prevY + cropperChange.prevHeight,
-        ),
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        width: getRightSize(
-          cropperChange.prevWidth + diffX,
-          10,
-          cropperChange.prevX + cropperChange.prevWidth,
-        ),
-        height: getRightSize(
-          cropperChange.prevHeight + diffY,
-          10,
-          cropperChange.prevHeight + cropperChange.prevY,
-        ),
+        ...state,
+        top: nextCropper.y,
+        left: nextCropper.x,
+        width: nextCropper.width,
+        height: state.isWide ? (nextCropper.width * 9) / 16 : (nextCropper.width * 4) / 3,
       };
     case 'move':
       return {
         ...state,
-        top: getRightSize(
-          cropperChange.prevY - diffY,
-          0,
-          canvasScale.height - cropperChange.prevHeight,
-        ),
-        left: getRightSize(
-          cropperChange.prevX - diffX,
-          0,
-          canvasScale.width - cropperChange.prevWidth,
-        ),
+        top: nextCropper.y,
+        left: nextCropper.x,
       };
     default:
       return initialState;

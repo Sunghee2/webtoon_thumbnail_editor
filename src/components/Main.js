@@ -59,14 +59,14 @@ const Main = () => {
     // },
   };
 
-  useEffect(() => {
-    if (Object.keys(canvasScale).length) {
-      const canvasEl = canvasRef.current;
+  // useEffect(() => {
+  //   if (Object.keys(canvasScale).length) {
+  //     const canvasEl = canvasRef.current;
 
-      canvasEl.style.width = `${canvasScale.width}px`;
-      canvasEl.style.height = `${canvasScale.height}px`;
-    }
-  }, [canvasScale]);
+  //     canvasEl.style.width = `${canvasScale.width}px`;
+  //     canvasEl.style.height = `${canvasScale.height}px`;
+  //   }
+  // }, [canvasScale]);
 
   const openImage = async evt => {
     const img = evt.target.files[0];
@@ -112,8 +112,7 @@ const Main = () => {
           type: 'init',
           offsetLeft,
           offsetTop,
-          width: canvasScale.width,
-          height: canvasScale.height,
+          width: canvasEl.width / 2,
         });
         adjustDispatch({ type: 'RESET' });
       }
@@ -144,19 +143,33 @@ const Main = () => {
       const canvasEl = canvasRef.current;
       const ctx = canvasEl.getContext('2d');
       const scale = getScale();
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+      canvasEl.width = state.isWide ? 800 : 300;
+      canvasEl.height = state.isWide ? 450 : 400;
+      const { width, height, offsetTop, offsetLeft } = canvasEl;
       ctx.drawImage(
         currentImage,
-        state.left * scale.x,
-        state.top * scale.y,
+        (state.left - offsetLeft) * scale.x,
+        (state.top - offsetTop) * scale.y,
         state.width * scale.x,
         state.height * scale.y,
-        state.left,
-        state.top,
-        state.width,
-        state.height,
+        0,
+        0,
+        width,
+        height,
       );
-
+      setCanvasScale({
+        left: offsetLeft,
+        top: offsetTop,
+        width,
+        height,
+      });
+      dispatch({
+        type: 'init',
+        offsetLeft,
+        offsetTop,
+        width: canvasEl.width / 2,
+      });
       saveNewImage();
     };
     setCropIsActive(false);
@@ -213,6 +226,7 @@ const Main = () => {
             canvasScale={canvasScale}
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
+            canvasRef={canvasRef}
           >
             <canvas className="editor" ref={canvasRef} />
             {textContents.length > 0 && (
