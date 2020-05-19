@@ -60,12 +60,8 @@ const Main = () => {
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
-      const canvasEl = canvasRef.current;
-
-      canvasEl.style.width = `${canvasScale.width}px`;
-      canvasEl.style.height = `${canvasScale.height}px`;
-      backgroundCanvas.style.width = canvasEl.style.width;
-      backgroundCanvas.style.height = canvasEl.style.height;
+      backgroundCanvas.width = canvasRef.current.width;
+      backgroundCanvas.height = canvasRef.current.height;
     }
   }, [canvasScale]);
 
@@ -135,10 +131,11 @@ const Main = () => {
     newImg.onload = () => setImgEl(newImg);
 
     const backgroundContext = backgroundCanvas.getContext('2d');
+    backgroundContext.clearRect(0, 0, backgroundContext.width, backgroundContext.height);
     backgroundContext.drawImage(notFilteredImgEl, sx, sy, swidth, sheight, x, y, width, height);
     const notFilteredImg = new Image();
     notFilteredImg.src = backgroundCanvas.toDataURL();
-    notFilteredImgEl.onload = () => setNotFilteredImgEl(notFilteredImg);
+    notFilteredImg.onload = () => setNotFilteredImgEl(notFilteredImg);
   };
 
   const applyCropper = e => {
@@ -164,12 +161,14 @@ const Main = () => {
         width,
         height,
       );
+
       setCanvasScale({
         left: offsetLeft,
         top: offsetTop,
         width,
         height,
       });
+
       dispatch({
         type: 'init',
         offsetLeft,
@@ -178,14 +177,14 @@ const Main = () => {
       });
 
       saveNewImage(
-        state.left * scale.x,
-        state.top * scale.y,
+        (state.left - offsetLeft) * scale.x,
+        (state.top - offsetTop) * scale.y,
         state.width * scale.x,
         state.height * scale.y,
-        state.left,
-        state.top,
-        state.width,
-        state.height,
+        0,
+        0,
+        width,
+        height,
       );
     };
     setCropIsActive(false);
