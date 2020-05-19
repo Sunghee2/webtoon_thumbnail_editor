@@ -3,15 +3,28 @@ import './styles/reset.scss';
 import './styles/base.scss';
 import Header from './components/Header';
 import Main from './components/Main';
-import Footer from './components/Footer';
-import { CropperInfoProvider } from './context/CropperInfoContext';
+// import Footer from './components/Footer';
+import {
+  AddTextProvider,
+  CropperInfoProvider,
+  AdjustProvider,
+  HistoryContextProvider,
+} from './context';
+import History from './components/History';
 
 const App = () => {
   return (
     <div className="App">
       <Header />
       <CropperInfoProvider>
-        <Main />
+        <AdjustProvider>
+          <AddTextProvider>
+            <HistoryContextProvider>
+              <Main />
+              <History />
+            </HistoryContextProvider>
+          </AddTextProvider>
+        </AdjustProvider>
       </CropperInfoProvider>
     </div>
   );

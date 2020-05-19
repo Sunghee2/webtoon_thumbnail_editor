@@ -1,63 +1,124 @@
-import React, { useRef, useState, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
+import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
+import { ChevronRight } from '@material-ui/icons';
 import '../styles/Main.scss';
-import Button from '@material-ui/core/Button';
+import readImgAsync from '../utils/FileRead';
+import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
-import { CropperInfoContext } from '../context/CropperInfoContext';
+import AddText from './AddText/AddText';
+import AddTextList from './AddText/AddTextList';
+import AddTextDraw from './AddText/AddTextDraw';
+import AdjustList from './Adjust/AdjustList';
+import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
+import Save from './Save';
 
-const Main = props => {
+const Main = () => {
   const canvasRef = useRef(null);
   const [canvasScale, setCanvasScale] = useState({});
+  const [imgEl, setImgEl] = useState(null);
+  const [cropIsActive, setCropIsActive] = useState(false);
+  const [focusedTextID, setFocusedTextID] = useState('');
+  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
+  const [visibleDrawer, setVisibleDrawer] = useState(false);
+  const [mode, setMode] = useState('');
   const { state, dispatch } = useContext(CropperInfoContext);
-  const openImage = evt => {
-    console.log(evt.target.files[0]);
+  const { textContents } = useContext(AddTextContext);
+  const [adjust, adjustDispatch] = useContext(AdjustContext);
+
+  const Modes = {
+    Crop: {
+      start: () => {
+        setCropIsActive(!cropIsActive);
+      },
+      end: () => {
+        setCropIsActive(false);
+      },
+    },
+    Adjust: {
+      start: () => {
+        setVisibleDrawer(true);
+      },
+      end: () => {
+        setVisibleDrawer(false);
+      },
+    },
+    Text: {
+      start: () => {
+        setVisibleDrawer(true);
+      },
+      end: () => {
+        setVisibleDrawer(false);
+        setFocusedTextID('');
+      },
+    },
+    // Save: {
+    //   start: () => {
+    //     setTextCanvasSaving(true);
+    //   },
+    //   end: () => {},
+    // },
+  };
+
+  // useEffect(() => {
+  //   if (Object.keys(canvasScale).length) {
+  //     const canvasEl = canvasRef.current;
+
+  //     canvasEl.style.width = `${canvasScale.width}px`;
+  //     canvasEl.style.height = `${canvasScale.height}px`;
+  //   }
+  // }, [canvasScale]);
+
+  const openImage = async evt => {
+    const img = evt.target.files[0];
+    const imgSrc = await readImgAsync(img);
     const canvasEl = canvasRef.current;
     const context = canvasEl.getContext(`2d`);
-    const img = evt.target.files[0];
-    const reader = new FileReader();
+    const image = new Image();
 
-    reader.onload = readerEvt => {
-      const image = new Image();
+    image.src = imgSrc;
+    image.onload = () => {
+      let { width, height } = image;
+      const maxWidth = 800;
 
-      image.src = readerEvt.target.result;
-      image.onload = () => {
-        const maxWidth = 800;
-        let { width } = image;
-        let { height } = image;
-
-        if (width > height) {
-          if (width > maxWidth) {
-            height *= maxWidth / width;
-            width = maxWidth;
-          }
-        } else if (height > maxWidth) {
-          width *= maxWidth / height;
-          height = maxWidth;
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
         }
-        canvasEl.width = width;
-        canvasEl.height = height;
-        context.drawImage(image, 0, 0, width, height);
-        if (canvasRef.current) {
-          const { offsetLeft, offsetTop } = canvasRef.current;
-          setCanvasScale({
-            left: offsetLeft,
-            top: offsetTop,
-            width,
-            height,
-          });
-          dispatch({ type: 'init', offsetLeft, offsetTop, width, height });
-        }
+      } else {
+        width *= maxWidth / height;
+        height = maxWidth;
+      }
+
+      canvasEl.width = width;
+      canvasEl.height = height;
+      context.drawImage(image, 0, 0, width, height);
+      const canvasData = new Image();
+      canvasData.src = canvasEl.toDataURL();
+
+      canvasData.onload = () => {
+        setImgEl(canvasData);
       };
+
+      if (canvasRef.current) {
+        const { offsetLeft, offsetTop } = canvasRef.current;
+        setCanvasScale({
+          left: offsetLeft,
+          top: offsetTop,
+          width,
+          height,
+        });
+        dispatch({
+          type: 'init',
+          offsetLeft,
+          offsetTop,
+          width: canvasEl.width / 2,
+        });
+        adjustDispatch({ type: 'RESET' });
+      }
     };
-    if (img) {
-      reader.readAsDataURL(img);
-    }
   };
 
-  const [cropIsActive, setCropIsActive] = useState(false);
-  const startCrop = e => {
-    e.preventDefault();
-    setCropIsActive(!cropIsActive);
-  };
   const getScale = () => {
     const currentImage = new Image();
     currentImage.src = canvasRef.current.toDataURL();
@@ -65,54 +126,147 @@ const Main = props => {
     const { width, height } = canvasRef.current;
     return { x: naturalWidth / width, y: naturalHeight / height };
   };
+
+  const saveNewImage = () => {
+    const newImg = new Image();
+    newImg.src = canvasRef.current.toDataURL();
+    newImg.onload = () => {
+      setImgEl(newImg);
+    };
+  };
+
   const applyCropper = e => {
     e.preventDefault();
     const currentImage = new Image();
     currentImage.src = canvasRef.current.toDataURL();
     currentImage.onload = () => {
-      const ctx = canvasRef.current.getContext('2d');
+      const canvasEl = canvasRef.current;
+      const ctx = canvasEl.getContext('2d');
       const scale = getScale();
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
+      canvasEl.width = state.isWide ? 800 : 300;
+      canvasEl.height = state.isWide ? 450 : 400;
+      const { width, height, offsetTop, offsetLeft } = canvasEl;
       ctx.drawImage(
         currentImage,
-        state.left * scale.x,
-        state.top * scale.y,
+        (state.left - offsetLeft) * scale.x,
+        (state.top - offsetTop) * scale.y,
         state.width * scale.x,
         state.height * scale.y,
-        state.left,
-        state.top,
-        state.width,
-        state.height,
+        0,
+        0,
+        width,
+        height,
       );
+      setCanvasScale({
+        left: offsetLeft,
+        top: offsetTop,
+        width,
+        height,
+      });
+      dispatch({
+        type: 'init',
+        offsetLeft,
+        offsetTop,
+        width: canvasEl.width / 2,
+      });
+      saveNewImage();
     };
     setCropIsActive(false);
   };
+
+  const drawTextCanvas = textCanvas => {
+    const context = canvasRef.current.getContext('2d');
+    context.drawImage(textCanvas, 0, 0);
+  };
+
+  const handleDrawerClose = () => {
+    setVisibleDrawer(false);
+    setFocusedTextID('');
+  };
+
+  const handleButtonClick = e => {
+    if (mode) Modes[mode].end();
+
+    Modes[e.currentTarget.id].start();
+    setMode(e.currentTarget.id);
+  };
+
   return (
-    <section>
-      <aside>
-        <Button className="open-btn" variant="contained" color="primary">
-          OPEN IMAGE
-          <input
-            className="open-file"
-            type="file"
-            accept=".jpg, .jpeg, .png"
-            onChange={openImage}
-          />
-        </Button>
-        <Button className="open-btn" variant="contained" color="primary" onClick={startCrop}>
-          Crop
-        </Button>
-      </aside>
-      <article className="editor-container horizontal">
-        <CanvasContainer
-          canvasScale={canvasScale}
-          cropIsActive={cropIsActive}
-          applyCropper={applyCropper}
-        >
-          <canvas className="editor" ref={canvasRef} />
-        </CanvasContainer>
-      </article>
-    </section>
+    <>
+      <section>
+        <aside>
+          <Button className="open-btn" variant="contained" color="primary">
+            OPEN IMAGE
+            <input
+              className="open-file"
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              onChange={openImage}
+            />
+          </Button>
+
+          {imgEl &&
+            Object.keys(Modes).map(key => (
+              <Button
+                key={key}
+                id={key}
+                className="open-btn"
+                variant="contained"
+                color="primary"
+                onClick={handleButtonClick}
+              >
+                {key}
+              </Button>
+            ))}
+          {imgEl && <Save canvasRef={canvasRef} />}
+        </aside>
+        <article className="editor-container horizontal">
+          <CanvasContainer
+            canvasScale={canvasScale}
+            cropIsActive={cropIsActive}
+            applyCropper={applyCropper}
+            canvasRef={canvasRef}
+          >
+            <canvas className="editor" ref={canvasRef} />
+            {textContents.length > 0 && (
+              <AddTextList
+                focusedTextID={focusedTextID}
+                setFocusedTextID={setFocusedTextID}
+                canvasScale={canvasScale}
+                textMode={mode === 'Text'}
+              />
+            )}
+          </CanvasContainer>
+          {textCanvasIsSaving && (
+            <AddTextDraw
+              canvasScale={canvasScale}
+              setFocusedTextID={setFocusedTextID}
+              mergingCanvas={drawTextCanvas}
+              setTextCanvasSaving={setTextCanvasSaving}
+            />
+          )}
+        </article>
+      </section>
+      <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
+        <div className="drawer">
+          <IconButton className="close-drawer" onClick={handleDrawerClose}>
+            <ChevronRight />
+          </IconButton>
+          <Divider />
+          <div className="drawer-content">
+            {mode === 'Text' && (
+              <AddText
+                focusedTextID={focusedTextID}
+                canvasScale={canvasScale}
+                setFocusedTextID={setFocusedTextID}
+              />
+            )}
+            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={imgEl} />}
+          </div>
+        </div>
+      </Drawer>
+    </>
   );
 };
 
