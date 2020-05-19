@@ -41,20 +41,17 @@ const Save = () => {
       return;
     }
     const canvasEl = document.getElementById('editor');
-    if (canvasEl) {
-      const canvasData = canvasEl.toDataURL();
-      const link = document.getElementById('link');
 
-      link.setAttribute('download', `${name}.png`);
-      link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
-      link.click();
+    const canvasData = canvasEl.toDataURL();
+    const link = document.getElementById('link');
 
-      canvasEl.toBlob(blob => {
-        setHistory(name, blob);
-      });
-    } else {
-      window.alert('이미지가 없습니다');
-    }
+    link.setAttribute('download', `${name}.png`);
+    link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
+    link.click();
+
+    canvasEl.toBlob(blob => {
+      setHistory(name, blob);
+    });
   };
 
   const handleNameChange = e => {
