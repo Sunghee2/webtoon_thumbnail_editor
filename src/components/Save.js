@@ -41,8 +41,14 @@ const Save = () => {
       return;
     }
     const canvasEl = document.getElementById('editor');
-
+    const blankCanvas = document.createElement('canvas');
     const canvasData = canvasEl.toDataURL();
+
+    if (canvasData === blankCanvas.toDataURL()) {
+      window.alert('이미지가 없습니다');
+      return;
+    }
+
     const link = document.getElementById('link');
 
     link.setAttribute('download', `${name}.png`);
