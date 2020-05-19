@@ -1,15 +1,7 @@
 import React, { useContext } from 'react';
-import { Slider, Tooltip } from '@material-ui/core';
+import { Slider } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { AddTextContext } from '../../context';
-
-function ValueLabelComponent({ children, open, value }) {
-  return (
-    <Tooltip open={open} enterTouchDelay={0} placement="top" title={value}>
-      {children}
-    </Tooltip>
-  );
-}
 
 const AddTextSlider = ({ id, fontSize }) => {
   const { textContentsDispatch } = useContext(AddTextContext);
@@ -19,8 +11,8 @@ const AddTextSlider = ({ id, fontSize }) => {
   return (
     <Slider
       className="naver-colored-slider"
-      ValueLabelComponent={ValueLabelComponent}
       aria-label="custom thumb label"
+      valueLabelDisplay="auto"
       value={fontSize}
       onChange={handleChange}
       min={1}
@@ -30,12 +22,6 @@ const AddTextSlider = ({ id, fontSize }) => {
 };
 
 export default AddTextSlider;
-
-ValueLabelComponent.propTypes = {
-  children: PropTypes.element.isRequired,
-  open: PropTypes.bool.isRequired,
-  value: PropTypes.number.isRequired,
-};
 
 AddTextSlider.propTypes = {
   id: PropTypes.string.isRequired,

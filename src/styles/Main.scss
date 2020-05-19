@@ -118,9 +118,11 @@ button:focus {
   & label.Mui-focused {
     color: $naver-focused-color;
   }
-
   & label {
     color: $naver-color;
+  }
+  & option {
+    background-color: $background-color !important;
   }
 
   & .MuiOutlinedInput-root {
@@ -129,7 +131,7 @@ button:focus {
     }
     & fieldset {
       border-color: $naver-color;
-      color: $naver-color;
+      color: white;
     }
     &:hover fieldset {
       border-color: $naver-focused-color;
@@ -148,10 +150,10 @@ button:focus {
 
 .naver-colored-slider {
   & span {
-    color: $naver-color;
+    color: white;
     background-color: $naver-color;
     &:hover {
-      color: $naver-focused-color;
+      color: white;
       background-color: $naver-focused-color;
     }
   }
