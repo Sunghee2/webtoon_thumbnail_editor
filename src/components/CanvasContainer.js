@@ -198,9 +198,15 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
         {cropIsActive && (
           <>
             <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
-            <Button color="primary" onClick={applyCropper}>
-              적용하기
-            </Button>
+            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+              <Button color="primary" onClick={applyCropper}>
+                적용하기
+              </Button>
+              <div>
+                <Button onClick={handleClickLeft}>왼쪽</Button>
+                <Button onClick={handleClickRight}>오른쪽</Button>
+              </div>
+            </div>
           </>
         )}
       </div>
