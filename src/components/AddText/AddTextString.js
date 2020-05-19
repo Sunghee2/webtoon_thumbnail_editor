@@ -16,19 +16,20 @@ const AddTextString = ({
     const textContent = textContentRef.current;
     let X = left;
     let Y = top;
+    const padding = canvasScale.left;
 
     const nextX = dX => {
       const nX = X + dX;
-      const endX = width - textContent.offsetWidth;
-      if (nX < 0) return 0;
+      const endX = width - textContent.offsetWidth + padding;
+      if (nX < padding) return padding;
       if (nX > endX) return endX;
       return nX;
     };
 
     const nextY = dY => {
       const nY = Y + dY;
-      const endY = height - textContent.offsetHeight;
-      if (nY < 0) return 0;
+      const endY = height - textContent.offsetHeight + padding;
+      if (nY < padding) return padding;
       if (nY > endY) return endY;
       return nY;
     };
@@ -85,6 +86,7 @@ AddTextString.propTypes = {
   canvasScale: PropTypes.shape({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
+    left: PropTypes.number.isRequired,
   }).isRequired,
   textMode: PropTypes.bool.isRequired,
 };
