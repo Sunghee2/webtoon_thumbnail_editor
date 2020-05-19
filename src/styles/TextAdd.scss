@@ -102,10 +102,19 @@ $focusedColor: rgb(3, 207, 93);
 }
 
 @font-face {
-  font-family: 'NanumSquareRoundR';
-  src: url('./fonts/NanumSquareRoundR.eot'); /* IE9 Compat Modes */
-  src: url('./fonts/NanumSquareRoundR.eot?#iefix') format('embedded-opentype'),
-    /* IE6-IE8 */ url('./fonts/NanumSquareRoundR.woff2') format('woff2'),
-    /* Modern Browsers */ url('./fonts/NanumSquareRoundR.woff') format('woff'),
-    /* Modern Browsers */ url('./fonts/NanumSquareRoundR.ttf') format('truetype'); /* Safari, Android, iOS */
+  font-family: 'DabangguB';
+  src: url('./fonts/DabangguB.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/DabangguB.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('./fonts/DabangguB.woff2') format('woff2'),
+    /* Modern Browsers */ url('./fonts/DabangguB.woff') format('woff'),
+    /* Modern Browsers */ url('./fonts/DabangguB.ttf') format('truetype'); /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'CrayonM';
+  src: url('./fonts/CrayonM.eot'); /* IE9 Compat Modes */
+  src: url('./fonts/CrayonM.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('./fonts/CrayonM.woff2') format('woff2'),
+    /* Modern Browsers */ url('./fonts/CrayonM.woff') format('woff'),
+    /* Modern Browsers */ url('./fonts/CrayonM.ttf') format('truetype'); /* Safari, Android, iOS */
 }
