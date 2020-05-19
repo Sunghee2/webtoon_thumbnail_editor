@@ -2,6 +2,8 @@ const drawText = (canvas, textContents) => {
   const context = canvas.getContext('2d');
   const padding = 10;
   const border = 3;
+  const containerPadding = parseFloat(getComputedStyle(document.documentElement).fontSize, 0) * 3;
+
   textContents.forEach(item => {
     const { width, font, text, fontSize } = item;
     let { top, left } = item;
@@ -14,8 +16,8 @@ const drawText = (canvas, textContents) => {
     const textSplits = text.split(' ');
     const maxWidth = width - padding * 2;
     let line = '';
-    left += width / 2 + border;
-    top += padding + border;
+    left += width / 2 + border * 2 - containerPadding;
+    top += padding - containerPadding;
 
     for (let i = 0; i < textSplits.length; i += 1) {
       let test = textSplits[i];
