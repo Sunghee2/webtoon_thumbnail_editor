@@ -7,10 +7,8 @@ import CanvasTypeModal from './CanvasTypeModal';
 import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
-import AddTextDraw from './AddText/AddTextDraw';
 import AdjustList from './Adjust/AdjustList';
 import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
-import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -18,7 +16,6 @@ const Main = () => {
   const [imgEl, setImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
-  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
   const [visibleDrawer, setVisibleDrawer] = useState(false);
   const [mode, setMode] = useState('');
   const { state, dispatch } = useContext(CropperInfoContext);
@@ -51,12 +48,6 @@ const Main = () => {
         setFocusedTextID('');
       },
     },
-    // Save: {
-    //   start: () => {
-    //     setTextCanvasSaving(true);
-    //   },
-    //   end: () => {},
-    // },
   };
 
   useEffect(() => {
@@ -162,11 +153,6 @@ const Main = () => {
     setCropIsActive(false);
   };
 
-  const drawTextCanvas = textCanvas => {
-    const context = canvasRef.current.getContext('2d');
-    context.drawImage(textCanvas, 0, 0);
-  };
-
   const handleDrawerClose = () => {
     setVisibleDrawer(false);
     setFocusedTextID('');
@@ -223,14 +209,6 @@ const Main = () => {
               />
             )}
           </CanvasContainer>
-          {textCanvasIsSaving && (
-            <AddTextDraw
-              canvasScale={canvasScale}
-              setFocusedTextID={setFocusedTextID}
-              mergingCanvas={drawTextCanvas}
-              setTextCanvasSaving={setTextCanvasSaving}
-            />
-          )}
         </article>
       </section>
       <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
