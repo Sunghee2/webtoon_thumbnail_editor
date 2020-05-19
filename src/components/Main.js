@@ -206,7 +206,6 @@ const Main = () => {
                 {key}
               </Button>
             ))}
-          {imgEl && <Save canvasRef={canvasRef} />}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
@@ -214,7 +213,7 @@ const Main = () => {
             cropIsActive={cropIsActive}
             applyCropper={applyCropper}
           >
-            <canvas className="editor" ref={canvasRef} />
+            <canvas id="editor" className="editor" ref={canvasRef} />
             {textContents.length > 0 && (
               <AddTextList
                 focusedTextID={focusedTextID}

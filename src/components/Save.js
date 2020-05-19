@@ -43,19 +43,30 @@ const Save = props => {
       return;
     }
 
-    if (canvasRef.current) {
-      const canvasEl = canvasRef.current;
-      const canvasData = canvasEl.toDataURL();
-      const link = document.getElementById('link');
+    // if (canvasRef.current) {
+    //   const canvasEl = canvasRef.current;
+    //   const canvasData = canvasEl.toDataURL();
+    //   const link = document.getElementById('link');
 
-      link.setAttribute('download', `${name}.png`);
-      link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
-      link.click();
+    //   link.setAttribute('download', `${name}.png`);
+    //   link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
+    //   link.click();
 
-      canvasRef.current.toBlob(blob => {
-        setHistory(name, blob);
-      });
-    }
+    //   canvasRef.current.toBlob(blob => {
+    //     setHistory(name, blob);
+    //   });
+    // }
+    const canvasEl = document.getElementById('editor');
+    const canvasData = canvasEl.toDataURL();
+    const link = document.getElementById('link');
+
+    link.setAttribute('download', `${name}.png`);
+    link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
+    link.click();
+
+    canvasEl.toBlob(blob => {
+      setHistory(name, blob);
+    });
   };
 
   const handleNameChange = e => {
