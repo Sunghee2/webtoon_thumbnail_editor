@@ -100,7 +100,12 @@ const Main = () => {
       canvasData.src = canvasEl.toDataURL();
 
       canvasData.onload = () => {
+        setImgEl(canvasData);
         setNotFilteredImgEl(canvasData);
+
+        const backContext = backgroundCanvas.getContext(`2d`);
+        backContext.clearRect(0, 0, backContext.width, backContext.height);
+        backContext.drawImage(image, 0, 0, width, height);
       };
 
       if (canvasRef.current) {
