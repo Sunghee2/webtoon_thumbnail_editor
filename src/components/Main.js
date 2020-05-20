@@ -145,12 +145,12 @@ const Main = () => {
     const currentImage = new Image();
     currentImage.src = canvas.toDataURL();
     currentImage.onload = () => {
-      const test = canvas.getContext('2d');
-      test.clearRect(0, 0, canvas.width, canvas.height);
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
       canvas.width = state.isWide ? 800 : 300;
       canvas.height = state.isWide ? 450 : 400;
       const { width, height } = canvas;
-      test.drawImage(
+      context.drawImage(
         currentImage,
         (state.left - offsetLeft) * scale.x,
         (state.top - offsetTop) * scale.y,
