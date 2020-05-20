@@ -15,10 +15,10 @@ const AdjustList = ({ canvasRef, image }) => {
       const context = canvasRef.current.getContext('2d');
       const { width, height } = canvasRef.current;
 
-      const backgroundCanvas = new OffscreenCanvas(width, height);
-      const backgroundContext = backgroundCanvas.getContext('2d');
-      backgroundContext.drawImage(image, 0, 0, width, height);
-      let imgData = backgroundContext.getImageData(0, 0, width, height);
+      const backCanvas = new OffscreenCanvas(width, height);
+      const backContext = backCanvas.getContext('2d');
+      backContext.drawImage(image, 0, 0, width, height);
+      let imgData = backContext.getImageData(0, 0, width, height);
 
       Object.entries(adjust).forEach(([key, value]) => {
         if (value !== defaultAdjust[key].default) {
@@ -40,10 +40,10 @@ const AdjustList = ({ canvasRef, image }) => {
           }
         }
       });
-      backgroundContext.putImageData(imgData, 0, 0);
-      const backgroundImage = backgroundCanvas.transferToImageBitmap();
+      backContext.putImageData(imgData, 0, 0);
+      const backImage = backCanvas.transferToImageBitmap();
       context.clearRect(0, 0, width, height);
-      context.drawImage(backgroundImage, 0, 0);
+      context.drawImage(backImage, 0, 0);
     }
   }, [adjust]);
 

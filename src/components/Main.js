@@ -12,7 +12,7 @@ import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
 
 const Main = () => {
   const canvasRef = useRef(null);
-  const [backgroundCanvas, setBackgroundCanvas] = useState(null);
+  const [backCanvas, setBackCanvas] = useState(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [imgEl, setImgEl] = useState(null);
   const [notFilteredImgEl, setNotFilteredImgEl] = useState(null);
@@ -61,13 +61,13 @@ const Main = () => {
     const canvas = document.createElement('canvas');
     canvas.width = canvasRef.current.width;
     canvas.height = canvasRef.current.height;
-    setBackgroundCanvas(canvas);
+    setBackCanvas(canvas);
   }, []);
 
   useEffect(() => {
     if (Object.keys(canvasScale).length) {
-      backgroundCanvas.width = canvasRef.current.width;
-      backgroundCanvas.height = canvasRef.current.height;
+      backCanvas.width = canvasRef.current.width;
+      backCanvas.height = canvasRef.current.height;
     }
   }, [canvasScale]);
 
@@ -103,7 +103,7 @@ const Main = () => {
         setImgEl(canvasData);
         setNotFilteredImgEl(canvasData);
 
-        const backContext = backgroundCanvas.getContext(`2d`);
+        const backContext = backCanvas.getContext(`2d`);
         backContext.clearRect(0, 0, backContext.width, backContext.height);
         backContext.drawImage(image, 0, 0, width, height);
       };
@@ -137,7 +137,7 @@ const Main = () => {
 
   const saveNewImage = () => {
     const notFilteredImg = new Image();
-    notFilteredImg.src = backgroundCanvas.toDataURL();
+    notFilteredImg.src = backCanvas.toDataURL();
     notFilteredImg.onload = () => setNotFilteredImgEl(notFilteredImg);
   };
 
@@ -190,7 +190,7 @@ const Main = () => {
         height,
       );
 
-      cropCanvas(backgroundCanvas, scale, offsetTop, offsetLeft, true);
+      cropCanvas(backCanvas, scale, offsetTop, offsetLeft, true);
 
       setCanvasScale({
         left: offsetLeft,
@@ -260,7 +260,7 @@ const Main = () => {
     dispatch({ type: 'rotate', rotateCount });
 
     rotateCanvas(canvasEl.getContext('2d'), imgEl, rotateCount, width, height);
-    rotateCanvas(backgroundCanvas.getContext('2d'), notFilteredImgEl, rotateCount, width, height);
+    rotateCanvas(backCanvas.getContext('2d'), notFilteredImgEl, rotateCount, width, height);
   };
 
   return (
