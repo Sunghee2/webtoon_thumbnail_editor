@@ -26,7 +26,12 @@ const Main = () => {
   const Modes = {
     Crop: {
       start: () => {
-        setCropIsActive(!cropIsActive);
+        const img = new Image();
+        img.src = canvasRef.current.toDataURL();
+        img.onload = () => {
+          setImgEl(img);
+          setCropIsActive(!cropIsActive);
+        };
       },
       end: () => {
         setCropIsActive(false);
