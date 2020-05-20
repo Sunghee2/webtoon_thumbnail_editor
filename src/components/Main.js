@@ -13,6 +13,7 @@ const Main = () => {
   const canvasRef = useRef(null);
   const [backgroundCanvas, setBackgroundCanvas] = useState(null);
   const [canvasScale, setCanvasScale] = useState({});
+  const [imgEl, setImgEl] = useState(null);
   const [notFilteredImgEl, setNotFilteredImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
@@ -196,38 +197,46 @@ const Main = () => {
     setMode(e.currentTarget.id);
   };
 
-  const rotate = rightOrLeft => {
-    // 1: right, -1: left
-    const canvasEl = canvasRef.current;
-    const context = canvasEl.getContext(`2d`);
-    const { width, height } = canvasEl;
-    const rotateCount = (state.rotateCount + rightOrLeft) % 4;
-    dispatch({ type: 'rotate', rotateCount });
-
+  const rotateCanvas = (context, img, rotateCount, width, height) => {
     context.clearRect(0, 0, width, height);
     context.save();
     context.translate(width / 2, height / 2);
     context.rotate((rotateCount * (90 * Math.PI)) / 180);
     context.translate(-1 * (width / 2), -1 * (height / 2));
+
     if (rotateCount % 2) {
-      if (width > height)
+      if (width > height) {
         context.drawImage(
-          imgEl,
+          img,
           (width - height) / 2,
           (height - height ** 2 / width) / 2,
           height,
           height ** 2 / width,
         );
-      else
+      } else {
         context.drawImage(
-          imgEl,
+          img,
           (width - width ** 2 / height) / 2,
           (height - width) / 2,
           width ** 2 / height,
           width,
         );
-    } else context.drawImage(imgEl, 0, 0);
+      }
+    } else {
+      context.drawImage(img, 0, 0);
+    }
     context.restore();
+  };
+
+  const rotate = rightOrLeft => {
+    // 1: right, -1: left
+    const canvasEl = canvasRef.current;
+    const { width, height } = canvasEl;
+    const rotateCount = (state.rotateCount + rightOrLeft) % 4;
+    dispatch({ type: 'rotate', rotateCount });
+
+    rotateCanvas(canvasEl.getContext('2d'), imgEl, rotateCount, width, height);
+    rotateCanvas(backgroundCanvas.getContext('2d'), notFilteredImgEl, rotateCount, width, height);
   };
 
   return (
@@ -244,7 +253,7 @@ const Main = () => {
             />
           </Button>
 
-          {notFilteredImgEl &&
+          {imgEl &&
             Object.keys(Modes).map(key => (
               <Button
                 key={key}
