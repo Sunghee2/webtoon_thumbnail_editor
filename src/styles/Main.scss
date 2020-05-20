@@ -90,9 +90,11 @@ button:focus {
 }
 
 .editor-container {
-  width: 70%;
-  margin-left: 2rem;
+  width: 100%;
   position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 .MuiDrawer-paperAnchorDockedRight {
@@ -157,8 +159,4 @@ button:focus {
       background-color: $naver-focused-color;
     }
   }
-}
-.editor-container {
-  width: 60%;
-  position: relative;
 }
