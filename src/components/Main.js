@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
@@ -129,13 +130,35 @@ const Main = () => {
     return { x: naturalWidth / width, y: naturalHeight / height };
   };
 
-  const saveNewImage = (sx, sy, swidth, sheight, x, y, width, height) => {
-    const backgroundContext = backgroundCanvas.getContext('2d');
-    backgroundContext.clearRect(0, 0, backgroundContext.width, backgroundContext.height);
-    backgroundContext.drawImage(notFilteredImgEl, sx, sy, swidth, sheight, x, y, width, height);
+  const saveNewImage = () => {
     const notFilteredImg = new Image();
     notFilteredImg.src = backgroundCanvas.toDataURL();
     notFilteredImg.onload = () => setNotFilteredImgEl(notFilteredImg);
+  };
+
+  const cropCanvas = (canvas, scale, offsetTop, offsetLeft, isSave) => {
+    const currentImage = new Image();
+    currentImage.src = canvas.toDataURL();
+    currentImage.onload = () => {
+      const test = canvas.getContext('2d');
+      test.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = state.isWide ? 800 : 300;
+      canvas.height = state.isWide ? 450 : 400;
+      const { width, height } = canvas;
+      test.drawImage(
+        currentImage,
+        (state.left - offsetLeft) * scale.x,
+        (state.top - offsetTop) * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        0,
+        0,
+        width,
+        height,
+      );
+
+      if (isSave) saveNewImage();
+    };
   };
 
   const applyCropper = e => {
@@ -162,6 +185,8 @@ const Main = () => {
         height,
       );
 
+      cropCanvas(backgroundCanvas, scale, offsetTop, offsetLeft, true);
+
       setCanvasScale({
         left: offsetLeft,
         top: offsetTop,
@@ -175,17 +200,6 @@ const Main = () => {
         offsetTop,
         width: canvasEl.width / 2,
       });
-
-      saveNewImage(
-        (state.left - offsetLeft) * scale.x,
-        (state.top - offsetTop) * scale.y,
-        state.width * scale.x,
-        state.height * scale.y,
-        0,
-        0,
-        width,
-        height,
-      );
     };
     setCropIsActive(false);
   };
