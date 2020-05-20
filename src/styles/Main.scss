@@ -160,3 +160,10 @@ button:focus {
     }
   }
 }
+
+.naver-colored-checkbox,
+.naver-colored-button {
+  & span {
+    color: $naver-color;
+  }
+}

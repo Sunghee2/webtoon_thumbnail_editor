@@ -9,7 +9,15 @@ const AdjustCheckbox = memo(({ header, value, setValue }) => {
 
   return (
     <FormControlLabel
-      control={<Checkbox checked={value} onChange={handleChange} name={header} color="primary" />}
+      control={
+        // eslint-disable-next-line react/jsx-wrap-multilines
+        <Checkbox
+          className="naver-colored-checkbox"
+          checked={value}
+          onChange={handleChange}
+          name={header}
+        />
+      }
       label={header}
     />
   );
