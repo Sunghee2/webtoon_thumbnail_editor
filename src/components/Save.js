@@ -1,13 +1,13 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, TextField } from '@material-ui/core';
-import propTypes from 'prop-types';
 import * as firebase from 'firebase';
 import firebaseConfig from './FirebaseConfig';
-import { HistoryContext } from '../context/HistoryContext';
+import { HistoryContext, AddTextContext } from '../context';
+import drawText from '../utils/drawText';
 
-const Save = props => {
-  const { canvasRef } = props;
+const Save = () => {
   const { dispatch } = useContext(HistoryContext);
+  const { textContents, textContentsDispatch } = useContext(AddTextContext);
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   }
@@ -38,24 +38,31 @@ const Save = props => {
   const handleClick = e => {
     e.preventDefault();
     if (name.trim().length === 0) {
-      // eslint-disable-next-line no-alert
       window.alert('파일 이름을 확인해주세요');
       return;
     }
+    const canvasEl = document.getElementById('editor');
+    const blankCanvas = document.createElement('canvas');
 
-    if (canvasRef.current) {
-      const canvasEl = canvasRef.current;
-      const canvasData = canvasEl.toDataURL();
-      const link = document.getElementById('link');
+    drawText(canvasEl, textContents);
+    textContentsDispatch({ type: 'EMPTY_TEXT_CONTENTS' });
 
-      link.setAttribute('download', `${name}.png`);
-      link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
-      link.click();
+    const canvasData = canvasEl.toDataURL();
 
-      canvasRef.current.toBlob(blob => {
-        setHistory(name, blob);
-      });
+    if (canvasData === blankCanvas.toDataURL()) {
+      window.alert('이미지가 없습니다');
+      return;
     }
+
+    const link = document.getElementById('link');
+
+    link.setAttribute('download', `${name}.png`);
+    link.setAttribute('href', canvasData.replace('image/png', 'image/octet-stream'));
+    link.click();
+
+    canvasEl.toBlob(blob => {
+      setHistory(name, blob);
+    });
   };
 
   const handleNameChange = e => {
@@ -65,26 +72,23 @@ const Save = props => {
 
   return (
     <>
-      <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>
-        SAVE
-      </Button>
-      <TextField
-        className="naver-colored-text"
-        label="파일 제목"
-        margin="dense"
-        variant="outlined"
-        onChange={handleNameChange}
-      />
-      <a id="link" href="default">
-        {undefined}
-      </a>
+      <div className="save-container">
+        <TextField
+          className="naver-colored-text"
+          label="파일 제목"
+          margin="dense"
+          variant="outlined"
+          onChange={handleNameChange}
+        />
+        <Button className="open-btn" variant="contained" color="primary" onClick={handleClick}>
+          SAVE
+        </Button>
+        <a id="link" href="default">
+          {undefined}
+        </a>
+      </div>
     </>
   );
-};
-
-Save.propTypes = {
-  canvasRef: propTypes.oneOfType([propTypes.func, propTypes.shape({ current: propTypes.any })])
-    .isRequired,
 };
 
 export default Save;

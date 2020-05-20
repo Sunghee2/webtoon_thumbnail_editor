@@ -6,10 +6,8 @@ import readImgAsync from '../utils/FileRead';
 import CanvasContainer from './CanvasContainer';
 import AddText from './AddText/AddText';
 import AddTextList from './AddText/AddTextList';
-import AddTextDraw from './AddText/AddTextDraw';
 import AdjustList from './Adjust/AdjustList';
 import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
-import Save from './Save';
 
 const Main = () => {
   const canvasRef = useRef(null);
@@ -17,7 +15,6 @@ const Main = () => {
   const [imgEl, setImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
-  const [textCanvasIsSaving, setTextCanvasSaving] = useState(false);
   const [visibleDrawer, setVisibleDrawer] = useState(false);
   const [mode, setMode] = useState('');
   const { state, dispatch } = useContext(CropperInfoContext);
@@ -50,12 +47,6 @@ const Main = () => {
         setFocusedTextID('');
       },
     },
-    // Save: {
-    //   start: () => {
-    //     setTextCanvasSaving(true);
-    //   },
-    //   end: () => {},
-    // },
   };
 
   const openImage = async evt => {
@@ -165,11 +156,6 @@ const Main = () => {
     setCropIsActive(false);
   };
 
-  const drawTextCanvas = textCanvas => {
-    const context = canvasRef.current.getContext('2d');
-    context.drawImage(textCanvas, 0, 0);
-  };
-
   const handleDrawerClose = () => {
     setVisibleDrawer(false);
     setFocusedTextID('');
@@ -243,7 +229,6 @@ const Main = () => {
                 {key}
               </Button>
             ))}
-          {imgEl && <Save canvasRef={canvasRef} />}
         </aside>
         <article className="editor-container horizontal">
           <CanvasContainer
@@ -253,7 +238,7 @@ const Main = () => {
             rotate={rotate}
             canvasRef={canvasRef}
           >
-            <canvas className="editor" ref={canvasRef} />
+            <canvas id="editor" className="editor" ref={canvasRef} />
             {textContents.length > 0 && (
               <AddTextList
                 focusedTextID={focusedTextID}
@@ -263,14 +248,6 @@ const Main = () => {
               />
             )}
           </CanvasContainer>
-          {textCanvasIsSaving && (
-            <AddTextDraw
-              canvasScale={canvasScale}
-              setFocusedTextID={setFocusedTextID}
-              mergingCanvas={drawTextCanvas}
-              setTextCanvasSaving={setTextCanvasSaving}
-            />
-          )}
         </article>
       </section>
       <Drawer variant="persistent" anchor="right" open={visibleDrawer}>
