@@ -176,8 +176,16 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
       {cropIsActive && (
         <FormControl component="fieldset">
           <RadioGroup value={cropSize} onChange={changeCropSize}>
-            <FormControlLabel value="wide" control={<Radio />} label="가로형" />
-            <FormControlLabel value="tall" control={<Radio />} label="세로형" />
+            <FormControlLabel
+              value="wide"
+              control={<Radio className="naver-colored-button" />}
+              label="가로형"
+            />
+            <FormControlLabel
+              value="tall"
+              control={<Radio className="naver-colored-button" />}
+              label="세로형"
+            />
           </RadioGroup>
         </FormControl>
       )}
