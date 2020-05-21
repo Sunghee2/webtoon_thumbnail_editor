@@ -190,32 +190,32 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
         {cropIsActive && (
           <>
             <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <div className="cropper-button-container">
+              <div>
+                <Button onClick={handleClickLeft} style={{ marginRight: '8px' }}>
+                  왼쪽 회전
+                </Button>
+                <Button onClick={handleClickRight}>오른쪽 회전</Button>
+              </div>
+              <FormControl className="radio-container">
+                <RadioGroup value={cropSize} onChange={changeCropSize}>
+                  <FormControlLabel
+                    value="wide"
+                    control={<Radio className="naver-colored-button" />}
+                    label="가로형"
+                  />
+                  <FormControlLabel
+                    value="tall"
+                    control={<Radio className="naver-colored-button" />}
+                    label="세로형"
+                  />
+                </RadioGroup>
+              </FormControl>
               <Button color="primary" onClick={applyCropper}>
                 적용하기
               </Button>
-              <div>
-                <Button onClick={handleClickLeft}>왼쪽</Button>
-                <Button onClick={handleClickRight}>오른쪽</Button>
-              </div>
             </div>
           </>
-        )}
-        {cropIsActive && (
-          <FormControl component="fieldset">
-            <RadioGroup value={cropSize} onChange={changeCropSize}>
-              <FormControlLabel
-                value="wide"
-                control={<Radio className="naver-colored-button" />}
-                label="가로형"
-              />
-              <FormControlLabel
-                value="tall"
-                control={<Radio className="naver-colored-button" />}
-                label="세로형"
-              />
-            </RadioGroup>
-          </FormControl>
         )}
       </div>
     </>

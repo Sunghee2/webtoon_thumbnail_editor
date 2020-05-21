@@ -239,6 +239,7 @@ const Main = () => {
             canvasRef={canvasRef}
           >
             <canvas id="editor" className="editor" ref={canvasRef} />
+
             {textContents.length > 0 && (
               <AddTextList
                 focusedTextID={focusedTextID}
