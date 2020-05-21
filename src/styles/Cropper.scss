@@ -44,6 +44,22 @@
   padding: 3rem;
   width: fit-content;
 }
+
 fieldset {
   left: 3rem;
+}
+
+.radio-container {
+  & .MuiFormGroup-root {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.cropper-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-top: 16px;
+  min-width: 500px;
 }

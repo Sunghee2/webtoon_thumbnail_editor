@@ -9,7 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import { CropperInfoContext } from '../context';
 import Cropper from './Cropper';
 
-const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, rotate }) => {
+const CanvasContainer = ({
+  children,
+  cropIsActive,
+  applyCropper,
+  canvasScale,
+  rotate,
+  setCanvasScale,
+}) => {
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
@@ -173,22 +180,6 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
 
   return (
     <>
-      {cropIsActive && (
-        <FormControl component="fieldset">
-          <RadioGroup value={cropSize} onChange={changeCropSize}>
-            <FormControlLabel
-              value="wide"
-              control={<Radio className="naver-colored-button" />}
-              label="가로형"
-            />
-            <FormControlLabel
-              value="tall"
-              control={<Radio className="naver-colored-button" />}
-              label="세로형"
-            />
-          </RadioGroup>
-        </FormControl>
-      )}
       <div
         role="button"
         tabIndex={0}
@@ -205,15 +196,35 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
         {children}
         {cropIsActive && (
           <>
-            <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
-            <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Cropper
+              startCropperResize={startCropperResize}
+              startCropperMove={startCropperMove}
+              setCanvasScale={setCanvasScale}
+            />
+            <div className="cropper-button-container">
+              <div>
+                <Button onClick={handleClickLeft} style={{ marginRight: '8px' }}>
+                  왼쪽 회전
+                </Button>
+                <Button onClick={handleClickRight}>오른쪽 회전</Button>
+              </div>
+              <FormControl className="radio-container">
+                <RadioGroup value={cropSize} onChange={changeCropSize}>
+                  <FormControlLabel
+                    value="wide"
+                    control={<Radio className="naver-colored-button" />}
+                    label="가로형"
+                  />
+                  <FormControlLabel
+                    value="tall"
+                    control={<Radio className="naver-colored-button" />}
+                    label="세로형"
+                  />
+                </RadioGroup>
+              </FormControl>
               <Button color="primary" onClick={applyCropper}>
                 적용하기
               </Button>
-              <div>
-                <Button onClick={handleClickLeft}>왼쪽</Button>
-                <Button onClick={handleClickRight}>오른쪽</Button>
-              </div>
             </div>
           </>
         )}
@@ -228,6 +239,7 @@ CanvasContainer.propTypes = {
   applyCropper: PropTypes.func.isRequired,
   canvasScale: PropTypes.objectOf(number).isRequired,
   rotate: PropTypes.func.isRequired,
+  setCanvasScale: PropTypes.func.isRequired,
 };
 
 export default CanvasContainer;
