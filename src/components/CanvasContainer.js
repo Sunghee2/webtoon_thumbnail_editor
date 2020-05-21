@@ -18,6 +18,7 @@ const CanvasContainer = ({
   setCanvasScale,
 }) => {
   const { state, dispatch } = useContext(CropperInfoContext);
+  const [activeMove, setActiveMove] = useState(false);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
   const [prevCropper, setPrevCropper] = useState({
@@ -37,17 +38,17 @@ const CanvasContainer = ({
     y: 0,
   });
 
-  const getRightSize = (current, min) => {
+  const getRightSize = (current, min, max) => {
     if (current < min) {
       return min;
     }
-    let max = canvasScale.height + canvasScale.top - state.top;
+    let maxH = canvasScale.height + canvasScale.top - state.top;
     if (state.isWide) {
-      max = (max * 16) / 9;
-      return Math.min(current, max);
+      maxH = (maxH * 16) / 9;
+      return Math.min(current, max, maxH);
     }
-    max = (max * 3) / 4;
-    return Math.min(current, max);
+    maxH = (maxH * 3) / 4;
+    return Math.min(current, max, maxH);
   };
   const getRightPos = (current, min, max) => {
     if (current < min) {
@@ -64,10 +65,10 @@ const CanvasContainer = ({
       dispatch({ type: 'wide' });
     } else {
       setCropSize('tall');
-      const nextW = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
-      if (nextW + state.top > canvasScale.height) {
-        const changeY = canvasScale.height + canvasScale.top - nextW;
-        dispatch({ type: 'tall', changeY });
+      const nextH = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
+      if (nextH + state.top > canvasScale.height) {
+        const changeY = canvasScale.height + canvasScale.top - nextH;
+        dispatch({ type: 'tall', changeY, nextH });
       } else {
         dispatch({ type: 'tall' });
       }
@@ -104,7 +105,7 @@ const CanvasContainer = ({
     const nextY = getRightPos(
       prevCropper.y - diffY,
       canvasScale.top,
-      canvasScale.height + canvasScale.top - prevCropper.height,
+      canvasScale.height + canvasScale.top - state.height,
     );
     setNextCropper(prev => ({ ...prev, x: nextX, y: nextY }));
   };
@@ -113,11 +114,17 @@ const CanvasContainer = ({
     let nextWidth;
     let nextHeight;
     if (direction === 'se' || direction === 'ne') {
-      nextWidth = getRightSize(prevCropper.width - diffX, 20, canvasScale.width - prevCropper.x);
-      nextHeight = getRightSize(prevCropper.height - diffY, 20, canvasScale.height - prevCropper.y);
+      nextWidth = getRightSize(
+        prevCropper.width - diffX,
+        20,
+        canvasScale.width + canvasScale.left - prevCropper.x,
+      );
     } else {
-      nextWidth = getRightSize(prevCropper.width + diffX, 20, canvasScale.width - prevCropper.x);
-      nextHeight = getRightSize(prevCropper.height + diffY, 20, canvasScale.height - state.top);
+      nextWidth = getRightSize(
+        prevCropper.width + diffX,
+        20,
+        prevCropper.width + prevCropper.x - canvasScale.left,
+      );
     }
     setNextCropper(prev => ({ ...prev, width: nextWidth, height: nextHeight }));
   };
@@ -146,8 +153,6 @@ const CanvasContainer = ({
     setActiveResize(false);
   };
 
-  const [activeMove, setActiveMove] = useState(false);
-
   const startCropperMove = e => {
     if (e.target.dataset.dir) return;
     e.preventDefault();
@@ -159,12 +164,14 @@ const CanvasContainer = ({
     e.preventDefault();
     if (activeMove) {
       getNextPosition(e);
-      dispatch({ type: 'move', nextCropper });
     }
   };
 
   const finishCropperMove = e => {
     e.preventDefault();
+    if (activeMove) {
+      dispatch({ type: 'move', nextCropper });
+    }
     setActiveMove(false);
   };
 
@@ -199,6 +206,9 @@ const CanvasContainer = ({
             <Cropper
               startCropperResize={startCropperResize}
               startCropperMove={startCropperMove}
+              nextCropper={nextCropper}
+              activeMove={activeMove}
+              activeResize={activeResize}
               setCanvasScale={setCanvasScale}
             />
             <div className="cropper-button-container">
