@@ -11,6 +11,7 @@ import Cropper from './Cropper';
 
 const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, rotate }) => {
   const { state, dispatch } = useContext(CropperInfoContext);
+  const [activeMove, setActiveMove] = useState(false);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
   const [prevCropper, setPrevCropper] = useState({
@@ -30,17 +31,17 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     y: 0,
   });
 
-  const getRightSize = (current, min) => {
+  const getRightSize = (current, min, max) => {
     if (current < min) {
       return min;
     }
-    let max = canvasScale.height + canvasScale.top - state.top;
+    let maxH = canvasScale.height + canvasScale.top - state.top;
     if (state.isWide) {
-      max = (max * 16) / 9;
-      return Math.min(current, max);
+      maxH = (maxH * 16) / 9;
+      return Math.min(current, max, maxH);
     }
-    max = (max * 3) / 4;
-    return Math.min(current, max);
+    maxH = (maxH * 3) / 4;
+    return Math.min(current, max, maxH);
   };
   const getRightPos = (current, min, max) => {
     if (current < min) {
@@ -106,11 +107,17 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     let nextWidth;
     let nextHeight;
     if (direction === 'se' || direction === 'ne') {
-      nextWidth = getRightSize(prevCropper.width - diffX, 20, canvasScale.width - prevCropper.x);
-      nextHeight = getRightSize(prevCropper.height - diffY, 20, canvasScale.height - prevCropper.y);
+      nextWidth = getRightSize(
+        prevCropper.width - diffX,
+        20,
+        canvasScale.width + canvasScale.left - prevCropper.x,
+      );
     } else {
-      nextWidth = getRightSize(prevCropper.width + diffX, 20, canvasScale.width - prevCropper.x);
-      nextHeight = getRightSize(prevCropper.height + diffY, 20, canvasScale.height - state.top);
+      nextWidth = getRightSize(
+        prevCropper.width + diffX,
+        20,
+        prevCropper.width + prevCropper.x - canvasScale.left,
+      );
     }
     setNextCropper(prev => ({ ...prev, width: nextWidth, height: nextHeight }));
   };
@@ -138,8 +145,6 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     e.preventDefault();
     setActiveResize(false);
   };
-
-  const [activeMove, setActiveMove] = useState(false);
 
   const startCropperMove = e => {
     if (e.target.dataset.dir) return;
