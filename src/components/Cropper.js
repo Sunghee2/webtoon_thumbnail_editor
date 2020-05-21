@@ -4,9 +4,32 @@ import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 import { CropperInfoContext } from '../context';
 
-const Cropper = ({ startCropperResize, startCropperMove, nextCropper, activeMove }) => {
-  const { state } = useContext(CropperInfoContext);
+const Cropper = ({
+  startCropperResize,
+  startCropperMove,
+  nextCropper,
+  activeMove,
+  setCanvasScale,
+}) => {
+  const { state, dispatch } = useContext(CropperInfoContext);
   const areaRef = useRef(null);
+  useEffect(() => {
+    const canvasEl = document.getElementById('editor');
+    const { offsetLeft, offsetTop, width, height } = canvasEl;
+
+    setCanvasScale({
+      left: offsetLeft,
+      top: offsetTop,
+      width,
+      height,
+    });
+    dispatch({
+      type: 'update',
+      offsetLeft,
+      offsetTop,
+    });
+  }, []);
+
   useEffect(() => {
     if (activeMove) {
       areaRef.current.style.left = `${nextCropper.x}px`;
@@ -16,6 +39,7 @@ const Cropper = ({ startCropperResize, startCropperMove, nextCropper, activeMove
       areaRef.current.style.top = `${state.top}px`;
     }
   }, [nextCropper, state]);
+
   return (
     <div
       ref={areaRef}
@@ -69,6 +93,7 @@ Cropper.propTypes = {
   startCropperMove: propTypes.func.isRequired,
   nextCropper: propTypes.objectOf(number).isRequired,
   activeMove: propTypes.bool.isRequired,
+  setCanvasScale: propTypes.func.isRequired,
 };
 
 export default React.memo(Cropper);

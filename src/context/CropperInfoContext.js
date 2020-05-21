@@ -21,6 +21,12 @@ const reducer = (state, action) => {
         height: state.isWide ? (width * 9) / 16 : (width * 4) / 3,
         rotateCount: 0,
       };
+    case 'update':
+      return {
+        ...state,
+        left: offsetLeft,
+        top: offsetTop,
+      };
     case 'rotate':
       return {
         ...state,
