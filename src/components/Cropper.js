@@ -1,19 +1,28 @@
-import React, { useContext } from 'react';
-import propTypes from 'prop-types';
+import React, { useContext, useRef, useEffect } from 'react';
+import propTypes, { number } from 'prop-types';
 import '../styles/Main.scss';
 import '../styles/Cropper.scss';
 import { CropperInfoContext } from '../context';
 
-const Cropper = ({ startCropperResize, startCropperMove }) => {
+const Cropper = ({ startCropperResize, startCropperMove, nextCropper, activeMove }) => {
   const { state } = useContext(CropperInfoContext);
+  const areaRef = useRef(null);
+  useEffect(() => {
+    if (activeMove) {
+      areaRef.current.style.left = `${nextCropper.x}px`;
+      areaRef.current.style.top = `${nextCropper.y}px`;
+    } else {
+      areaRef.current.style.left = `${state.left}px`;
+      areaRef.current.style.top = `${state.top}px`;
+    }
+  }, [nextCropper, state]);
   return (
     <div
+      ref={areaRef}
       role="button"
       tabIndex={0}
       className="crop-area"
       style={{
-        left: `${state.left}px`,
-        top: `${state.top}px`,
         width: `${state.width}px`,
         height: `${state.height}px`,
       }}
@@ -58,6 +67,8 @@ const Cropper = ({ startCropperResize, startCropperMove }) => {
 Cropper.propTypes = {
   startCropperResize: propTypes.func.isRequired,
   startCropperMove: propTypes.func.isRequired,
+  nextCropper: propTypes.objectOf(number).isRequired,
+  activeMove: propTypes.bool.isRequired,
 };
 
 export default React.memo(Cropper);

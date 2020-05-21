@@ -157,12 +157,14 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     e.preventDefault();
     if (activeMove) {
       getNextPosition(e);
-      dispatch({ type: 'move', nextCropper });
     }
   };
 
   const finishCropperMove = e => {
     e.preventDefault();
+    if (activeMove) {
+      dispatch({ type: 'move', nextCropper });
+    }
     setActiveMove(false);
   };
 
@@ -210,7 +212,13 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
         {children}
         {cropIsActive && (
           <>
-            <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
+            <Cropper
+              startCropperResize={startCropperResize}
+              startCropperMove={startCropperMove}
+              nextCropper={nextCropper}
+              activeMove={activeMove}
+              activeResize={activeResize}
+            />
             <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
               <Button color="primary" onClick={applyCropper}>
                 적용하기
