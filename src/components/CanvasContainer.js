@@ -9,7 +9,14 @@ import FormControl from '@material-ui/core/FormControl';
 import { CropperInfoContext } from '../context';
 import Cropper from './Cropper';
 
-const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, rotate }) => {
+const CanvasContainer = ({
+  children,
+  cropIsActive,
+  applyCropper,
+  canvasScale,
+  rotate,
+  setCanvasScale,
+}) => {
   const { state, dispatch } = useContext(CropperInfoContext);
   const [activeResize, setActiveResize] = useState(false);
   const [direction, setDirection] = useState('');
@@ -189,7 +196,11 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
         {children}
         {cropIsActive && (
           <>
-            <Cropper startCropperResize={startCropperResize} startCropperMove={startCropperMove} />
+            <Cropper
+              startCropperResize={startCropperResize}
+              startCropperMove={startCropperMove}
+              setCanvasScale={setCanvasScale}
+            />
             <div className="cropper-button-container">
               <div>
                 <Button onClick={handleClickLeft} style={{ marginRight: '8px' }}>
@@ -228,6 +239,7 @@ CanvasContainer.propTypes = {
   applyCropper: PropTypes.func.isRequired,
   canvasScale: PropTypes.objectOf(number).isRequired,
   rotate: PropTypes.func.isRequired,
+  setCanvasScale: PropTypes.func.isRequired,
 };
 
 export default CanvasContainer;

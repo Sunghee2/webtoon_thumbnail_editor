@@ -127,7 +127,10 @@ const Main = () => {
       ctx.clearRect(0, 0, canvasEl.width, canvasEl.height);
       canvasEl.width = state.isWide ? 800 : 300;
       canvasEl.height = state.isWide ? 450 : 400;
-      const { width, height, offsetTop, offsetLeft } = canvasEl;
+      const { width, height } = canvasEl;
+      const offsetLeft = canvasScale.left;
+      const offsetTop = canvasScale.top;
+
       ctx.drawImage(
         currentImage,
         (state.left - offsetLeft) * scale.x,
@@ -237,6 +240,7 @@ const Main = () => {
             applyCropper={applyCropper}
             rotate={rotate}
             canvasRef={canvasRef}
+            setCanvasScale={setCanvasScale}
           >
             <canvas id="editor" className="editor" ref={canvasRef} />
 
