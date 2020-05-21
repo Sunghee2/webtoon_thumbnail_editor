@@ -10,7 +10,7 @@ const initialState = {
 };
 
 const reducer = (state, action) => {
-  const { type, offsetTop, offsetLeft, width, height, nextCropper, changeY, rotateCount } = action;
+  const { type, offsetTop, offsetLeft, width, nextCropper, changeY, nextH, rotateCount } = action;
   switch (type) {
     case 'init':
       return {
@@ -37,7 +37,8 @@ const reducer = (state, action) => {
         ...state,
         isWide: false,
         top: changeY || state.top,
-        height: (state.width * 4) / 3,
+        width: (nextH * 3) / 4,
+        height: nextH || (state.width * 4) / 3,
       };
     case 'se':
       return {

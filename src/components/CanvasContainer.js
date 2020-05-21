@@ -58,10 +58,10 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
       dispatch({ type: 'wide' });
     } else {
       setCropSize('tall');
-      const nextW = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
-      if (nextW + state.top > canvasScale.height) {
-        const changeY = canvasScale.height + canvasScale.top - nextW;
-        dispatch({ type: 'tall', changeY });
+      const nextH = getRightSize((state.width * 4) / 3, 20, canvasScale.height);
+      if (nextH + state.top > canvasScale.height) {
+        const changeY = canvasScale.height + canvasScale.top - nextH;
+        dispatch({ type: 'tall', changeY, nextH });
       } else {
         dispatch({ type: 'tall' });
       }
@@ -98,7 +98,7 @@ const CanvasContainer = ({ children, cropIsActive, applyCropper, canvasScale, ro
     const nextY = getRightPos(
       prevCropper.y - diffY,
       canvasScale.top,
-      canvasScale.height + canvasScale.top - prevCropper.height,
+      canvasScale.height + canvasScale.top - state.height,
     );
     setNextCropper(prev => ({ ...prev, x: nextX, y: nextY }));
   };
