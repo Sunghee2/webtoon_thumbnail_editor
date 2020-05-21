@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import React, { useRef, useState, useEffect, useContext } from 'react';
 import { Button, Drawer, IconButton, Divider } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
@@ -11,8 +12,10 @@ import { CropperInfoContext, AddTextContext, AdjustContext } from '../context';
 
 const Main = () => {
   const canvasRef = useRef(null);
+  const [backCanvas, setBackCanvas] = useState(null);
   const [canvasScale, setCanvasScale] = useState({});
   const [imgEl, setImgEl] = useState(null);
+  const [notFilteredImgEl, setNotFilteredImgEl] = useState(null);
   const [cropIsActive, setCropIsActive] = useState(false);
   const [focusedTextID, setFocusedTextID] = useState('');
   const [visibleDrawer, setVisibleDrawer] = useState(false);
@@ -24,7 +27,12 @@ const Main = () => {
   const Modes = {
     Crop: {
       start: () => {
-        setCropIsActive(!cropIsActive);
+        const img = new Image();
+        img.src = canvasRef.current.toDataURL();
+        img.onload = () => {
+          setImgEl(img);
+          setCropIsActive(!cropIsActive);
+        };
       },
       end: () => {
         setCropIsActive(false);
@@ -48,6 +56,20 @@ const Main = () => {
       },
     },
   };
+
+  useEffect(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasRef.current.width;
+    canvas.height = canvasRef.current.height;
+    setBackCanvas(canvas);
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(canvasScale).length) {
+      backCanvas.width = canvasRef.current.width;
+      backCanvas.height = canvasRef.current.height;
+    }
+  }, [canvasScale]);
 
   const openImage = async evt => {
     const img = evt.target.files[0];
@@ -79,6 +101,11 @@ const Main = () => {
 
       canvasData.onload = () => {
         setImgEl(canvasData);
+        setNotFilteredImgEl(canvasData);
+
+        const backContext = backCanvas.getContext(`2d`);
+        backContext.clearRect(0, 0, backContext.width, backContext.height);
+        backContext.drawImage(image, 0, 0, width, height);
       };
 
       if (canvasRef.current) {
@@ -109,10 +136,33 @@ const Main = () => {
   };
 
   const saveNewImage = () => {
-    const newImg = new Image();
-    newImg.src = canvasRef.current.toDataURL();
-    newImg.onload = () => {
-      setImgEl(newImg);
+    const notFilteredImg = new Image();
+    notFilteredImg.src = backCanvas.toDataURL();
+    notFilteredImg.onload = () => setNotFilteredImgEl(notFilteredImg);
+  };
+
+  const cropCanvas = (canvas, scale, offsetTop, offsetLeft, isSave) => {
+    const currentImage = new Image();
+    currentImage.src = canvas.toDataURL();
+    currentImage.onload = () => {
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      canvas.width = state.isWide ? 800 : 300;
+      canvas.height = state.isWide ? 450 : 400;
+      const { width, height } = canvas;
+      context.drawImage(
+        currentImage,
+        (state.left - offsetLeft) * scale.x,
+        (state.top - offsetTop) * scale.y,
+        state.width * scale.x,
+        state.height * scale.y,
+        0,
+        0,
+        width,
+        height,
+      );
+
+      if (isSave) saveNewImage();
     };
   };
 
@@ -142,19 +192,22 @@ const Main = () => {
         width,
         height,
       );
+
+      cropCanvas(backCanvas, scale, offsetTop, offsetLeft, true);
+
       setCanvasScale({
         left: offsetLeft,
         top: offsetTop,
         width,
         height,
       });
+
       dispatch({
         type: 'init',
         offsetLeft,
         offsetTop,
         width: canvasEl.width / 2,
       });
-      saveNewImage();
     };
     setCropIsActive(false);
   };
@@ -171,38 +224,46 @@ const Main = () => {
     setMode(e.currentTarget.id);
   };
 
-  const rotate = rightOrLeft => {
-    // 1: right, -1: left
-    const canvasEl = canvasRef.current;
-    const context = canvasEl.getContext(`2d`);
-    const { width, height } = canvasEl;
-    const rotateCount = (state.rotateCount + rightOrLeft) % 4;
-    dispatch({ type: 'rotate', rotateCount });
-
+  const rotateCanvas = (context, img, rotateCount, width, height) => {
     context.clearRect(0, 0, width, height);
     context.save();
     context.translate(width / 2, height / 2);
     context.rotate((rotateCount * (90 * Math.PI)) / 180);
     context.translate(-1 * (width / 2), -1 * (height / 2));
+
     if (rotateCount % 2) {
-      if (width > height)
+      if (width > height) {
         context.drawImage(
-          imgEl,
+          img,
           (width - height) / 2,
           (height - height ** 2 / width) / 2,
           height,
           height ** 2 / width,
         );
-      else
+      } else {
         context.drawImage(
-          imgEl,
+          img,
           (width - width ** 2 / height) / 2,
           (height - width) / 2,
           width ** 2 / height,
           width,
         );
-    } else context.drawImage(imgEl, 0, 0);
+      }
+    } else {
+      context.drawImage(img, 0, 0);
+    }
     context.restore();
+  };
+
+  const rotate = rightOrLeft => {
+    // 1: right, -1: left
+    const canvasEl = canvasRef.current;
+    const { width, height } = canvasEl;
+    const rotateCount = (state.rotateCount + rightOrLeft) % 4;
+    dispatch({ type: 'rotate', rotateCount });
+
+    rotateCanvas(canvasEl.getContext('2d'), imgEl, rotateCount, width, height);
+    rotateCanvas(backCanvas.getContext('2d'), notFilteredImgEl, rotateCount, width, height);
   };
 
   return (
@@ -269,7 +330,7 @@ const Main = () => {
                 setFocusedTextID={setFocusedTextID}
               />
             )}
-            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={imgEl} />}
+            {mode === 'Adjust' && <AdjustList canvasRef={canvasRef} image={notFilteredImgEl} />}
           </div>
         </div>
       </Drawer>
